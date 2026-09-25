@@ -15,7 +15,7 @@ public sealed class ExpiryWorker(IServiceScopeFactory scopes, ILogger<ExpiryWork
                 var db = scope.ServiceProvider.GetRequiredService<AppDb>();
                 var service = scope.ServiceProvider.GetRequiredService<AttemptService>();
                 var expired = await db.Attempts.Where(a => a.Status == AttemptStatus.InProgress && a.Mode == AssessmentMode.Mock && a.Deadline <= service.Now).OrderBy(a => a.Deadline).Take(100).ToListAsync(stoppingToken);
-                foreach (var attempt in expired) service.Finish(attempt, true);
+                foreach (var attempt in expired) await service.Finish(attempt, true);
                 await db.SaveChangesAsync(stoppingToken);
             }
             catch (DbUpdateConcurrencyException) { /* A submit/save won the race. Retry on the next sweep. */ }

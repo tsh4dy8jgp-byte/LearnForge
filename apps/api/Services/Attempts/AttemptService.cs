@@ -22,7 +22,7 @@ public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache re
     {
         if (a.Status == AttemptStatus.InProgress && a.Mode == AssessmentMode.Mock && a.Deadline <= Now)
         {
-            Finish(a, true);
+            await Finish(a, true);
             await db.SaveChangesAsync();
         }
     }
@@ -108,7 +108,13 @@ public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache re
         var answers = Answers(a);
         answers[q.Id] = request.Answer;
         a.AnswersJson = Json.Write(answers);
-        if (request.Check) { feedback[q.Id] = Grader.Score(q, request.Answer); a.FeedbackJson = Json.Write(feedback); }
+        if (request.Check)
+        {
+            var grade = Grader.Score(q, request.Answer);
+            feedback[q.Id] = grade;
+            a.FeedbackJson = Json.Write(feedback);
+            db.Evidence.Add(EvidenceWriter.Record(a, q, request.Answer, grade, EvidenceSource.LearningCheck, Now));
+        }
         a.Revision++;
         db.Responses.Add(new() { AttemptId = a.Id, RequestId = request.RequestId, Payload = payload });
         await db.SaveChangesAsync();
@@ -117,7 +123,7 @@ public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache re
     {
         if (a.Status == AttemptStatus.Completed) return;
         Writable(a, revision);
-        Finish(a, false);
+        await Finish(a, false);
         await db.SaveChangesAsync();
     }
     public async Task NextSection(Attempt a, int revision)
@@ -133,16 +139,28 @@ public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache re
         if (a.Status != AttemptStatus.InProgress) throw new DomainError(409, "This attempt is already complete.");
         if (a.Revision != revision) throw new DomainError(409, "A newer response exists. Reload the attempt before saving.");
     }
-    public void Finish(Attempt a, bool timedOut)
+    public async Task Finish(Attempt a, bool timedOut)
     {
         var s = Snapshot(a); var answers = Answers(a);
         var grades = s.Questions.Select(q => Grader.Score(q, answers.GetValueOrDefault(q.Id))).ToArray();
-        a.Status = AttemptStatus.Completed; a.ActiveKey = null; a.CompletedAt = Now; a.TimedOut = timedOut;
+        var completedAt = Now;
+        a.Status = AttemptStatus.Completed; a.ActiveKey = null; a.CompletedAt = completedAt; a.TimedOut = timedOut;
         a.Earned = grades.Sum(g => g.Earned); a.Possible = grades.Sum(g => g.Possible);
         a.CorrectPercent = grades.Count(g => g.FullyCorrect) * 100m / grades.Length;
         a.Eligible = a.Mode == AssessmentMode.Mock && !timedOut && a.FreshPercent >= s.Readiness.MinimumFreshPercent;
         a.Revision++;
         db.Audit.Add(new() { ActorId = a.UserId, Action = timedOut ? "attempt.expired" : "attempt.submitted", ResourceId = a.Id });
+        // Rows are saved with the transition, so the Revision concurrency token covers both.
+        // Any question without a row gets one, including checks made before the ledger existed.
+        var feedback = Json.Read<Dictionary<string, Grade>>(a.FeedbackJson);
+        var recorded = (await db.Evidence.Where(e => e.AttemptId == a.Id).Select(e => e.QuestionId).ToListAsync()).ToHashSet();
+        foreach (var (question, grade) in s.Questions.Zip(grades))
+        {
+            if (recorded.Contains(question.Id)) continue;
+            var source = feedback.ContainsKey(question.Id) ? EvidenceSource.LearningCheck
+                : a.Mode == AssessmentMode.Mock ? EvidenceSource.MockSubmission : EvidenceSource.LearningSubmission;
+            db.Evidence.Add(EvidenceWriter.Record(a, question, answers.GetValueOrDefault(question.Id), grade, source, completedAt));
+        }
     }
 
     public AttemptView View(Attempt a)

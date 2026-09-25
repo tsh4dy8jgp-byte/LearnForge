@@ -7,4 +7,5 @@ global using LearnForge.Api.Contracts.Export;
 global using LearnForge.Api.Services.Attempts;
 global using LearnForge.Api.Services.Analytics;
 global using LearnForge.Api.Services.Content;
+global using LearnForge.Api.Services.Learning;
 global using LearnForge.Core;
