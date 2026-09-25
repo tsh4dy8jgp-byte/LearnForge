@@ -1,0 +1,127 @@
+import { Component, computed, inject, signal } from '@angular/core';
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { Api, message } from '../api';
+import { AttemptSummary } from '../models';
+@Component({
+  imports: [DatePipe, DecimalPipe, FormsModule, RouterLink],
+  template: ` <div class="page-heading">
+      <div>
+        <p class="eyebrow">EVERY ATTEMPT TELLS A STORY</p>
+        <h1>Attempts & results<span class="accent">.</span></h1>
+        <p class="lead">Reflect on your progress. Find the patterns. Choose your next step.</p>
+      </div>
+      <a href="/api/me/export" class="button secondary">Export history ↓</a>
+    </div>
+    <div class="filter-row">
+      <label
+        >Course<input
+          placeholder="Search course"
+          [ngModel]="query()"
+          (ngModelChange)="query.set($event)" /></label
+      ><label
+        >Mode<select [ngModel]="mode()" (ngModelChange)="mode.set($event)">
+          <option value="">All modes</option>
+          <option value="mock">Mock exam</option>
+          <option value="learn">Learning</option>
+        </select></label
+      ><label
+        >Length<select [ngModel]="size()" (ngModelChange)="size.set($event)">
+          <option value="">All lengths</option>
+          <option value="short">Short</option>
+          <option value="full">Full</option>
+        </select></label
+      >
+    </div>
+    @if (error()) {
+      <p class="alert error" role="alert">{{ error() }}</p>
+    }
+    <div class="panel table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Course / date</th>
+            <th>Session</th>
+            <th>Fully correct</th>
+            <th>Points score</th>
+            <th>Readiness evidence</th>
+            <th><span class="sr-only">Open</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (a of filtered(); track a.id) {
+            <tr>
+              <td>
+                <strong>{{ a.title }}</strong
+                ><small>{{ a.startedAt | date: 'medium' }} · v{{ a.version }}</small>
+              </td>
+              <td>
+                {{ a.size }} / {{ a.mode
+                }}<small>{{ a.itemCount }} questions{{ a.focus ? ' · ' + a.focus : '' }}</small>
+              </td>
+              <td>
+                {{
+                  a.status === 'completed'
+                    ? (a.correctPercent | number: '1.0-1') + '%'
+                    : 'In progress'
+                }}
+              </td>
+              <td>{{ a.status === 'completed' ? (a.score | number: '1.0-1') + '%' : '—' }}</td>
+              <td>
+                <span class="pill subtle">{{
+                  a.status !== 'completed'
+                    ? 'Pending'
+                    : a.eligible
+                      ? 'Eligible'
+                      : a.mode === 'learn'
+                        ? 'Learning session'
+                        : a.timedOut
+                          ? 'Time expired'
+                          : 'Repeated questions'
+                }}</span>
+              </td>
+              <td>
+                <a [routerLink]="['/attempts', a.id]" class="text-link"
+                  >{{ a.status === 'completed' ? 'Review' : 'Resume' }} →</a
+                >
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="empty">
+                No attempts match these filters. Start a session from the learning library.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="muted small">
+      Readiness uses the latest consecutive mock results per course release and length. Exactly 90%
+      does not meet a strictly-above-90% rule. Partial-credit points and fully-correct questions are
+      shown separately.
+    </p>`,
+})
+export class HistoryPage {
+  private readonly api = inject(Api);
+  readonly attempts = signal<AttemptSummary[]>([]);
+  readonly error = signal('');
+  readonly query = signal('');
+  readonly mode = signal('');
+  readonly size = signal('');
+  readonly filtered = computed(() =>
+    this.attempts().filter(
+      (a) =>
+        (!this.mode() || a.mode === this.mode()) &&
+        (!this.size() || a.size === this.size()) &&
+        a.title.toLowerCase().includes(this.query().toLowerCase()),
+    ),
+  );
+  constructor() {
+    this.api
+      .get<AttemptSummary[]>('/me/attempts')
+      .then((a) => this.attempts.set(a))
+      .catch((e) => this.error.set(message(e)));
+  }
+}

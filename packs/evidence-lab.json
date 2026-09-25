@@ -1,0 +1,537 @@
+{
+  "schemaVersion": 1,
+  "id": "evidence-lab",
+  "version": "1.0.0",
+  "title": "Evidence lab",
+  "description": "Read a claim, question its evidence, and practise careful conclusions in two case studies.",
+  "license": "CC0-1.0",
+  "objectives": [
+    {
+      "id": "evaluate",
+      "title": "Evaluate claims against evidence",
+      "prerequisites": []
+    }
+  ],
+  "lessons": [
+    {
+      "id": "evidence-first",
+      "title": "From claim to justified conclusion",
+      "summary": "Separate observation, explanation and uncertainty.",
+      "objectiveIds": [
+        "evaluate"
+      ],
+      "blocks": [
+        {
+          "kind": "text",
+          "text": "A claim states what someone believes. Evidence is an observation that can support or challenge it. An observed improvement does not, by itself, establish its cause."
+        },
+        {
+          "kind": "example",
+          "title": "A careful conclusion",
+          "text": "Thirty volunteers reported better sleep after a course. This supports a statement about those reports. Without a comparable group, it does not establish that the course caused the change."
+        },
+        {
+          "kind": "callout",
+          "title": "A four-step review",
+          "text": "Define the claim. Inspect the study design and observations. Identify limitations. State a conclusion with appropriate uncertainty."
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "reading-claim",
+      "familyId": "reading-claim",
+      "kind": "single",
+      "prompt": "Which statement is directly supported by the reading club report?",
+      "objectiveIds": [
+        "evaluate"
+      ],
+      "options": [
+        {
+          "id": "supported",
+          "text": "24 volunteers reported an improvement."
+        },
+        {
+          "id": "cause",
+          "text": "The program caused improvement in every participant."
+        },
+        {
+          "id": "universal",
+          "text": "Everyone will benefit equally."
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "supported"
+        ]
+      },
+      "explanation": "A reported observation is supported. Causation and universal benefits require additional evidence.",
+      "scenarioId": "reading",
+      "weight": 1
+    },
+    {
+      "id": "reading-limits",
+      "familyId": "reading-limits",
+      "kind": "multiple",
+      "prompt": "Select TWO limitations of this study.",
+      "objectiveIds": [
+        "evaluate"
+      ],
+      "options": [
+        {
+          "id": "control",
+          "text": "No comparison group was used."
+        },
+        {
+          "id": "selection",
+          "text": "Participants volunteered."
+        },
+        {
+          "id": "sample",
+          "text": "No participants were studied."
+        },
+        {
+          "id": "random",
+          "text": "Random allocation removed selection bias."
+        },
+        {
+          "id": "none",
+          "text": "The report proves universal effectiveness."
+        }
+      ],
+      "slots": [],
+      "selectCount": 2,
+      "reuse": false,
+      "grading": {
+        "policy": "partial",
+        "correct": [
+          "control",
+          "selection"
+        ]
+      },
+      "explanation": "Volunteer selection limits generalization; without a comparison group, other explanations remain.",
+      "scenarioId": "reading",
+      "weight": 1
+    },
+    {
+      "id": "reading-match",
+      "familyId": "reading-match",
+      "kind": "matching",
+      "prompt": "Match each phrase to its role in the report.",
+      "objectiveIds": [
+        "evaluate"
+      ],
+      "options": [
+        {
+          "id": "observation",
+          "text": "Observation"
+        },
+        {
+          "id": "interpretation",
+          "text": "Interpretation"
+        }
+      ],
+      "slots": [
+        {
+          "id": "reported",
+          "text": "24 people reported an improvement.",
+          "options": []
+        },
+        {
+          "id": "caused",
+          "text": "The program caused the improvement.",
+          "options": []
+        }
+      ],
+      "selectCount": 0,
+      "reuse": false,
+      "grading": {
+        "policy": "partial",
+        "correct": [],
+        "matches": {
+          "reported": "observation",
+          "caused": "interpretation"
+        }
+      },
+      "explanation": "Reported outcomes are observations; causal explanations are interpretations.",
+      "scenarioId": "reading",
+      "weight": 1
+    },
+    {
+      "id": "reading-complete",
+      "familyId": "reading-complete",
+      "kind": "dropdown",
+      "prompt": "Complete the review recommendation.",
+      "objectiveIds": [
+        "evaluate"
+      ],
+      "options": [],
+      "slots": [
+        {
+          "id": "confidence",
+          "text": "Confidence in a causal conclusion is",
+          "options": [
+            {
+              "id": "limited",
+              "text": "limited"
+            },
+            {
+              "id": "certain",
+              "text": "certain"
+            }
+          ]
+        },
+        {
+          "id": "next",
+          "text": "A useful next study adds",
+          "options": [
+            {
+              "id": "comparison",
+              "text": "a comparable control group"
+            },
+            {
+              "id": "slogan",
+              "text": "a stronger advertising slogan"
+            }
+          ]
+        }
+      ],
+      "selectCount": 0,
+      "reuse": false,
+      "grading": {
+        "policy": "partial",
+        "correct": [],
+        "matches": {
+          "confidence": "limited",
+          "next": "comparison"
+        }
+      },
+      "explanation": "A comparison group helps evaluate alternative explanations. A slogan adds no evidence.",
+      "scenarioId": "reading",
+      "weight": 1
+    },
+    {
+      "id": "reading-process",
+      "familyId": "reading-process",
+      "kind": "sequence",
+      "prompt": "Arrange a responsible evidence review.",
+      "objectiveIds": [
+        "evaluate"
+      ],
+      "options": [
+        {
+          "id": "question",
+          "text": "Define the claim to evaluate"
+        },
+        {
+          "id": "inspect",
+          "text": "Inspect the study design and observations"
+        },
+        {
+          "id": "limits",
+          "text": "Identify limitations and alternative explanations"
+        },
+        {
+          "id": "conclude",
+          "text": "State a conclusion with its uncertainty"
+        }
+      ],
+      "slots": [],
+      "selectCount": 0,
+      "reuse": false,
+      "grading": {
+        "policy": "partial",
+        "correct": [
+          "question",
+          "inspect",
+          "limits",
+          "conclude"
+        ]
+      },
+      "explanation": "Define the question, examine evidence, assess limitations, then qualify the conclusion.",
+      "scenarioId": "reading",
+      "weight": 1
+    },
+    {
+      "id": "planning-claim",
+      "familyId": "planning-claim",
+      "kind": "single",
+      "prompt": "Which statement is directly supported by the planning workshop report?",
+      "objectiveIds": [
+        "evaluate"
+      ],
+      "options": [
+        {
+          "id": "supported",
+          "text": "18 volunteers reported an improvement."
+        },
+        {
+          "id": "cause",
+          "text": "The program caused improvement in every participant."
+        },
+        {
+          "id": "universal",
+          "text": "Everyone will benefit equally."
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "supported"
+        ]
+      },
+      "explanation": "A reported observation is supported. Causation and universal benefits require additional evidence.",
+      "scenarioId": "planning",
+      "weight": 1
+    },
+    {
+      "id": "planning-limits",
+      "familyId": "planning-limits",
+      "kind": "multiple",
+      "prompt": "Select TWO limitations of this study.",
+      "objectiveIds": [
+        "evaluate"
+      ],
+      "options": [
+        {
+          "id": "control",
+          "text": "No comparison group was used."
+        },
+        {
+          "id": "selection",
+          "text": "Participants volunteered."
+        },
+        {
+          "id": "sample",
+          "text": "No participants were studied."
+        },
+        {
+          "id": "random",
+          "text": "Random allocation removed selection bias."
+        },
+        {
+          "id": "none",
+          "text": "The report proves universal effectiveness."
+        }
+      ],
+      "slots": [],
+      "selectCount": 2,
+      "reuse": false,
+      "grading": {
+        "policy": "partial",
+        "correct": [
+          "control",
+          "selection"
+        ]
+      },
+      "explanation": "Volunteer selection limits generalization; without a comparison group, other explanations remain.",
+      "scenarioId": "planning",
+      "weight": 1
+    },
+    {
+      "id": "planning-match",
+      "familyId": "planning-match",
+      "kind": "matching",
+      "prompt": "Match each phrase to its role in the report.",
+      "objectiveIds": [
+        "evaluate"
+      ],
+      "options": [
+        {
+          "id": "observation",
+          "text": "Observation"
+        },
+        {
+          "id": "interpretation",
+          "text": "Interpretation"
+        }
+      ],
+      "slots": [
+        {
+          "id": "reported",
+          "text": "18 people reported an improvement.",
+          "options": []
+        },
+        {
+          "id": "caused",
+          "text": "The program caused the improvement.",
+          "options": []
+        }
+      ],
+      "selectCount": 0,
+      "reuse": false,
+      "grading": {
+        "policy": "partial",
+        "correct": [],
+        "matches": {
+          "reported": "observation",
+          "caused": "interpretation"
+        }
+      },
+      "explanation": "Reported outcomes are observations; causal explanations are interpretations.",
+      "scenarioId": "planning",
+      "weight": 1
+    },
+    {
+      "id": "planning-complete",
+      "familyId": "planning-complete",
+      "kind": "dropdown",
+      "prompt": "Complete the review recommendation.",
+      "objectiveIds": [
+        "evaluate"
+      ],
+      "options": [],
+      "slots": [
+        {
+          "id": "confidence",
+          "text": "Confidence in a causal conclusion is",
+          "options": [
+            {
+              "id": "limited",
+              "text": "limited"
+            },
+            {
+              "id": "certain",
+              "text": "certain"
+            }
+          ]
+        },
+        {
+          "id": "next",
+          "text": "A useful next study adds",
+          "options": [
+            {
+              "id": "comparison",
+              "text": "a comparable control group"
+            },
+            {
+              "id": "slogan",
+              "text": "a stronger advertising slogan"
+            }
+          ]
+        }
+      ],
+      "selectCount": 0,
+      "reuse": false,
+      "grading": {
+        "policy": "partial",
+        "correct": [],
+        "matches": {
+          "confidence": "limited",
+          "next": "comparison"
+        }
+      },
+      "explanation": "A comparison group helps evaluate alternative explanations. A slogan adds no evidence.",
+      "scenarioId": "planning",
+      "weight": 1
+    },
+    {
+      "id": "planning-process",
+      "familyId": "planning-process",
+      "kind": "sequence",
+      "prompt": "Arrange a responsible evidence review.",
+      "objectiveIds": [
+        "evaluate"
+      ],
+      "options": [
+        {
+          "id": "question",
+          "text": "Define the claim to evaluate"
+        },
+        {
+          "id": "inspect",
+          "text": "Inspect the study design and observations"
+        },
+        {
+          "id": "limits",
+          "text": "Identify limitations and alternative explanations"
+        },
+        {
+          "id": "conclude",
+          "text": "State a conclusion with its uncertainty"
+        }
+      ],
+      "slots": [],
+      "selectCount": 0,
+      "reuse": false,
+      "grading": {
+        "policy": "partial",
+        "correct": [
+          "question",
+          "inspect",
+          "limits",
+          "conclude"
+        ]
+      },
+      "explanation": "Define the question, examine evidence, assess limitations, then qualify the conclusion.",
+      "scenarioId": "planning",
+      "weight": 1
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "reading",
+      "title": "The reading club report",
+      "background": "A library ran a four-week reading club. Thirty people volunteered. Afterward, 24 reported reading more often. No comparison group was used. A poster claimed the club made everyone a regular reader."
+    },
+    {
+      "id": "planning",
+      "title": "The planning workshop report",
+      "background": "A university offered a planning workshop to twenty volunteers. Afterward, 18 reported meeting more deadlines. No comparison group was used. The organizer claimed the workshop caused the improvement."
+    }
+  ],
+  "blueprints": [
+    {
+      "id": "short",
+      "title": "One case study",
+      "count": 5,
+      "minutes": 10,
+      "size": "short",
+      "objectiveIds": [
+        "evaluate"
+      ],
+      "requiredKinds": [
+        "single",
+        "multiple",
+        "matching",
+        "dropdown",
+        "sequence"
+      ],
+      "lockSections": true
+    },
+    {
+      "id": "full",
+      "title": "Two case studies",
+      "count": 10,
+      "minutes": 20,
+      "size": "full",
+      "objectiveIds": [
+        "evaluate"
+      ],
+      "requiredKinds": [
+        "single",
+        "multiple",
+        "matching",
+        "dropdown",
+        "sequence"
+      ],
+      "lockSections": true
+    }
+  ],
+  "readiness": {
+    "shortAttempts": 5,
+    "fullAttempts": 3,
+    "threshold": 90,
+    "lookbackDays": 90,
+    "minimumFreshPercent": 100
+  },
+  "sources": []
+}

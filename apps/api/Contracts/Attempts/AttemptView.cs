@@ -1,0 +1,27 @@
+namespace LearnForge.Api.Contracts.Attempts;
+
+public sealed record AttemptView(
+    string Id,
+    string PackId,
+    string Title,
+    string Version,
+    AssessmentMode Mode,
+    AssessmentSize Size,
+    AttemptStatus Status,
+    int Revision,
+    DateTime StartedAt,
+    DateTime Deadline,
+    DateTime? CompletedAt,
+    int SectionIndex,
+    string[] Sections,
+    bool LockSections,
+    bool TimedOut,
+    PracticeFocus? Focus,
+    DeliveryQuestion[] Questions,
+    Scenario[] Scenarios,
+    Objective[] Objectives,
+    Dictionary<string, Answer> Answers,
+    Dictionary<string, Grade> Feedback,
+    DateTime ServerTime,
+    Dictionary<string, Grade>? Results,
+    AttemptResultSummary? Summary);

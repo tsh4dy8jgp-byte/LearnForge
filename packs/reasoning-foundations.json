@@ -1,0 +1,1975 @@
+{
+  "templates": {
+    "question": {
+      "id": "{{id}}",
+      "familyId": "{{id}}",
+      "kind": "{{kind}}",
+      "prompt": "{{prompt}}",
+      "objectiveIds": "{{objectives}}",
+      "options": "{{options}}",
+      "slots": "{{slots}}",
+      "selectCount": "{{selectCount}}",
+      "reuse": "{{reuse}}",
+      "grading": "{{grading}}",
+      "explanation": "{{explanation}}",
+      "scenarioId": null,
+      "weight": 1
+    }
+  },
+  "pack": {
+    "schemaVersion": 1,
+    "id": "reasoning-foundations",
+    "version": "1.0.0",
+    "title": "Reasoning foundations",
+    "description": "A compact, original course in sets, logic and ordered reasoning. Explore every LearnForge question format before creating your own subject pack.",
+    "license": "CC0-1.0",
+    "objectives": [
+      {
+        "id": "sets",
+        "title": "Reason about sets and membership",
+        "prerequisites": []
+      },
+      {
+        "id": "logic",
+        "title": "Evaluate statements and logical rules",
+        "prerequisites": [
+          "sets"
+        ]
+      },
+      {
+        "id": "ordering",
+        "title": "Follow and explain ordered procedures",
+        "prerequisites": [
+          "logic"
+        ]
+      }
+    ],
+    "lessons": [
+      {
+        "id": "sets-intro",
+        "title": "Think in sets",
+        "summary": "Describe collections, membership and overlap.",
+        "objectiveIds": [
+          "sets"
+        ],
+        "blocks": [
+          {
+            "kind": "text",
+            "text": "A set is a collection of distinct elements. Order does not matter: {1, 2} and {2, 1} describe the same set."
+          },
+          {
+            "kind": "example",
+            "title": "Union and intersection",
+            "text": "For A = {1, 2} and B = {2, 3}, the union A ∪ B is {1, 2, 3}. The intersection A ∩ B is {2}, because 2 belongs to both."
+          },
+          {
+            "kind": "callout",
+            "title": "A common mistake",
+            "text": "Union means either collection; intersection means both. Drawing two overlapping circles can help you separate the ideas."
+          }
+        ]
+      },
+      {
+        "id": "logic-intro",
+        "title": "Build logical statements",
+        "summary": "Evaluate AND and OR using truth values.",
+        "objectiveIds": [
+          "logic"
+        ],
+        "blocks": [
+          {
+            "kind": "text",
+            "text": "A logical statement has a truth value: true or false. AND is true only when both operands are true. Inclusive OR is true when at least one operand is true."
+          },
+          {
+            "kind": "example",
+            "title": "Evaluate one step at a time",
+            "text": "Let P be true and Q be false. P AND Q is false. P OR Q is true. Write down the input values before applying the operator."
+          },
+          {
+            "kind": "callout",
+            "title": "Check your interpretation",
+            "text": "In this course OR is inclusive: both inputs may be true. Everyday language sometimes uses OR to mean exactly one; mathematics distinguishes this as exclusive OR."
+          }
+        ]
+      },
+      {
+        "id": "ordering-intro",
+        "title": "Reason in sequence",
+        "summary": "Follow a procedure and check its invariant.",
+        "objectiveIds": [
+          "ordering"
+        ],
+        "blocks": [
+          {
+            "kind": "text",
+            "text": "A sequence records order. When sorting numbers increasingly, every adjacent pair must satisfy left ≤ right."
+          },
+          {
+            "kind": "example",
+            "title": "Sort a small list",
+            "text": "Given 8, 3, 6, 1, choose the smallest remaining value repeatedly: 1, 3, 6, 8. Check that each value appears exactly once."
+          },
+          {
+            "kind": "code",
+            "title": "A check in pseudocode",
+            "text": "for each adjacent pair (left, right):\n    require left <= right\nrequire output has the same elements as input"
+          }
+        ]
+      }
+    ],
+    "questions": [
+      {
+        "$use": "question",
+        "values": {
+          "id": "sets-single-1",
+          "kind": "single",
+          "prompt": "Let A = {3, 4} and B = {4, 5}. Which set is A ∩ B?",
+          "objectives": [
+            "sets"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "{4}"
+            },
+            {
+              "id": "b",
+              "text": "{3, 4, 5}"
+            },
+            {
+              "id": "c",
+              "text": "{}"
+            },
+            {
+              "id": "d",
+              "text": "{3, 5}"
+            }
+          ],
+          "slots": [],
+          "selectCount": 1,
+          "grading": {
+            "policy": "exact",
+            "correct": [
+              "a"
+            ],
+            "matches": null
+          },
+          "explanation": "Intersection retains elements in both sets. Only 4 appears in both A and B.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "sets-multi-1",
+          "kind": "multiple",
+          "prompt": "Select the two elements that belong to A = {3, 5}.",
+          "objectives": [
+            "sets"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "3"
+            },
+            {
+              "id": "b",
+              "text": "4"
+            },
+            {
+              "id": "c",
+              "text": "5"
+            },
+            {
+              "id": "d",
+              "text": "6"
+            },
+            {
+              "id": "e",
+              "text": "7"
+            }
+          ],
+          "slots": [],
+          "selectCount": 2,
+          "grading": {
+            "policy": "partial",
+            "correct": [
+              "a",
+              "c"
+            ],
+            "matches": null
+          },
+          "explanation": "The set explicitly contains 3 and 5. The other values are absent.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "logic-dropdown-1",
+          "kind": "dropdown",
+          "prompt": "With P = false and Q = false, complete the two logical evaluations.",
+          "objectives": [
+            "logic"
+          ],
+          "options": [],
+          "slots": [
+            {
+              "id": "and",
+              "text": "P AND Q",
+              "options": [
+                {
+                  "id": "true",
+                  "text": "True"
+                },
+                {
+                  "id": "false",
+                  "text": "False"
+                }
+              ]
+            },
+            {
+              "id": "or",
+              "text": "P OR Q",
+              "options": [
+                {
+                  "id": "true",
+                  "text": "True"
+                },
+                {
+                  "id": "false",
+                  "text": "False"
+                }
+              ]
+            }
+          ],
+          "selectCount": 1,
+          "grading": {
+            "policy": "partial",
+            "correct": [],
+            "matches": {
+              "and": "false",
+              "or": "false"
+            }
+          },
+          "explanation": "AND requires both inputs to be true; OR requires at least one. Here AND is false, and OR is false.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "logic-matching-1",
+          "kind": "matching",
+          "prompt": "Classify these statements about the number 3. Match each statement to its truth value; values may be reused.",
+          "objectives": [
+            "logic"
+          ],
+          "options": [
+            {
+              "id": "true",
+              "text": "True"
+            },
+            {
+              "id": "false",
+              "text": "False"
+            }
+          ],
+          "slots": [
+            {
+              "id": "larger",
+              "text": "3 > 2",
+              "options": []
+            },
+            {
+              "id": "equal",
+              "text": "3 = 4",
+              "options": []
+            }
+          ],
+          "selectCount": 1,
+          "grading": {
+            "policy": "partial",
+            "correct": [],
+            "matches": {
+              "larger": "true",
+              "equal": "false"
+            }
+          },
+          "explanation": "3 is greater than 2, but it does not equal 4.",
+          "reuse": true
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "order-1",
+          "kind": "sequence",
+          "prompt": "Arrange these numbers in increasing order, from smallest to largest.",
+          "objectives": [
+            "ordering"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "3"
+            },
+            {
+              "id": "b",
+              "text": "9"
+            },
+            {
+              "id": "c",
+              "text": "4"
+            },
+            {
+              "id": "d",
+              "text": "7"
+            }
+          ],
+          "slots": [],
+          "selectCount": 4,
+          "grading": {
+            "policy": "partial",
+            "correct": [
+              "a",
+              "c",
+              "d",
+              "b"
+            ],
+            "matches": null
+          },
+          "explanation": "Increasing order is 3, 4, 7, 9. Compare adjacent values to check every step.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "sets-single-2",
+          "kind": "single",
+          "prompt": "Let A = {6, 7} and B = {7, 8}. Which set is A ∩ B?",
+          "objectives": [
+            "sets"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "{7}"
+            },
+            {
+              "id": "b",
+              "text": "{6, 7, 8}"
+            },
+            {
+              "id": "c",
+              "text": "{}"
+            },
+            {
+              "id": "d",
+              "text": "{6, 8}"
+            }
+          ],
+          "slots": [],
+          "selectCount": 1,
+          "grading": {
+            "policy": "exact",
+            "correct": [
+              "a"
+            ],
+            "matches": null
+          },
+          "explanation": "Intersection retains elements in both sets. Only 7 appears in both A and B.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "sets-multi-2",
+          "kind": "multiple",
+          "prompt": "Select the two elements that belong to A = {6, 8}.",
+          "objectives": [
+            "sets"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "6"
+            },
+            {
+              "id": "b",
+              "text": "7"
+            },
+            {
+              "id": "c",
+              "text": "8"
+            },
+            {
+              "id": "d",
+              "text": "9"
+            },
+            {
+              "id": "e",
+              "text": "10"
+            }
+          ],
+          "slots": [],
+          "selectCount": 2,
+          "grading": {
+            "policy": "partial",
+            "correct": [
+              "a",
+              "c"
+            ],
+            "matches": null
+          },
+          "explanation": "The set explicitly contains 6 and 8. The other values are absent.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "logic-dropdown-2",
+          "kind": "dropdown",
+          "prompt": "With P = true and Q = false, complete the two logical evaluations.",
+          "objectives": [
+            "logic"
+          ],
+          "options": [],
+          "slots": [
+            {
+              "id": "and",
+              "text": "P AND Q",
+              "options": [
+                {
+                  "id": "true",
+                  "text": "True"
+                },
+                {
+                  "id": "false",
+                  "text": "False"
+                }
+              ]
+            },
+            {
+              "id": "or",
+              "text": "P OR Q",
+              "options": [
+                {
+                  "id": "true",
+                  "text": "True"
+                },
+                {
+                  "id": "false",
+                  "text": "False"
+                }
+              ]
+            }
+          ],
+          "selectCount": 1,
+          "grading": {
+            "policy": "partial",
+            "correct": [],
+            "matches": {
+              "and": "false",
+              "or": "true"
+            }
+          },
+          "explanation": "AND requires both inputs to be true; OR requires at least one. Here AND is false, and OR is true.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "logic-matching-2",
+          "kind": "matching",
+          "prompt": "Classify these statements about the number 6. Match each statement to its truth value; values may be reused.",
+          "objectives": [
+            "logic"
+          ],
+          "options": [
+            {
+              "id": "true",
+              "text": "True"
+            },
+            {
+              "id": "false",
+              "text": "False"
+            }
+          ],
+          "slots": [
+            {
+              "id": "larger",
+              "text": "6 > 5",
+              "options": []
+            },
+            {
+              "id": "equal",
+              "text": "6 = 7",
+              "options": []
+            }
+          ],
+          "selectCount": 1,
+          "grading": {
+            "policy": "partial",
+            "correct": [],
+            "matches": {
+              "larger": "true",
+              "equal": "false"
+            }
+          },
+          "explanation": "6 is greater than 5, but it does not equal 7.",
+          "reuse": true
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "order-2",
+          "kind": "sequence",
+          "prompt": "Arrange these numbers in increasing order, from smallest to largest.",
+          "objectives": [
+            "ordering"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "6"
+            },
+            {
+              "id": "b",
+              "text": "12"
+            },
+            {
+              "id": "c",
+              "text": "7"
+            },
+            {
+              "id": "d",
+              "text": "10"
+            }
+          ],
+          "slots": [],
+          "selectCount": 4,
+          "grading": {
+            "policy": "partial",
+            "correct": [
+              "a",
+              "c",
+              "d",
+              "b"
+            ],
+            "matches": null
+          },
+          "explanation": "Increasing order is 6, 7, 10, 12. Compare adjacent values to check every step.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "sets-single-3",
+          "kind": "single",
+          "prompt": "Let A = {9, 10} and B = {10, 11}. Which set is A ∩ B?",
+          "objectives": [
+            "sets"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "{10}"
+            },
+            {
+              "id": "b",
+              "text": "{9, 10, 11}"
+            },
+            {
+              "id": "c",
+              "text": "{}"
+            },
+            {
+              "id": "d",
+              "text": "{9, 11}"
+            }
+          ],
+          "slots": [],
+          "selectCount": 1,
+          "grading": {
+            "policy": "exact",
+            "correct": [
+              "a"
+            ],
+            "matches": null
+          },
+          "explanation": "Intersection retains elements in both sets. Only 10 appears in both A and B.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "sets-multi-3",
+          "kind": "multiple",
+          "prompt": "Select the two elements that belong to A = {9, 11}.",
+          "objectives": [
+            "sets"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "9"
+            },
+            {
+              "id": "b",
+              "text": "10"
+            },
+            {
+              "id": "c",
+              "text": "11"
+            },
+            {
+              "id": "d",
+              "text": "12"
+            },
+            {
+              "id": "e",
+              "text": "13"
+            }
+          ],
+          "slots": [],
+          "selectCount": 2,
+          "grading": {
+            "policy": "partial",
+            "correct": [
+              "a",
+              "c"
+            ],
+            "matches": null
+          },
+          "explanation": "The set explicitly contains 9 and 11. The other values are absent.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "logic-dropdown-3",
+          "kind": "dropdown",
+          "prompt": "With P = false and Q = true, complete the two logical evaluations.",
+          "objectives": [
+            "logic"
+          ],
+          "options": [],
+          "slots": [
+            {
+              "id": "and",
+              "text": "P AND Q",
+              "options": [
+                {
+                  "id": "true",
+                  "text": "True"
+                },
+                {
+                  "id": "false",
+                  "text": "False"
+                }
+              ]
+            },
+            {
+              "id": "or",
+              "text": "P OR Q",
+              "options": [
+                {
+                  "id": "true",
+                  "text": "True"
+                },
+                {
+                  "id": "false",
+                  "text": "False"
+                }
+              ]
+            }
+          ],
+          "selectCount": 1,
+          "grading": {
+            "policy": "partial",
+            "correct": [],
+            "matches": {
+              "and": "false",
+              "or": "true"
+            }
+          },
+          "explanation": "AND requires both inputs to be true; OR requires at least one. Here AND is false, and OR is true.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "logic-matching-3",
+          "kind": "matching",
+          "prompt": "Classify these statements about the number 9. Match each statement to its truth value; values may be reused.",
+          "objectives": [
+            "logic"
+          ],
+          "options": [
+            {
+              "id": "true",
+              "text": "True"
+            },
+            {
+              "id": "false",
+              "text": "False"
+            }
+          ],
+          "slots": [
+            {
+              "id": "larger",
+              "text": "9 > 8",
+              "options": []
+            },
+            {
+              "id": "equal",
+              "text": "9 = 10",
+              "options": []
+            }
+          ],
+          "selectCount": 1,
+          "grading": {
+            "policy": "partial",
+            "correct": [],
+            "matches": {
+              "larger": "true",
+              "equal": "false"
+            }
+          },
+          "explanation": "9 is greater than 8, but it does not equal 10.",
+          "reuse": true
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "order-3",
+          "kind": "sequence",
+          "prompt": "Arrange these numbers in increasing order, from smallest to largest.",
+          "objectives": [
+            "ordering"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "9"
+            },
+            {
+              "id": "b",
+              "text": "15"
+            },
+            {
+              "id": "c",
+              "text": "10"
+            },
+            {
+              "id": "d",
+              "text": "13"
+            }
+          ],
+          "slots": [],
+          "selectCount": 4,
+          "grading": {
+            "policy": "partial",
+            "correct": [
+              "a",
+              "c",
+              "d",
+              "b"
+            ],
+            "matches": null
+          },
+          "explanation": "Increasing order is 9, 10, 13, 15. Compare adjacent values to check every step.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "sets-single-4",
+          "kind": "single",
+          "prompt": "Let A = {12, 13} and B = {13, 14}. Which set is A ∩ B?",
+          "objectives": [
+            "sets"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "{13}"
+            },
+            {
+              "id": "b",
+              "text": "{12, 13, 14}"
+            },
+            {
+              "id": "c",
+              "text": "{}"
+            },
+            {
+              "id": "d",
+              "text": "{12, 14}"
+            }
+          ],
+          "slots": [],
+          "selectCount": 1,
+          "grading": {
+            "policy": "exact",
+            "correct": [
+              "a"
+            ],
+            "matches": null
+          },
+          "explanation": "Intersection retains elements in both sets. Only 13 appears in both A and B.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "sets-multi-4",
+          "kind": "multiple",
+          "prompt": "Select the two elements that belong to A = {12, 14}.",
+          "objectives": [
+            "sets"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "12"
+            },
+            {
+              "id": "b",
+              "text": "13"
+            },
+            {
+              "id": "c",
+              "text": "14"
+            },
+            {
+              "id": "d",
+              "text": "15"
+            },
+            {
+              "id": "e",
+              "text": "16"
+            }
+          ],
+          "slots": [],
+          "selectCount": 2,
+          "grading": {
+            "policy": "partial",
+            "correct": [
+              "a",
+              "c"
+            ],
+            "matches": null
+          },
+          "explanation": "The set explicitly contains 12 and 14. The other values are absent.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "logic-dropdown-4",
+          "kind": "dropdown",
+          "prompt": "With P = true and Q = false, complete the two logical evaluations.",
+          "objectives": [
+            "logic"
+          ],
+          "options": [],
+          "slots": [
+            {
+              "id": "and",
+              "text": "P AND Q",
+              "options": [
+                {
+                  "id": "true",
+                  "text": "True"
+                },
+                {
+                  "id": "false",
+                  "text": "False"
+                }
+              ]
+            },
+            {
+              "id": "or",
+              "text": "P OR Q",
+              "options": [
+                {
+                  "id": "true",
+                  "text": "True"
+                },
+                {
+                  "id": "false",
+                  "text": "False"
+                }
+              ]
+            }
+          ],
+          "selectCount": 1,
+          "grading": {
+            "policy": "partial",
+            "correct": [],
+            "matches": {
+              "and": "false",
+              "or": "true"
+            }
+          },
+          "explanation": "AND requires both inputs to be true; OR requires at least one. Here AND is false, and OR is true.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "logic-matching-4",
+          "kind": "matching",
+          "prompt": "Classify these statements about the number 12. Match each statement to its truth value; values may be reused.",
+          "objectives": [
+            "logic"
+          ],
+          "options": [
+            {
+              "id": "true",
+              "text": "True"
+            },
+            {
+              "id": "false",
+              "text": "False"
+            }
+          ],
+          "slots": [
+            {
+              "id": "larger",
+              "text": "12 > 11",
+              "options": []
+            },
+            {
+              "id": "equal",
+              "text": "12 = 13",
+              "options": []
+            }
+          ],
+          "selectCount": 1,
+          "grading": {
+            "policy": "partial",
+            "correct": [],
+            "matches": {
+              "larger": "true",
+              "equal": "false"
+            }
+          },
+          "explanation": "12 is greater than 11, but it does not equal 13.",
+          "reuse": true
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "order-4",
+          "kind": "sequence",
+          "prompt": "Arrange these numbers in increasing order, from smallest to largest.",
+          "objectives": [
+            "ordering"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "12"
+            },
+            {
+              "id": "b",
+              "text": "18"
+            },
+            {
+              "id": "c",
+              "text": "13"
+            },
+            {
+              "id": "d",
+              "text": "16"
+            }
+          ],
+          "slots": [],
+          "selectCount": 4,
+          "grading": {
+            "policy": "partial",
+            "correct": [
+              "a",
+              "c",
+              "d",
+              "b"
+            ],
+            "matches": null
+          },
+          "explanation": "Increasing order is 12, 13, 16, 18. Compare adjacent values to check every step.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "sets-single-5",
+          "kind": "single",
+          "prompt": "Let A = {15, 16} and B = {16, 17}. Which set is A ∩ B?",
+          "objectives": [
+            "sets"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "{16}"
+            },
+            {
+              "id": "b",
+              "text": "{15, 16, 17}"
+            },
+            {
+              "id": "c",
+              "text": "{}"
+            },
+            {
+              "id": "d",
+              "text": "{15, 17}"
+            }
+          ],
+          "slots": [],
+          "selectCount": 1,
+          "grading": {
+            "policy": "exact",
+            "correct": [
+              "a"
+            ],
+            "matches": null
+          },
+          "explanation": "Intersection retains elements in both sets. Only 16 appears in both A and B.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "sets-multi-5",
+          "kind": "multiple",
+          "prompt": "Select the two elements that belong to A = {15, 17}.",
+          "objectives": [
+            "sets"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "15"
+            },
+            {
+              "id": "b",
+              "text": "16"
+            },
+            {
+              "id": "c",
+              "text": "17"
+            },
+            {
+              "id": "d",
+              "text": "18"
+            },
+            {
+              "id": "e",
+              "text": "19"
+            }
+          ],
+          "slots": [],
+          "selectCount": 2,
+          "grading": {
+            "policy": "partial",
+            "correct": [
+              "a",
+              "c"
+            ],
+            "matches": null
+          },
+          "explanation": "The set explicitly contains 15 and 17. The other values are absent.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "logic-dropdown-5",
+          "kind": "dropdown",
+          "prompt": "With P = false and Q = false, complete the two logical evaluations.",
+          "objectives": [
+            "logic"
+          ],
+          "options": [],
+          "slots": [
+            {
+              "id": "and",
+              "text": "P AND Q",
+              "options": [
+                {
+                  "id": "true",
+                  "text": "True"
+                },
+                {
+                  "id": "false",
+                  "text": "False"
+                }
+              ]
+            },
+            {
+              "id": "or",
+              "text": "P OR Q",
+              "options": [
+                {
+                  "id": "true",
+                  "text": "True"
+                },
+                {
+                  "id": "false",
+                  "text": "False"
+                }
+              ]
+            }
+          ],
+          "selectCount": 1,
+          "grading": {
+            "policy": "partial",
+            "correct": [],
+            "matches": {
+              "and": "false",
+              "or": "false"
+            }
+          },
+          "explanation": "AND requires both inputs to be true; OR requires at least one. Here AND is false, and OR is false.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "logic-matching-5",
+          "kind": "matching",
+          "prompt": "Classify these statements about the number 15. Match each statement to its truth value; values may be reused.",
+          "objectives": [
+            "logic"
+          ],
+          "options": [
+            {
+              "id": "true",
+              "text": "True"
+            },
+            {
+              "id": "false",
+              "text": "False"
+            }
+          ],
+          "slots": [
+            {
+              "id": "larger",
+              "text": "15 > 14",
+              "options": []
+            },
+            {
+              "id": "equal",
+              "text": "15 = 16",
+              "options": []
+            }
+          ],
+          "selectCount": 1,
+          "grading": {
+            "policy": "partial",
+            "correct": [],
+            "matches": {
+              "larger": "true",
+              "equal": "false"
+            }
+          },
+          "explanation": "15 is greater than 14, but it does not equal 16.",
+          "reuse": true
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "order-5",
+          "kind": "sequence",
+          "prompt": "Arrange these numbers in increasing order, from smallest to largest.",
+          "objectives": [
+            "ordering"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "15"
+            },
+            {
+              "id": "b",
+              "text": "21"
+            },
+            {
+              "id": "c",
+              "text": "16"
+            },
+            {
+              "id": "d",
+              "text": "19"
+            }
+          ],
+          "slots": [],
+          "selectCount": 4,
+          "grading": {
+            "policy": "partial",
+            "correct": [
+              "a",
+              "c",
+              "d",
+              "b"
+            ],
+            "matches": null
+          },
+          "explanation": "Increasing order is 15, 16, 19, 21. Compare adjacent values to check every step.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "sets-single-6",
+          "kind": "single",
+          "prompt": "Let A = {18, 19} and B = {19, 20}. Which set is A ∩ B?",
+          "objectives": [
+            "sets"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "{19}"
+            },
+            {
+              "id": "b",
+              "text": "{18, 19, 20}"
+            },
+            {
+              "id": "c",
+              "text": "{}"
+            },
+            {
+              "id": "d",
+              "text": "{18, 20}"
+            }
+          ],
+          "slots": [],
+          "selectCount": 1,
+          "grading": {
+            "policy": "exact",
+            "correct": [
+              "a"
+            ],
+            "matches": null
+          },
+          "explanation": "Intersection retains elements in both sets. Only 19 appears in both A and B.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "sets-multi-6",
+          "kind": "multiple",
+          "prompt": "Select the two elements that belong to A = {18, 20}.",
+          "objectives": [
+            "sets"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "18"
+            },
+            {
+              "id": "b",
+              "text": "19"
+            },
+            {
+              "id": "c",
+              "text": "20"
+            },
+            {
+              "id": "d",
+              "text": "21"
+            },
+            {
+              "id": "e",
+              "text": "22"
+            }
+          ],
+          "slots": [],
+          "selectCount": 2,
+          "grading": {
+            "policy": "partial",
+            "correct": [
+              "a",
+              "c"
+            ],
+            "matches": null
+          },
+          "explanation": "The set explicitly contains 18 and 20. The other values are absent.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "logic-dropdown-6",
+          "kind": "dropdown",
+          "prompt": "With P = true and Q = true, complete the two logical evaluations.",
+          "objectives": [
+            "logic"
+          ],
+          "options": [],
+          "slots": [
+            {
+              "id": "and",
+              "text": "P AND Q",
+              "options": [
+                {
+                  "id": "true",
+                  "text": "True"
+                },
+                {
+                  "id": "false",
+                  "text": "False"
+                }
+              ]
+            },
+            {
+              "id": "or",
+              "text": "P OR Q",
+              "options": [
+                {
+                  "id": "true",
+                  "text": "True"
+                },
+                {
+                  "id": "false",
+                  "text": "False"
+                }
+              ]
+            }
+          ],
+          "selectCount": 1,
+          "grading": {
+            "policy": "partial",
+            "correct": [],
+            "matches": {
+              "and": "true",
+              "or": "true"
+            }
+          },
+          "explanation": "AND requires both inputs to be true; OR requires at least one. Here AND is true, and OR is true.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "logic-matching-6",
+          "kind": "matching",
+          "prompt": "Classify these statements about the number 18. Match each statement to its truth value; values may be reused.",
+          "objectives": [
+            "logic"
+          ],
+          "options": [
+            {
+              "id": "true",
+              "text": "True"
+            },
+            {
+              "id": "false",
+              "text": "False"
+            }
+          ],
+          "slots": [
+            {
+              "id": "larger",
+              "text": "18 > 17",
+              "options": []
+            },
+            {
+              "id": "equal",
+              "text": "18 = 19",
+              "options": []
+            }
+          ],
+          "selectCount": 1,
+          "grading": {
+            "policy": "partial",
+            "correct": [],
+            "matches": {
+              "larger": "true",
+              "equal": "false"
+            }
+          },
+          "explanation": "18 is greater than 17, but it does not equal 19.",
+          "reuse": true
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "order-6",
+          "kind": "sequence",
+          "prompt": "Arrange these numbers in increasing order, from smallest to largest.",
+          "objectives": [
+            "ordering"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "18"
+            },
+            {
+              "id": "b",
+              "text": "24"
+            },
+            {
+              "id": "c",
+              "text": "19"
+            },
+            {
+              "id": "d",
+              "text": "22"
+            }
+          ],
+          "slots": [],
+          "selectCount": 4,
+          "grading": {
+            "policy": "partial",
+            "correct": [
+              "a",
+              "c",
+              "d",
+              "b"
+            ],
+            "matches": null
+          },
+          "explanation": "Increasing order is 18, 19, 22, 24. Compare adjacent values to check every step.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "sets-single-7",
+          "kind": "single",
+          "prompt": "Let A = {21, 22} and B = {22, 23}. Which set is A ∩ B?",
+          "objectives": [
+            "sets"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "{22}"
+            },
+            {
+              "id": "b",
+              "text": "{21, 22, 23}"
+            },
+            {
+              "id": "c",
+              "text": "{}"
+            },
+            {
+              "id": "d",
+              "text": "{21, 23}"
+            }
+          ],
+          "slots": [],
+          "selectCount": 1,
+          "grading": {
+            "policy": "exact",
+            "correct": [
+              "a"
+            ],
+            "matches": null
+          },
+          "explanation": "Intersection retains elements in both sets. Only 22 appears in both A and B.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "sets-multi-7",
+          "kind": "multiple",
+          "prompt": "Select the two elements that belong to A = {21, 23}.",
+          "objectives": [
+            "sets"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "21"
+            },
+            {
+              "id": "b",
+              "text": "22"
+            },
+            {
+              "id": "c",
+              "text": "23"
+            },
+            {
+              "id": "d",
+              "text": "24"
+            },
+            {
+              "id": "e",
+              "text": "25"
+            }
+          ],
+          "slots": [],
+          "selectCount": 2,
+          "grading": {
+            "policy": "partial",
+            "correct": [
+              "a",
+              "c"
+            ],
+            "matches": null
+          },
+          "explanation": "The set explicitly contains 21 and 23. The other values are absent.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "logic-dropdown-7",
+          "kind": "dropdown",
+          "prompt": "With P = false and Q = false, complete the two logical evaluations.",
+          "objectives": [
+            "logic"
+          ],
+          "options": [],
+          "slots": [
+            {
+              "id": "and",
+              "text": "P AND Q",
+              "options": [
+                {
+                  "id": "true",
+                  "text": "True"
+                },
+                {
+                  "id": "false",
+                  "text": "False"
+                }
+              ]
+            },
+            {
+              "id": "or",
+              "text": "P OR Q",
+              "options": [
+                {
+                  "id": "true",
+                  "text": "True"
+                },
+                {
+                  "id": "false",
+                  "text": "False"
+                }
+              ]
+            }
+          ],
+          "selectCount": 1,
+          "grading": {
+            "policy": "partial",
+            "correct": [],
+            "matches": {
+              "and": "false",
+              "or": "false"
+            }
+          },
+          "explanation": "AND requires both inputs to be true; OR requires at least one. Here AND is false, and OR is false.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "logic-matching-7",
+          "kind": "matching",
+          "prompt": "Classify these statements about the number 21. Match each statement to its truth value; values may be reused.",
+          "objectives": [
+            "logic"
+          ],
+          "options": [
+            {
+              "id": "true",
+              "text": "True"
+            },
+            {
+              "id": "false",
+              "text": "False"
+            }
+          ],
+          "slots": [
+            {
+              "id": "larger",
+              "text": "21 > 20",
+              "options": []
+            },
+            {
+              "id": "equal",
+              "text": "21 = 22",
+              "options": []
+            }
+          ],
+          "selectCount": 1,
+          "grading": {
+            "policy": "partial",
+            "correct": [],
+            "matches": {
+              "larger": "true",
+              "equal": "false"
+            }
+          },
+          "explanation": "21 is greater than 20, but it does not equal 22.",
+          "reuse": true
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "order-7",
+          "kind": "sequence",
+          "prompt": "Arrange these numbers in increasing order, from smallest to largest.",
+          "objectives": [
+            "ordering"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "21"
+            },
+            {
+              "id": "b",
+              "text": "27"
+            },
+            {
+              "id": "c",
+              "text": "22"
+            },
+            {
+              "id": "d",
+              "text": "25"
+            }
+          ],
+          "slots": [],
+          "selectCount": 4,
+          "grading": {
+            "policy": "partial",
+            "correct": [
+              "a",
+              "c",
+              "d",
+              "b"
+            ],
+            "matches": null
+          },
+          "explanation": "Increasing order is 21, 22, 25, 27. Compare adjacent values to check every step.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "sets-single-8",
+          "kind": "single",
+          "prompt": "Let A = {24, 25} and B = {25, 26}. Which set is A ∩ B?",
+          "objectives": [
+            "sets"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "{25}"
+            },
+            {
+              "id": "b",
+              "text": "{24, 25, 26}"
+            },
+            {
+              "id": "c",
+              "text": "{}"
+            },
+            {
+              "id": "d",
+              "text": "{24, 26}"
+            }
+          ],
+          "slots": [],
+          "selectCount": 1,
+          "grading": {
+            "policy": "exact",
+            "correct": [
+              "a"
+            ],
+            "matches": null
+          },
+          "explanation": "Intersection retains elements in both sets. Only 25 appears in both A and B.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "sets-multi-8",
+          "kind": "multiple",
+          "prompt": "Select the two elements that belong to A = {24, 26}.",
+          "objectives": [
+            "sets"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "24"
+            },
+            {
+              "id": "b",
+              "text": "25"
+            },
+            {
+              "id": "c",
+              "text": "26"
+            },
+            {
+              "id": "d",
+              "text": "27"
+            },
+            {
+              "id": "e",
+              "text": "28"
+            }
+          ],
+          "slots": [],
+          "selectCount": 2,
+          "grading": {
+            "policy": "partial",
+            "correct": [
+              "a",
+              "c"
+            ],
+            "matches": null
+          },
+          "explanation": "The set explicitly contains 24 and 26. The other values are absent.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "logic-dropdown-8",
+          "kind": "dropdown",
+          "prompt": "With P = true and Q = false, complete the two logical evaluations.",
+          "objectives": [
+            "logic"
+          ],
+          "options": [],
+          "slots": [
+            {
+              "id": "and",
+              "text": "P AND Q",
+              "options": [
+                {
+                  "id": "true",
+                  "text": "True"
+                },
+                {
+                  "id": "false",
+                  "text": "False"
+                }
+              ]
+            },
+            {
+              "id": "or",
+              "text": "P OR Q",
+              "options": [
+                {
+                  "id": "true",
+                  "text": "True"
+                },
+                {
+                  "id": "false",
+                  "text": "False"
+                }
+              ]
+            }
+          ],
+          "selectCount": 1,
+          "grading": {
+            "policy": "partial",
+            "correct": [],
+            "matches": {
+              "and": "false",
+              "or": "true"
+            }
+          },
+          "explanation": "AND requires both inputs to be true; OR requires at least one. Here AND is false, and OR is true.",
+          "reuse": false
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "logic-matching-8",
+          "kind": "matching",
+          "prompt": "Classify these statements about the number 24. Match each statement to its truth value; values may be reused.",
+          "objectives": [
+            "logic"
+          ],
+          "options": [
+            {
+              "id": "true",
+              "text": "True"
+            },
+            {
+              "id": "false",
+              "text": "False"
+            }
+          ],
+          "slots": [
+            {
+              "id": "larger",
+              "text": "24 > 23",
+              "options": []
+            },
+            {
+              "id": "equal",
+              "text": "24 = 25",
+              "options": []
+            }
+          ],
+          "selectCount": 1,
+          "grading": {
+            "policy": "partial",
+            "correct": [],
+            "matches": {
+              "larger": "true",
+              "equal": "false"
+            }
+          },
+          "explanation": "24 is greater than 23, but it does not equal 25.",
+          "reuse": true
+        }
+      },
+      {
+        "$use": "question",
+        "values": {
+          "id": "order-8",
+          "kind": "sequence",
+          "prompt": "Arrange these numbers in increasing order, from smallest to largest.",
+          "objectives": [
+            "ordering"
+          ],
+          "options": [
+            {
+              "id": "a",
+              "text": "24"
+            },
+            {
+              "id": "b",
+              "text": "30"
+            },
+            {
+              "id": "c",
+              "text": "25"
+            },
+            {
+              "id": "d",
+              "text": "28"
+            }
+          ],
+          "slots": [],
+          "selectCount": 4,
+          "grading": {
+            "policy": "partial",
+            "correct": [
+              "a",
+              "c",
+              "d",
+              "b"
+            ],
+            "matches": null
+          },
+          "explanation": "Increasing order is 24, 25, 28, 30. Compare adjacent values to check every step.",
+          "reuse": false
+        }
+      }
+    ],
+    "scenarios": [],
+    "blueprints": [
+      {
+        "id": "short",
+        "title": "Short mock",
+        "count": 5,
+        "minutes": 10,
+        "size": "short",
+        "objectiveIds": [
+          "sets",
+          "logic",
+          "ordering"
+        ],
+        "requiredKinds": [
+          "single",
+          "multiple",
+          "matching",
+          "dropdown",
+          "sequence"
+        ],
+        "lockSections": false
+      },
+      {
+        "id": "full",
+        "title": "Full mock",
+        "count": 10,
+        "minutes": 20,
+        "size": "full",
+        "objectiveIds": [
+          "sets",
+          "logic",
+          "ordering"
+        ],
+        "requiredKinds": [
+          "single",
+          "multiple",
+          "matching",
+          "dropdown",
+          "sequence"
+        ],
+        "lockSections": false
+      }
+    ],
+    "readiness": {
+      "shortAttempts": 5,
+      "fullAttempts": 3,
+      "threshold": 90,
+      "lookbackDays": 90,
+      "minimumFreshPercent": 100
+    },
+    "sources": []
+  }
+}

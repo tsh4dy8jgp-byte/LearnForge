@@ -1,0 +1,72 @@
+import { Component, computed, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { Api, message } from '../api';
+import { CourseCard } from '../models';
+@Component({
+  imports: [RouterLink, FormsModule],
+  template: ` <div class="page-heading">
+      <div>
+        <p class="eyebrow">A WORLD OF UNDERSTANDING</p>
+        <h1>Learning library<span class="accent">.</span></h1>
+        <p class="lead">Find a subject. Follow its connections. Put your knowledge to work.</p>
+      </div>
+      <span class="pill">{{ courses().length }} courses</span>
+    </div>
+    <label class="search"
+      >Search your library<input
+        type="search"
+        placeholder="Search a subject or topic"
+        [ngModel]="query()"
+        (ngModelChange)="query.set($event)"
+    /></label>
+    @if (error()) {
+      <p class="alert error" role="alert">{{ error() }}</p>
+    }
+    <div class="course-grid">
+      @for (course of filtered(); track course.id; let i = $index) {
+        <a class="course-card" [routerLink]="['/courses', course.id]"
+          ><div class="course-art" [class.alternate]="i % 2">
+            <span class="course-number">0{{ i + 1 }}</span>
+            <div class="art-orbit"></div>
+            <span class="tiny-label">LEARNING PATH</span>
+          </div>
+          <div class="course-card-body">
+            <div class="row">
+              <span class="eyebrow">{{ course.objectiveCount }} CONNECTED OBJECTIVES</span
+              ><span aria-hidden="true">↗</span>
+            </div>
+            <h2>{{ course.title }}</h2>
+            <p>{{ course.description }}</p>
+            <div class="card-meta">
+              <span>{{ course.lessonCount }} lessons</span
+              ><span>{{ course.questionCount }} practice questions</span>
+            </div>
+          </div></a
+        >
+      } @empty {
+        <p class="empty">
+          {{ loaded() ? 'No courses match this search.' : 'Loading the library…' }}
+        </p>
+      }
+    </div>`,
+})
+export class CoursesPage {
+  private readonly api = inject(Api);
+  readonly courses = signal<CourseCard[]>([]);
+  readonly query = signal('');
+  readonly loaded = signal(false);
+  readonly error = signal('');
+  readonly filtered = computed(() =>
+    this.courses().filter((c) =>
+      (c.title + c.description).toLowerCase().includes(this.query().toLowerCase()),
+    ),
+  );
+  constructor() {
+    this.api
+      .get<CourseCard[]>('/catalog')
+      .then((c) => this.courses.set(c))
+      .catch((e) => this.error.set(message(e)))
+      .finally(() => this.loaded.set(true));
+  }
+}

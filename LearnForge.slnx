@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="src/LearnForge.Core/LearnForge.Core.csproj" />
+  <Project Path="apps/api/LearnForge.Api.csproj" />
+  <Project Path="tools/cli/LearnForge.Cli.csproj" />
+  <Project Path="tests/LearnForge.Tests/LearnForge.Tests.csproj" />
+</Solution>

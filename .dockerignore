@@ -1,0 +1,13 @@
+**/node_modules
+**/bin
+**/obj
+**/dist
+**/.angular
+apps/api/data/*.db
+apps/api/data/*.db-*
+apps/api/data/keys
+**/test-results
+**/playwright-report
+.git
+.env
+build
