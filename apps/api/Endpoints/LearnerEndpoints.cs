@@ -13,11 +13,11 @@ public static class LearnerEndpoints
         public void MapLearner()
         {
             var me = app.MapGroup("/api/me").RequireAuthorization();
-            me.MapPut("/courses/{id}/lessons/{lessonId}", async (string id, string lessonId, ClaimsPrincipal user, AppDb db) =>
+            me.MapPut("/courses/{id}/lessons/{lessonId}", async (string id, string lessonId, ClaimsPrincipal user, AppDb db, ReleaseCache releases) =>
             {
-                var release = await db.Packs.Where(p => p.PackId == id).OrderByDescending(p => p.PublishedAt).FirstOrDefaultAsync();
-                if (release is null || !Json.Read<Pack>(release.ContentJson).Lessons.Any(l => l.Id == lessonId)) return Results.NotFound();
-                if (await db.Completions.FindAsync(UserId(user), release.Id, lessonId) is null) { db.Completions.Add(new() { UserId = UserId(user), ReleaseId = release.Id, LessonId = lessonId }); await db.SaveChangesAsync(); }
+                var release = await releases.Latest(db, id);
+                if (release is null || !release.LessonHashes.ContainsKey(lessonId)) return Results.NotFound();
+                if (await db.Completions.FindAsync(UserId(user), release.ReleaseId, lessonId) is null) { db.Completions.Add(new() { UserId = UserId(user), ReleaseId = release.ReleaseId, LessonId = lessonId }); await db.SaveChangesAsync(); }
                 return Results.NoContent();
             });
             me.MapGet("/dashboard", async (ClaimsPrincipal user, AppDb db, AttemptService service) =>

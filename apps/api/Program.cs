@@ -57,6 +57,7 @@ Directory.CreateDirectory(Path.Combine(builder.Environment.ContentRootPath, "dat
 builder.Services.AddDataProtection().SetApplicationName("LearnForge").PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "data", "keys")));
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<AttemptService>();
+builder.Services.AddSingleton<ReleaseCache>();
 builder.Services.AddHostedService<ExpiryWorker>();
 builder.Services.AddOpenApi();
 builder.Services.AddRateLimiter(o =>

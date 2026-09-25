@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LearnForge.Api.Services.Attempts;
 
-public sealed class AttemptService(AppDb db, TimeProvider clock)
+public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache releases)
 {
     public DateTime Now => clock.GetUtcNow().UtcDateTime;
     public static AttemptSnapshot Snapshot(Attempt a) => Json.Read<AttemptSnapshot>(a.SnapshotJson);
@@ -38,15 +38,14 @@ public sealed class AttemptService(AppDb db, TimeProvider clock)
             await Expire(replay);
             return replay;
         }
-        var release = await db.Packs.Where(p => p.PackId == request.PackId).OrderByDescending(p => p.PublishedAt).FirstOrDefaultAsync()
-            ?? throw new DomainError(404, "Course not found.");
+        var release = await releases.Latest(db, request.PackId) ?? throw new DomainError(404, "Course not found.");
         var active = await db.Attempts.SingleOrDefaultAsync(a => a.ActiveKey == user + ":" + request.PackId);
         if (active is not null)
         {
             await Expire(active);
             if (active.Status == AttemptStatus.InProgress) throw new DomainError(409, $"Resume or finish your existing session: {active.Id}");
         }
-        var pack = Json.Read<Pack>(release.ContentJson);
+        var pack = release.Pack;
         var blueprint = pack.Blueprints.FirstOrDefault(b => b.Id == request.BlueprintId) ?? throw new DomainError(400, "Unknown blueprint.");
         var history = await db.Attempts.Where(a => a.UserId == user && a.PackId == request.PackId).ToListAsync();
         var seen = history.SelectMany(a => Snapshot(a).Questions).Select(q => q.FamilyId).ToHashSet();
@@ -70,7 +69,7 @@ public sealed class AttemptService(AppDb db, TimeProvider clock)
         var snapshot = new AttemptSnapshot(pack.Title, pack.Version, pack.Objectives, pack.Scenarios, blueprint, chosen, pack.Readiness ?? new());
         var attempt = new Attempt
         {
-            UserId = user, PackReleaseId = release.Id, PackId = pack.Id, StartKey = request.RequestId,
+            UserId = user, PackReleaseId = release.ReleaseId, PackId = pack.Id, StartKey = request.RequestId,
             ActiveKey = user + ":" + pack.Id, Mode = request.Mode, Size = blueprint.Size, Focus = request.Focus,
             StartedAt = Now, Deadline = Now.AddMinutes(blueprint.Minutes), SnapshotJson = Json.Write(snapshot),
             FreshPercent = chosen.Count(q => !seen.Contains(q.FamilyId)) * 100m / chosen.Length

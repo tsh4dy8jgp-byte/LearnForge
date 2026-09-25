@@ -10,17 +10,22 @@ public static class CatalogEndpoints
     {
         public void MapCatalog()
         {
-            app.MapGet("/api/catalog", async (AppDb db) => (await db.Packs.OrderByDescending(p => p.PublishedAt).ToListAsync()).DistinctBy(p => p.PackId).Select(release =>
+            app.MapGet("/api/catalog", async (AppDb db, ReleaseCache releases) =>
             {
-                var p = Json.Read<Pack>(release.ContentJson);
-                return new CatalogSummaryDto(p.Id, p.Title, p.Description, p.Version, p.Lessons.Length, p.Questions.Length, p.Objectives.Length);
-            }).ToArray());
-            app.MapGet("/api/catalog/{id}", async (string id, AppDb db, ClaimsPrincipal user) =>
+                var courses = new List<CatalogSummaryDto>();
+                foreach (var releaseId in await releases.LatestIds(db))
+                {
+                    var p = (await releases.Get(releaseId)).Pack;
+                    courses.Add(new(p.Id, p.Title, p.Description, p.Version, p.Lessons.Length, p.Questions.Length, p.Objectives.Length));
+                }
+                return courses.ToArray();
+            });
+            app.MapGet("/api/catalog/{id}", async (string id, AppDb db, ClaimsPrincipal user, ReleaseCache releases) =>
             {
-                var release = await db.Packs.Where(p => p.PackId == id).OrderByDescending(p => p.PublishedAt).FirstOrDefaultAsync();
+                var release = await releases.Latest(db, id);
                 if (release is null) return Results.NotFound();
-                var p = Json.Read<Pack>(release.ContentJson);
-                var completed = user.Identity?.IsAuthenticated == true ? await db.Completions.Where(c => c.UserId == UserId(user) && c.ReleaseId == release.Id).Select(c => c.LessonId).ToArrayAsync() : [];
+                var p = release.Pack;
+                var completed = user.Identity?.IsAuthenticated == true ? await db.Completions.Where(c => c.UserId == UserId(user) && c.ReleaseId == release.ReleaseId).Select(c => c.LessonId).ToArrayAsync() : [];
                 return Results.Ok(new CourseCatalogDto(p.Id, p.Title, p.Description, p.Version, p.License, p.Objectives,
                     p.Lessons, p.Blueprints, p.Sources, p.Readiness ?? new(), completed, p.Questions.Length));
             });
