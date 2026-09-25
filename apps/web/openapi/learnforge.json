@@ -1,0 +1,1990 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "LearnForge.Api | v1",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/catalog": {
+      "get": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CatalogSummaryDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/catalog/{id}": {
+      "get": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseCatalogDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/auth/csrf": {
+      "get": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CsrfResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/register": {
+      "post": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentUserResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/auth/password": {
+      "post": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/me/courses/{id}/lessons/{lessonId}": {
+      "put": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "lessonId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/me/courses/{id}": {
+      "get": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseProgressDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/enrollments/{id}": {
+      "put": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnrollmentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/me/dashboard": {
+      "get": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/export": {
+      "get": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/me/account": {
+      "delete": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteAccountRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/me/attempts": {
+      "get": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AttemptSummaryDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttemptView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/attempts/{id}": {
+      "get": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttemptView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/attempts/{id}/responses": {
+      "put": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttemptView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/attempts/{id}/submit": {
+      "post": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransitionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttemptView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/attempts/{id}/section": {
+      "post": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransitionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttemptView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/authoring/validate": {
+      "post": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JsonElement"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/authoring/publish": {
+      "post": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JsonElement"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Answer": {
+        "required": [
+          "selected",
+          "slots"
+        ],
+        "type": "object",
+        "properties": {
+          "selected": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "slots": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "AssessmentMode": {
+        "enum": [
+          "mock",
+          "learn"
+        ]
+      },
+      "AssessmentSize": {
+        "enum": [
+          "short",
+          "full"
+        ]
+      },
+      "AttemptResultSummary": {
+        "required": [
+          "earned",
+          "possible",
+          "score",
+          "correctPercent",
+          "eligible",
+          "freshPercent"
+        ],
+        "type": "object",
+        "properties": {
+          "earned": {
+            "type": "number",
+            "format": "double"
+          },
+          "possible": {
+            "type": "number",
+            "format": "double"
+          },
+          "score": {
+            "type": "number",
+            "format": "double"
+          },
+          "correctPercent": {
+            "type": "number",
+            "format": "double"
+          },
+          "eligible": {
+            "type": "boolean"
+          },
+          "freshPercent": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "AttemptStatus": {
+        "enum": [
+          "inProgress",
+          "completed"
+        ]
+      },
+      "AttemptSummaryDto": {
+        "required": [
+          "id",
+          "packId",
+          "title",
+          "version",
+          "size",
+          "mode",
+          "status",
+          "startedAt",
+          "completedAt",
+          "deadline",
+          "correctPercent",
+          "eligible",
+          "timedOut",
+          "freshPercent",
+          "focus",
+          "score",
+          "itemCount"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "packId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "size": {
+            "$ref": "#/components/schemas/AssessmentSize"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/AssessmentMode"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AttemptStatus"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "deadline": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "correctPercent": {
+            "type": "number",
+            "format": "double"
+          },
+          "eligible": {
+            "type": "boolean"
+          },
+          "timedOut": {
+            "type": "boolean"
+          },
+          "freshPercent": {
+            "type": "number",
+            "format": "double"
+          },
+          "focus": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/PracticeFocus"
+              }
+            ]
+          },
+          "score": {
+            "type": "number",
+            "format": "double"
+          },
+          "itemCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "AttemptView": {
+        "required": [
+          "id",
+          "packId",
+          "title",
+          "version",
+          "mode",
+          "size",
+          "status",
+          "revision",
+          "startedAt",
+          "deadline",
+          "completedAt",
+          "sectionIndex",
+          "sections",
+          "lockSections",
+          "timedOut",
+          "focus",
+          "questions",
+          "scenarios",
+          "objectives",
+          "answers",
+          "feedback",
+          "serverTime",
+          "results",
+          "summary"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "packId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/AssessmentMode"
+          },
+          "size": {
+            "$ref": "#/components/schemas/AssessmentSize"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AttemptStatus"
+          },
+          "revision": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deadline": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "sectionIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "lockSections": {
+            "type": "boolean"
+          },
+          "timedOut": {
+            "type": "boolean"
+          },
+          "focus": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/PracticeFocus"
+              }
+            ]
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeliveryQuestion"
+            }
+          },
+          "scenarios": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Scenario"
+            }
+          },
+          "objectives": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Objective"
+            }
+          },
+          "answers": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Answer"
+            }
+          },
+          "feedback": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Grade"
+            }
+          },
+          "serverTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "results": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Grade"
+            }
+          },
+          "summary": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/AttemptResultSummary"
+              }
+            ]
+          }
+        }
+      },
+      "Blueprint": {
+        "required": [
+          "id",
+          "title",
+          "count",
+          "minutes",
+          "size",
+          "objectiveIds",
+          "requiredKinds"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minutes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "$ref": "#/components/schemas/AssessmentSize"
+          },
+          "objectiveIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "requiredKinds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuestionKind"
+            }
+          },
+          "lockSections": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "CatalogSummaryDto": {
+        "required": [
+          "id",
+          "title",
+          "description",
+          "version",
+          "lessonCount",
+          "questionCount",
+          "objectiveCount"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "lessonCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "questionCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "objectiveCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ChangePasswordRequest": {
+        "required": [
+          "currentPassword",
+          "newPassword"
+        ],
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "maxLength": 128,
+            "type": "string"
+          },
+          "newPassword": {
+            "maxLength": 128,
+            "type": "string"
+          }
+        }
+      },
+      "ContentBlock": {
+        "required": [
+          "kind",
+          "text"
+        ],
+        "type": "object",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/ContentBlockKind"
+          },
+          "text": {
+            "type": "string"
+          },
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ContentBlockKind": {
+        "enum": [
+          "text",
+          "callout",
+          "example",
+          "code"
+        ]
+      },
+      "CourseCatalogDto": {
+        "required": [
+          "id",
+          "title",
+          "description",
+          "version",
+          "license",
+          "objectives",
+          "lessons",
+          "blueprints",
+          "sources",
+          "readiness",
+          "goal",
+          "questionCount"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "license": {
+            "type": "string"
+          },
+          "objectives": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Objective"
+            }
+          },
+          "lessons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Lesson"
+            }
+          },
+          "blueprints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Blueprint"
+            }
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SourceReference"
+            }
+          },
+          "readiness": {
+            "$ref": "#/components/schemas/ReadinessPolicy"
+          },
+          "goal": {
+            "$ref": "#/components/schemas/CourseGoal"
+          },
+          "questionCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "CourseGoal": {
+        "enum": [
+          "readiness",
+          "mastery",
+          "completion"
+        ]
+      },
+      "CourseGoalStatusDto": {
+        "required": [
+          "goal",
+          "met",
+          "proficientObjectives",
+          "objectiveCount",
+          "completedLessons",
+          "lessonCount",
+          "readiness"
+        ],
+        "type": "object",
+        "properties": {
+          "goal": {
+            "$ref": "#/components/schemas/CourseGoal"
+          },
+          "met": {
+            "type": "boolean"
+          },
+          "proficientObjectives": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "objectiveCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "completedLessons": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lessonCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "readiness": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ReadinessResult"
+              }
+            ]
+          }
+        }
+      },
+      "CourseProgressDto": {
+        "required": [
+          "packId",
+          "title",
+          "version",
+          "enrollment",
+          "lessonCount",
+          "completedLessons",
+          "revisedLessons",
+          "objectives",
+          "nextSteps",
+          "goal",
+          "lastActivityAt"
+        ],
+        "type": "object",
+        "properties": {
+          "packId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "enrollment": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/EnrollmentStatus"
+              }
+            ]
+          },
+          "lessonCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "completedLessons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "revisedLessons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "objectives": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ObjectiveMasteryDto"
+            }
+          },
+          "nextSteps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NextStepDto"
+            }
+          },
+          "goal": {
+            "$ref": "#/components/schemas/CourseGoalStatusDto"
+          },
+          "lastActivityAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "CsrfResponse": {
+        "required": [
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "CurrentUserResponse": {
+        "required": [
+          "id",
+          "displayName",
+          "email",
+          "publisher"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "publisher": {
+            "type": "boolean"
+          }
+        }
+      },
+      "DashboardDto": {
+        "required": [
+          "courses",
+          "recentAttempts",
+          "completedAttempts",
+          "activeAttempts",
+          "completedLessons"
+        ],
+        "type": "object",
+        "properties": {
+          "courses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourseProgressDto"
+            }
+          },
+          "recentAttempts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AttemptSummaryDto"
+            }
+          },
+          "completedAttempts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activeAttempts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "completedLessons": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "DeleteAccountRequest": {
+        "required": [
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "password": {
+            "maxLength": 128,
+            "type": "string"
+          }
+        }
+      },
+      "DeliveryQuestion": {
+        "required": [
+          "id",
+          "kind",
+          "prompt",
+          "objectiveIds",
+          "options",
+          "slots",
+          "selectCount",
+          "reuse",
+          "scenarioId",
+          "weight"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/QuestionKind"
+          },
+          "prompt": {
+            "type": "string"
+          },
+          "objectiveIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Option"
+            }
+          },
+          "slots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Slot"
+            }
+          },
+          "selectCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reuse": {
+            "type": "boolean"
+          },
+          "scenarioId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "weight": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "Diagnostic": {
+        "required": [
+          "code",
+          "path",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "EnrollmentRequest": {
+        "required": [
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/EnrollmentStatus"
+          }
+        }
+      },
+      "EnrollmentStatus": {
+        "enum": [
+          "active",
+          "archived",
+          null
+        ]
+      },
+      "Grade": {
+        "required": [
+          "earned",
+          "possible",
+          "fullyCorrect",
+          "correct",
+          "matches",
+          "explanation"
+        ],
+        "type": "object",
+        "properties": {
+          "earned": {
+            "type": "number",
+            "format": "double"
+          },
+          "possible": {
+            "type": "number",
+            "format": "double"
+          },
+          "fullyCorrect": {
+            "type": "boolean"
+          },
+          "correct": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "matches": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "explanation": {
+            "type": "string"
+          }
+        }
+      },
+      "JsonElement": { },
+      "Lesson": {
+        "required": [
+          "id",
+          "title",
+          "summary",
+          "objectiveIds",
+          "blocks"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "objectiveIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContentBlock"
+            }
+          }
+        }
+      },
+      "LoginRequest": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "maxLength": 254,
+            "type": "string"
+          },
+          "password": {
+            "maxLength": 128,
+            "type": "string"
+          }
+        }
+      },
+      "MasteryState": {
+        "enum": [
+          "notStarted",
+          "emerging",
+          "developing",
+          "proficient"
+        ]
+      },
+      "NextStepDto": {
+        "required": [
+          "kind",
+          "reason",
+          "objectiveId",
+          "objectiveTitle",
+          "lessonId",
+          "lessonTitle",
+          "blueprintId"
+        ],
+        "type": "object",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/NextStepKind"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/NextStepReason"
+          },
+          "objectiveId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "objectiveTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "lessonId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "lessonTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "blueprintId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "NextStepKind": {
+        "enum": [
+          "readLesson",
+          "practise",
+          "review",
+          "takeMock"
+        ]
+      },
+      "NextStepReason": {
+        "enum": [
+          "startObjective",
+          "continueReading",
+          "needsEvidence",
+          "belowProficient",
+          "reviewDue",
+          "readyForMock"
+        ]
+      },
+      "Objective": {
+        "required": [
+          "id",
+          "title",
+          "prerequisites"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "prerequisites": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ObjectiveMasteryDto": {
+        "required": [
+          "id",
+          "title",
+          "prerequisites",
+          "state",
+          "correct",
+          "considered",
+          "independent",
+          "lastEvidenceAt",
+          "reviewDue",
+          "lessonIds"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "prerequisites": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "state": {
+            "$ref": "#/components/schemas/MasteryState"
+          },
+          "correct": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "considered": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "independent": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lastEvidenceAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "reviewDue": {
+            "type": "boolean"
+          },
+          "lessonIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Option": {
+        "required": [
+          "id",
+          "text"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      },
+      "PracticeFocus": {
+        "enum": [
+          "mistakes",
+          "weak",
+          "objective",
+          null
+        ]
+      },
+      "QuestionKind": {
+        "enum": [
+          "single",
+          "multiple",
+          "matching",
+          "dropdown",
+          "sequence"
+        ]
+      },
+      "ReadinessPolicy": {
+        "type": "object",
+        "properties": {
+          "shortAttempts": {
+            "type": "integer",
+            "format": "int32",
+            "default": 5
+          },
+          "fullAttempts": {
+            "type": "integer",
+            "format": "int32",
+            "default": 3
+          },
+          "threshold": {
+            "type": "number",
+            "format": "double",
+            "default": 90
+          },
+          "lookbackDays": {
+            "type": "integer",
+            "format": "int32",
+            "default": 90
+          },
+          "minimumFreshPercent": {
+            "type": "number",
+            "format": "double",
+            "default": 100
+          }
+        }
+      },
+      "ReadinessResult": {
+        "required": [
+          "ready",
+          "message",
+          "short",
+          "full",
+          "threshold"
+        ],
+        "type": "object",
+        "properties": {
+          "ready": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "short": {
+            "$ref": "#/components/schemas/ReadinessTrack"
+          },
+          "full": {
+            "$ref": "#/components/schemas/ReadinessTrack"
+          },
+          "threshold": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "ReadinessTrack": {
+        "required": [
+          "size",
+          "required",
+          "streak",
+          "met",
+          "attemptIds"
+        ],
+        "type": "object",
+        "properties": {
+          "size": {
+            "$ref": "#/components/schemas/AssessmentSize"
+          },
+          "required": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "streak": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "met": {
+            "type": "boolean"
+          },
+          "attemptIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "RegisterRequest": {
+        "required": [
+          "email",
+          "password",
+          "displayName"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "maxLength": 254,
+            "type": "string"
+          },
+          "password": {
+            "maxLength": 128,
+            "minLength": 12,
+            "type": "string"
+          },
+          "displayName": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string"
+          }
+        }
+      },
+      "ResponseRequest": {
+        "required": [
+          "revision",
+          "requestId",
+          "questionId",
+          "answer"
+        ],
+        "type": "object",
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requestId": {
+            "maxLength": 64,
+            "type": "string"
+          },
+          "questionId": {
+            "maxLength": 100,
+            "type": "string"
+          },
+          "answer": {
+            "$ref": "#/components/schemas/Answer"
+          },
+          "check": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "Scenario": {
+        "required": [
+          "id",
+          "title",
+          "background"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "background": {
+            "type": "string"
+          }
+        }
+      },
+      "Slot": {
+        "required": [
+          "id",
+          "text",
+          "options"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Option"
+            }
+          }
+        }
+      },
+      "SourceReference": {
+        "required": [
+          "title",
+          "url"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "StartRequest": {
+        "required": [
+          "packId",
+          "blueprintId",
+          "mode",
+          "requestId"
+        ],
+        "type": "object",
+        "properties": {
+          "packId": {
+            "maxLength": 100,
+            "type": "string"
+          },
+          "blueprintId": {
+            "maxLength": 100,
+            "type": "string"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/AssessmentMode"
+          },
+          "requestId": {
+            "maxLength": 64,
+            "type": "string"
+          },
+          "focus": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/PracticeFocus"
+              }
+            ]
+          },
+          "objectiveId": {
+            "maxLength": 100,
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "TransitionRequest": {
+        "required": [
+          "revision"
+        ],
+        "type": "object",
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ValidationResponseDto": {
+        "required": [
+          "success",
+          "hash",
+          "diagnostics",
+          "questionCount",
+          "lessonCount"
+        ],
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "hash": {
+            "type": "string"
+          },
+          "diagnostics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Diagnostic"
+            }
+          },
+          "questionCount": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "lessonCount": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "LearnForge.Api"
+    }
+  ]
+}

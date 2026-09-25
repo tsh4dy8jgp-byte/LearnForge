@@ -24,6 +24,8 @@ builder.Services.ConfigureHttpJsonOptions(o =>
 {
     o.SerializerOptions.RespectNullableAnnotations = true;
     o.SerializerOptions.RespectRequiredConstructorParameters = true;
+    // Strict numbers keep the OpenAPI schema (and the generated TypeScript) typed as number, not number | string.
+    o.SerializerOptions.NumberHandling = JsonNumberHandling.Strict;
     o.SerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 });
 builder.Services.AddIdentity<User, IdentityRole>(options =>
@@ -112,5 +114,7 @@ app.MapLearner();
 app.MapAttempts();
 app.MapAuthoring();
 
-if (!await DatabaseInitializer.RunAsync(app, args)) return;
+// Build-time OpenAPI generation runs this entry point with a mock server; it must not touch a database.
+var generatingOpenApiDocument = System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
+if (!generatingOpenApiDocument && !await DatabaseInitializer.RunAsync(app, args)) return;
 app.Run();

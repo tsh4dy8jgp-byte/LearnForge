@@ -1,4 +1,4 @@
-.PHONY: setup dev test build check-content browser-test
+.PHONY: setup dev test build check-content browser-test api-types check-api-types
 setup:
 	dotnet restore LearnForge.slnx
 	npm ci --prefix apps/web
@@ -14,3 +14,8 @@ check-content:
 	dotnet run --project tools/cli -- check packs/evidence-lab.json
 browser-test:
 	cd apps/web && npx playwright test
+api-types:
+	dotnet build apps/api/LearnForge.Api.csproj -p:OpenApiGenerateDocumentsOnBuild=true
+	npm run api:types --prefix apps/web
+check-api-types: api-types
+	git diff --exit-code -- apps/web/openapi apps/web/src/app/generated

@@ -152,3 +152,18 @@ export interface Dashboard {
   activeAttempts: number;
   completedLessons: number;
 }
+// Generated from the API's OpenAPI document by `make api-types`. New code uses these;
+// the hand-written interfaces above are replaced page by page.
+export type {
+  CourseCatalogDto,
+  CourseGoal,
+  CourseGoalStatusDto,
+  CourseProgressDto,
+  DashboardDto,
+  EnrollmentStatus,
+  MasteryState,
+  NextStepDto,
+  NextStepKind,
+  NextStepReason,
+  ObjectiveMasteryDto,
+} from './generated/types.gen';

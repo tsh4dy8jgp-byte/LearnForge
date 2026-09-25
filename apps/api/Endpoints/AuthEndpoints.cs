@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 
 namespace LearnForge.Api.Endpoints;
@@ -27,10 +28,11 @@ public static class AuthEndpoints
                 var result = await signIn.PasswordSignInAsync(request.Email.Trim(), request.Password, false, true);
                 return result.Succeeded ? Results.Ok() : Results.Json(new ApiErrorResponse("Sign-in failed. Check your details or try again later."), statusCode: 401);
             }).RequireRateLimiting("auth");
-            auth.MapGet("/me", async (ClaimsPrincipal principal, UserManager<User> users) =>
+            auth.MapGet("/me", async Task<Results<Ok<CurrentUserResponse>, UnauthorizedHttpResult>> (ClaimsPrincipal principal, UserManager<User> users) =>
             {
                 var user = await users.GetUserAsync(principal);
-                return user is null ? Results.Unauthorized() : Results.Ok(new CurrentUserResponse(user.Id, user.DisplayName, user.Email!, await users.IsInRoleAsync(user, "Publisher")));
+                return user is null ? TypedResults.Unauthorized()
+                    : TypedResults.Ok(new CurrentUserResponse(user.Id, user.DisplayName, user.Email!, await users.IsInRoleAsync(user, "Publisher")));
             }).RequireAuthorization();
             auth.MapPost("/logout", async (SignInManager<User> signIn) => { await signIn.SignOutAsync(); return Results.NoContent(); }).RequireAuthorization();
             auth.MapPost("/password", async (ChangePasswordRequest request, ClaimsPrincipal principal, UserManager<User> users, SignInManager<User> signIn) =>

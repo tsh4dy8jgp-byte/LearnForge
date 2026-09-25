@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace LearnForge.Api.Endpoints;
@@ -18,12 +19,12 @@ public static class CatalogEndpoints
                 }
                 return courses.ToArray();
             });
-            app.MapGet("/api/catalog/{id}", async (string id, AppDb db, ReleaseCache releases) =>
+            app.MapGet("/api/catalog/{id}", async Task<Results<Ok<CourseCatalogDto>, NotFound>> (string id, AppDb db, ReleaseCache releases) =>
             {
                 var release = await releases.Latest(db, id);
-                if (release is null) return Results.NotFound();
+                if (release is null) return TypedResults.NotFound();
                 var p = release.Pack;
-                return Results.Ok(new CourseCatalogDto(p.Id, p.Title, p.Description, p.Version, p.License, p.Objectives,
+                return TypedResults.Ok(new CourseCatalogDto(p.Id, p.Title, p.Description, p.Version, p.License, p.Objectives,
                     p.Lessons, p.Blueprints, p.Sources, p.Readiness ?? new(), p.Goal, p.Questions.Length));
             });
         }

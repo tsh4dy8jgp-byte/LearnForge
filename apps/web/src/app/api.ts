@@ -1,5 +1,8 @@
-import { Injectable, signal } from '@angular/core';
+import { HttpClient, HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { User } from './models';
+
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -8,11 +11,27 @@ export class ApiError extends Error {
     super(message);
   }
 }
+
+// Turns HTTP failures, including .NET validation problems, into one readable message.
+export function toApiError(error: unknown): ApiError {
+  if (error instanceof ApiError) return error;
+  if (!(error instanceof HttpErrorResponse)) return new ApiError('The request could not be completed.', 0);
+  const data = (error.error ?? {}) as { detail?: string; errors?: Record<string, string[]> };
+  const fieldErrors = data.errors ? Object.values(data.errors).flat().join(' ') : '';
+  return new ApiError(
+    data.detail ||
+      fieldErrors ||
+      (error.status === 401 ? 'Sign in to continue.' : 'The request could not be completed.'),
+    error.status,
+  );
+}
+
 @Injectable({ providedIn: 'root' })
 export class Api {
+  private readonly http = inject(HttpClient);
   readonly user = signal<User | null>(null);
   readonly unavailable = signal(false);
-  private csrf = '';
+  csrfToken = '';
   async initialize() {
     try {
       await this.refreshCsrf();
@@ -22,7 +41,7 @@ export class Api {
     }
   }
   async refreshCsrf() {
-    this.csrf = (await this.get<{ token: string }>('/auth/csrf')).token;
+    this.csrfToken = (await this.get<{ token: string }>('/auth/csrf')).token;
   }
   async refreshSession() {
     this.user.set(await this.get<User>('/auth/me'));
@@ -42,30 +61,23 @@ export class Api {
     return this.request<T>('DELETE', path, body);
   }
   private async request<T>(method: string, path: string, body?: unknown): Promise<T> {
-    const response = await fetch('/api' + path, {
-      method,
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(method !== 'GET' ? { 'X-CSRF-TOKEN': this.csrf } : {}),
-      },
-      body: body === undefined ? undefined : JSON.stringify(body),
-    });
-    if (!response.ok) {
-      const data = await response.json().catch(() => ({}));
-      throw new ApiError(
-        data.detail ||
-          (response.status === 401
-            ? 'Sign in to continue.'
-            : 'The request could not be completed.'),
-        response.status,
-      );
+    try {
+      return (await firstValueFrom(this.http.request<T>(method, '/api' + path, { body }))) as T;
+    } catch (e) {
+      throw toApiError(e);
     }
-    if (response.status === 204 || response.headers.get('content-length') === '0')
-      return undefined as T;
-    const text = await response.text();
-    return text ? (JSON.parse(text) as T) : (undefined as T);
   }
 }
+
+// Adds the antiforgery token to unsafe API requests, including those made by httpResource.
+export const csrfInterceptor: HttpInterceptorFn = (request, next) =>
+  request.method === 'GET' || request.method === 'HEAD' || !request.url.startsWith('/api')
+    ? next(request)
+    : next(request.clone({ setHeaders: { 'X-CSRF-TOKEN': inject(Api).csrfToken } }));
+
 export const message = (e: unknown) =>
-  e instanceof Error ? e.message : 'Something went wrong. Please try again.';
+  e instanceof HttpErrorResponse || e instanceof ApiError
+    ? toApiError(e).message
+    : e instanceof Error
+      ? e.message
+      : 'Something went wrong. Please try again.';
