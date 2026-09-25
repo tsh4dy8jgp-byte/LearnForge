@@ -11,13 +11,23 @@ Open **Learning library**, choose a subject, and work through its lessons. A cou
 
 Lesson completion is a reading record, separate from assessment performance. A newly published version starts its own completion and assessment evidence; older attempts remain in history.
 
+## My courses
+
+A course is added to **My courses** when you read a lesson or start a session in it, or when you choose **Add to my courses**. **Archive course** hides it from the overview without deleting anything; **Restore to my courses**, or any new activity, brings it back.
+
+Each objective shows a mastery state: **Not started**, **Getting started**, **Developing** or **Proficient**, with the evidence behind it, for example "3 of last 5 correct". Only your latest answer in each question family counts, so repeating one question does not inflate the result. Proficient objectives show **review due** after a while without practice.
+
+**Next steps** suggest what to do now: read the next lesson, practise an objective, review, or take a mock. Their links open the right lesson or preselect the practice session.
+
+When a new release changes a lesson you completed, it keeps its completion and shows **Updated since you read it**. **Mark as re-read** clears the flag. Each course shows a goal card for its declared goal: exam readiness, objectives proficient, or lessons completed.
+
 ## Choose a session
 
 Select a short or full blueprint defined by the author.
 
 **Mock mode** is timed and releases answers after submission. Leaving the page or changing your device clock does not pause the server deadline.
 
-**Learning mode** is untimed. **Check answer** releases feedback and locks the response for that session. It supports balanced practice, previous mistakes, or weak-objective practice. Focused practice needs earlier completed evidence, may be shorter than the blueprint, and currently selects standalone questions. Use balanced blueprints for case studies.
+**Learning mode** is untimed. **Check answer** releases feedback and locks the response for that session. It supports balanced practice, previous mistakes, weak-objective practice, or **One objective**, which is also available from **Practise this objective** on the content map. Focused practice needs earlier completed evidence, may be shorter than the blueprint, and currently selects standalone questions. Use balanced blueprints for case studies.
 
 One active session is allowed per account/course. Resume it through **Attempts & results**.
 
@@ -53,9 +63,9 @@ Expand each result for your answer, the expected answer and explanation. Your se
 
 ## Use the dashboard
 
-The overview shows lesson progress, sessions, objective evidence and suggested lessons. Objective percentages use fully correct answers from completed mocks; sample counts help you judge how much evidence exists.
+The overview shows your courses, lesson progress, sessions, objective mastery, next steps and goals. Objective evidence includes mock answers and answered learning-mode questions; see [assessment](assessment.md) for the rule.
 
-Suggestions prioritize objectives with no independent evidence or weaker results. These are deterministic study suggestions, not a calibrated mastery model.
+Next steps follow the prerequisite graph. They are deterministic study suggestions, not a calibrated prediction.
 
 By default, the latest five short mocks OR latest three full mocks must each exceed 90%, also satisfying time and freshness requirements. See [assessment](assessment.md). Learning sessions contribute review evidence but never the readiness streak.
 

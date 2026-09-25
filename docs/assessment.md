@@ -25,3 +25,13 @@ The short and full rules are independent and readiness is their OR. A newer fail
 With the default policy, five short mocks at 95, 93, 91, 97 and 96 qualify. Replacing the newest with exactly 90 does not. A learning attempt with 100 is ignored. An expired mock is retained but ineligible.
 
 Readiness is a transparent practice recommendation, not a prediction or claim about an external exam.
+
+## Mastery
+
+Each objective shows one of four states: not started, getting started (fewer than `minimumEvidence` question families), developing, or proficient. The rule looks at the learner's latest answer in each question family, keeps the latest `window` families (default 5), and requires at least `proficientPercent` (default 80%) fully correct: 4 of the last 5 qualifies.
+
+Mock answers always count, and unanswered mock items count as incorrect. Learning-mode answers count only when answered, because they are first tries before feedback; skipped learning items are ignored. Proficient objectives become "review due" after `reviewAfterDays` (default 60).
+
+Evidence comes from the append-only evidence ledger: one row per attempt and question, written when feedback is released. Mastery follows stable objective and family IDs across releases. It is a transparent study aid; readiness is unchanged and remains release-scoped and mock-only.
+
+Next steps follow the prerequisite graph: objectives whose prerequisites are proficient come first, an unread linked lesson is suggested before practice, review-due objectives follow, and a readiness pack suggests a timed mock once every objective is proficient.

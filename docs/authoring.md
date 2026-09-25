@@ -13,6 +13,10 @@ Use lowercase IDs with letters, numbers, dots, underscores or hyphens. IDs are s
 
 Every objective needs at least one lesson and one question. Every lesson and question must link to existing objectives. Every question needs an explanation and a familyId. Use the same family ID for genuinely equivalent variants; use a new family for a new competency or prompt pattern.
 
+A pack declares an optional `goal`: `readiness` (the default, for exam preparation), `mastery` (every objective proficient) or `completion` (every lesson read). `readiness` may be omitted for non-exam packs. The optional `mastery` object tunes the mastery rule: `window` (default 5), `minimumEvidence` (default 3), `proficientPercent` (default 80) and `reviewAfterDays` (default 60), with 1 ≤ minimumEvidence ≤ window ≤ 20, proficientPercent 50–100 and reviewAfterDays 1–365. A mastery goal requires at least `minimumEvidence` question families per objective, and the compiler rejects packs that cannot reach it.
+
+Keep lesson IDs stable. Learner progress is keyed by lesson ID, and changing a lesson's content flags it as updated for learners who completed it.
+
 ## Question contracts
 
 Single questions have one correct option and selectCount 1. Multiple questions have exactly selectCount correct options and at least one distractor. Sequence questions use a complete permutation as grading.correct. Matching questions use slots, a shared options bank and grading.matches; set reuse true when a token may fill multiple slots. Dropdown questions put their option banks on each slot and also use grading.matches.

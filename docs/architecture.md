@@ -26,17 +26,17 @@ The compiler rejects unknown JSON properties, invalid IDs, missing references, p
 
 ## API modules
 
-Program.cs configures Identity cookies, CSRF, security headers, rate limits, authorization, database migration and seed loading.
+Program.cs configures Identity cookies, CSRF, security headers, rate limits, authorization and built-in request validation, then maps the endpoint modules in `Endpoints/*` (C# 14 extension members). `Startup/DatabaseInitializer` migrates, backfills the evidence ledger, seeds packs and grants the Publisher role.
 
 AttemptService is the state machine. It validates ownership, creates deterministic selections, shuffles delivery copies, saves idempotently, enforces revisions and locks, finalizes deadlines and produces sanitized views. DeliveryQuestion deliberately omits keys and explanations while an attempt is active.
 
-Analytics derives dashboard evidence from completed attempts. Mock evidence is kept separate from learning feedback. Objective samples, recommendations and readiness remain inspectable data.
+LearningRecordService derives enrollment, lesson progress, objective mastery, next steps and goal status on read from the evidence ledger. ReleaseCache keeps each immutable release deserialized once; only the latest-release lookup reads the database. Readiness is still computed from the current release's mock attempts.
 
 ExpiryWorker periodically finds overdue mock attempts and finalizes the server's latest responses. It is safe to retry because completion is guarded by status and EF concurrency.
 
 ## Persistence model
 
-Users and Identity tables hold credentials and roles. PackReleases stores immutable compiled JSON plus a content hash. Attempts hold a snapshot, answers, revision, timing, outcome and freshness. ResponseEvents provide request-ID idempotency and an append-only trail for writes. Completions store lesson progress. AuditEvents record publishing and lifecycle actions.
+Users and Identity tables hold credentials and roles. PackReleases stores immutable compiled JSON plus a content hash. Attempts hold a snapshot, answers, revision, timing, outcome and freshness. ResponseEvents provide request-ID idempotency and an append-only trail for writes. EvidenceRecords form an append-only ledger with one row per attempt and question, written when feedback is released in the same save as the attempt transition. LessonProgress stores completion by pack and lesson ID with a content hash, so progress survives releases and revised lessons are flagged. Enrollments hold active or archived courses. AuditEvents record publishing and lifecycle actions.
 
 The current implementation stores pack JSON and answers as relational text. PostgreSQL is the deployment provider; JSONB, partitioning and materialized analytics can be introduced after measuring real workloads.
 
@@ -48,8 +48,9 @@ Add a question kind in this order:
 2. Add server Grader validation and scoring.
 3. Add composer feasibility rules.
 4. Add the sanitized delivery projection.
-5. Add Angular interaction and a keyboard alternative.
-6. Add Core, API and Playwright coverage.
-7. Update the authoring and learner guides.
+5. Make sure evidence rows are written for the new kind (Grader.Score results flow into the ledger).
+6. Add Angular interaction and a keyboard alternative.
+7. Add Core, API and Playwright coverage.
+8. Update the authoring and learner guides.
 
 Keep answer IDs stable across releases when you want meaningful family analytics. Change family ID when the competency or prompt pattern changes. Importers should map external material into the pack contract and run the compiler; they should not bypass validation or write directly to release tables.

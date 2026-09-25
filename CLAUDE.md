@@ -16,7 +16,10 @@ dotnet test LearnForge.slnx --filter "FullyQualifiedName~CoreTests.Readiness"   
 dotnet build LearnForge.slnx -c Release
 npm run build --prefix apps/web
 make check-content              # compile both bundled packs with the CLI
-cd apps/web && npx playwright test   # e2e; requires API and web dev servers already running
+npm test --prefix apps/web      # Angular unit tests (Vitest via @angular/build:unit-test)
+cd apps/web && npx playwright test   # or npm run test:e2e; requires API and web dev servers already running
+make api-types                  # regenerate apps/web/openapi/learnforge.json and src/app/generated types
+make check-api-types            # fail if generated API types are stale
 docker compose up --build -d    # Postgres + API + nginx web on 127.0.0.1:8088
 ```
 
@@ -24,13 +27,15 @@ docker compose up --build -d    # Postgres + API + nginx web on 127.0.0.1:8088
 - `Directory.Build.props` sets `TreatWarningsAsErrors`, nullable and implicit usings for every C# project, so warnings break the build.
 - Tests against PostgreSQL: `docker compose up -d db`, then set `LEARNFORGE_TEST_POSTGRES='Host=127.0.0.1;Port=55432;Database=learnforge_test;Username=learnforge;Password=learnforge-local-only'`. Otherwise `ApiFactory` uses a throwaway SQLite file in the temp dir. Never point tests at an operational database.
 - Content CLI (`tools/cli`): `dotnet run --project tools/cli -- init|check|build <pack.json> [--watch] [--out dir]`.
-- Grant Publisher role: `dotnet run --project apps/api -- --grant-publisher you@example.com` (same database as the app). `--migrate` applies migrations, seeds packs, then exits.
+- Grant Publisher role: `dotnet run --project apps/api -- --grant-publisher you@example.com` (same database as the app). `--migrate` applies migrations, backfills the evidence ledger, seeds packs, then exits.
 
 ## Architecture
 
-- **`src/LearnForge.Core`**: subject-neutral, dependency-light rules. `ContentEngine` compiles and validates pack JSON (rejects unknown properties, bad IDs, missing references, prerequisite cycles, malformed keys, unsafe URLs, infeasible blueprints; expands templates under `ExpansionBudget`). `Grader` scores answers server-side (exact or normalized partial credit). `ExamComposer` selects questions for a blueprint and keeps scenario (case-study) groups atomic. `ReadinessEvaluator` implements the exam-readiness rule (see `docs/assessment.md`).
-- **`apps/api`**: minimal-API endpoints live in `Program.cs` (groups `/api/auth`, `/api/me` with auth required, `/api/authoring` with the Publisher role). It configures Identity cookies, antiforgery (`X-CSRF-TOKEN` header from `/api/auth/csrf`), rate limits and security headers. `Services/Attempts/AttemptService` is the attempt state machine: ownership, deterministic selection, idempotent writes by request ID, revision checks, section locks, deadlines, sanitized views. `ExpiryWorker` finalizes overdue mocks. `Services/Analytics` builds the dashboard and readiness from completed attempts.
-- **`apps/web`**: standalone Angular components in `src/app/pages/*`, HTTP in `api.ts`, types in `models.ts`, question interactions in `question-input.ts`. Playwright specs in `e2e/`.
+- **`src/LearnForge.Core`**: subject-neutral, dependency-light rules. `ContentEngine` compiles and validates pack JSON (rejects unknown properties, bad IDs, missing references, prerequisite cycles, malformed keys, unsafe URLs, infeasible blueprints; expands templates under `ExpansionBudget`). `Grader` scores answers server-side (exact or normalized partial credit). `ExamComposer` selects questions for a blueprint and keeps scenario (case-study) groups atomic. `ReadinessEvaluator` implements the exam-readiness rule and `MasteryEvaluator` the per-objective mastery rule (see `docs/assessment.md`); `NextStepPlanner` suggests prerequisite-aware next steps. Packs declare a `goal` (readiness, mastery or completion).
+- **`apps/api`**: minimal-API endpoint modules in `Endpoints/*` (C# 14 extension members on `IEndpointRouteBuilder`), composed by `Program.cs` (groups `/api/auth`, `/api/me` with auth required, `/api/authoring` with the Publisher role); request records are validated by `AddValidation()`. `Program.cs` configures Identity cookies, antiforgery (`X-CSRF-TOKEN` header from `/api/auth/csrf`), rate limits and security headers. `Services/Attempts/AttemptService` is the attempt state machine: ownership, deterministic selection, idempotent writes by request ID, revision checks, section locks, deadlines, sanitized views. `ExpiryWorker` finalizes overdue mocks.
+- `Services/Learning/LearningRecordService` derives enrollment, lesson progress, mastery (`MasteryEvaluator`), next steps (`NextStepPlanner`) and goal status on read. `Services/Content/ReleaseCache` keeps each immutable release deserialized once.
+- `Startup/DatabaseInitializer` migrates, backfills the evidence ledger (`EvidenceBackfill`), seeds packs and handles `--grant-publisher`.
+- **`apps/web`**: standalone Angular components in `src/app/pages/*`, HTTP in `api.ts` (`HttpClient` + CSRF interceptor; pages use `httpResource`), types in `models.ts` (aliases of the OpenAPI-generated `src/app/generated`, never hand-edited), question interactions in `question-input.ts`. Vitest specs next to components (`*.spec.ts`), Playwright specs in `e2e/`.
 
 ### Invariants to preserve
 
@@ -38,6 +43,8 @@ docker compose up --build -d    # Postgres + API + nginx web on 127.0.0.1:8088
 - **Releases are immutable.** A `PackRelease` is keyed by pack ID and version. Seeding and publishing skip or reject an existing version, so content changes need a `version` bump. Starting an attempt snapshots its questions, blueprint and readiness policy, so later publishes cannot change work in progress.
 - **Packs are seeded at startup.** `packs/**/*.json` is copied into the API output. On startup every file is compiled, and one invalid pack makes the API throw. Restart or rebuild the API to pick up new pack files.
 - Importers must go through `ContentEngine`, never write directly to release tables.
+- **The evidence ledger is append-only.** `EvidenceRecord` holds one row per attempt and question, written when feedback is released (a learning check or attempt completion) in the same save as the attempt transition. Mastery, next steps and focused practice are derived from it on read.
+- **Progress is keyed by stable IDs.** Lesson progress uses pack and lesson IDs plus a content hash (revised lessons are flagged, not reset); mastery uses question, family and objective IDs across releases. Readiness stays release-scoped and mock-only.
 
 ### Persistence: two providers, two migration sets
 
