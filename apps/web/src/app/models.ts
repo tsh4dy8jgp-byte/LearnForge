@@ -35,14 +35,6 @@ export interface CourseCard {
   questionCount: number;
   objectiveCount: number;
 }
-export interface Course extends CourseCard {
-  objectives: Objective[];
-  lessons: Lesson[];
-  blueprints: Blueprint[];
-  sources: { title: string; url: string }[];
-  completedLessons: string[];
-  license: string;
-}
 export interface Option {
   id: string;
   text: string;

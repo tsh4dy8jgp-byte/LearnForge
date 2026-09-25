@@ -704,10 +704,13 @@ legend {
   white-space: nowrap;
   font-size: 0.87rem;
 }
-.tabs button.active {
+.tabs [aria-selected='true'] {
   border-color: var(--green);
   color: var(--green);
   font-weight: 600;
+}
+.tab-panel[inert] {
+  display: none;
 }
 .lesson-layout {
   display: grid;
