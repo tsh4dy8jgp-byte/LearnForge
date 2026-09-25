@@ -61,6 +61,8 @@ builder.Services.AddSingleton<ReleaseCache>();
 builder.Services.AddScoped<LearningRecordService>();
 builder.Services.AddHostedService<ExpiryWorker>();
 builder.Services.AddOpenApi();
+// .NET 10 minimal API validation: DataAnnotations on request records are enforced before handlers run.
+builder.Services.AddValidation();
 builder.Services.AddRateLimiter(o =>
 {
     o.RejectionStatusCode = 429;

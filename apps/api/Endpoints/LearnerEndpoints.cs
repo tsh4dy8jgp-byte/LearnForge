@@ -46,7 +46,7 @@ public static class LearnerEndpoints
             me.MapDelete("/account", async ([FromBody] DeleteAccountRequest request, ClaimsPrincipal principal, UserManager<User> users, SignInManager<User> signIn, AppDb db) =>
             {
                 var user = (await users.GetUserAsync(principal))!;
-                if (request.Password.Length > 128 || !await users.CheckPasswordAsync(user, request.Password)) return Results.Unauthorized();
+                if (!await users.CheckPasswordAsync(user, request.Password)) return Results.Unauthorized();
                 var audit = await db.Audit.Where(a => a.ActorId == user.Id).ToListAsync(); db.Audit.RemoveRange(audit);
                 await db.SaveChangesAsync();
                 var deleted = await users.DeleteAsync(user);
