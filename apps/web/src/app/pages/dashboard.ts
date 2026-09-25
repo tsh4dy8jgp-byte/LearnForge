@@ -1,10 +1,20 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
+import { httpResource } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { Api, message } from '../api';
-import { Dashboard } from '../models';
+import { CourseGoal, DashboardDto } from '../models';
+import { MasteryBadge } from '../mastery-badge';
+import { NextSteps } from '../next-steps';
+
+const goalLabels: Record<CourseGoal, string> = {
+  readiness: 'EXAM READINESS',
+  mastery: 'MASTERY GOAL',
+  completion: 'COMPLETION GOAL',
+};
+
 @Component({
-  imports: [RouterLink, DecimalPipe, DatePipe],
+  imports: [RouterLink, DecimalPipe, DatePipe, MasteryBadge, NextSteps],
   template: ` <div class="page-heading">
       <div>
         <p class="eyebrow">ONE STEP FURTHER</p>
@@ -13,10 +23,11 @@ import { Dashboard } from '../models';
       </div>
       <a class="button" routerLink="/courses">Explore your courses <span>↗</span></a>
     </div>
-    @if (error()) {
-      <p class="alert error" role="alert">{{ error() }}</p>
+    @if (dashboard.error(); as e) {
+      <p class="alert error" role="alert">{{ message(e) }}</p>
     }
-    @if (data(); as d) {
+    @if (dashboard.hasValue()) {
+      @let d = dashboard.value();
       <div class="stat-grid">
         <div class="stat">
           <span>LESSONS COMPLETED</span><strong>{{ d.completedLessons | number }}</strong
@@ -34,47 +45,59 @@ import { Dashboard } from '../models';
       <div class="dashboard-grid">
         <section>
           <div class="section-heading">
-            <h2>Your learning paths</h2>
-            <a routerLink="/courses" class="text-link">View library →</a>
+            <h2>My courses</h2>
+            <a routerLink="/courses" class="text-link">Browse the library →</a>
           </div>
-          @for (course of d.courses; track course.id) {
+          @for (course of d.courses; track course.packId) {
             <article class="panel path-panel">
               <div class="row">
                 <span class="tiny-label">CONTINUE LEARNING</span
                 ><span class="muted small"
-                  >{{ course.completedLessons }} / {{ course.lessonCount }} lessons</span
+                  >{{ course.completedLessons.length }} / {{ course.lessonCount }} lessons</span
                 >
               </div>
               <h2>
-                <a [routerLink]="['/courses', course.id]"
+                <a [routerLink]="['/courses', course.packId]"
                   >{{ course.title }} <span class="accent">↗</span></a
                 >
               </h2>
               <progress
-                [value]="course.completedLessons"
+                [value]="course.completedLessons.length"
                 [max]="course.lessonCount"
                 [attr.aria-label]="course.title + ' completion'"
               ></progress>
+              <h3 class="small">Next steps</h3>
+              <lf-next-steps [packId]="course.packId" [steps]="course.nextSteps" />
               <div class="objective-list">
                 @for (objective of course.objectives; track objective.id) {
                   <div>
-                    <span>{{ objective.title }}</span
-                    ><span class="pill subtle">{{
-                      objective.correctPercent === null
-                        ? 'Needs evidence'
-                        : (objective.correctPercent | number: '1.0-0') + '% correct'
-                    }}</span>
+                    <span>{{ objective.title }}</span>
+                    <lf-mastery-badge
+                      [state]="objective.state"
+                      [correct]="objective.correct"
+                      [considered]="objective.considered"
+                      [reviewDue]="objective.reviewDue"
+                    />
                   </div>
                 }
               </div>
             </article>
+          } @empty {
+            <div class="panel empty">
+              <h3>No courses yet.</h3>
+              <p>
+                Open a course from the library. It appears here as soon as you read a lesson or
+                start a session.
+              </p>
+              <a routerLink="/courses" class="button">Browse the library →</a>
+            </div>
           }
           <div class="section-heading">
             <h2>Recent practice</h2>
             <a routerLink="/attempts" class="text-link">All attempts →</a>
           </div>
           <div class="panel">
-            @for (a of d.attempts.slice(0, 4); track a.id) {
+            @for (a of d.recentAttempts; track a.id) {
               <a class="attempt-row" [routerLink]="['/attempts', a.id]"
                 ><div>
                   <strong>{{ a.title }}</strong
@@ -97,60 +120,58 @@ import { Dashboard } from '../models';
           </div>
         </section>
         <aside>
-          <div class="section-heading"><h2>A good next step</h2></div>
-          @for (course of d.courses; track course.id) {
-            <div class="recommendation">
-              <span class="eyebrow">YOUR STUDY COMPASS</span>
-              @for (r of course.recommendations.slice(0, 1); track r.objectiveId) {
-                <h2>{{ r.title }}</h2>
-                <p>{{ r.reason }}</p>
-                <a
-                  [routerLink]="['/courses', course.id]"
-                  [queryParams]="{ lesson: r.lessonId }"
-                  class="text-link"
-                  >Open the lesson →</a
-                >
-              }
-            </div>
+          <div class="section-heading"><h2>Course goals</h2></div>
+          @for (course of d.courses; track course.packId) {
             <div class="panel readiness">
-              <span class="eyebrow">EXAM READINESS</span>
-              <h3>
-                {{ course.readiness.ready ? 'Consistency is showing.' : 'Build your confidence.' }}
-              </h3>
-              <p>{{ course.readiness.message }}</p>
-              <div class="readiness-track">
-                <strong
-                  >{{ course.readiness.short.streak
-                  }}<small>/{{ course.readiness.short.required }}</small></strong
-                ><span>consecutive short mocks</span>
-              </div>
-              <div class="readiness-track">
-                <strong
-                  >{{ course.readiness.full.streak
-                  }}<small>/{{ course.readiness.full.required }}</small></strong
-                ><span>consecutive full mocks</span>
-              </div>
-              <p class="small muted">
-                Each result must be strictly above {{ course.readiness.threshold }}% fully correct,
-                with fresh questions and independent work. Either streak qualifies.
-              </p>
-              <a routerLink="/attempts" class="text-link">See the evidence →</a>
+              <span class="eyebrow">{{ goalLabel(course.goal.goal) }}</span>
+              <h3>{{ course.title }}</h3>
+              @switch (course.goal.goal) {
+                @case ('readiness') {
+                  @if (course.goal.readiness; as r) {
+                    <p>{{ r.message }}</p>
+                    <div class="readiness-track">
+                      <strong>{{ r.short.streak }}<small>/{{ r.short.required }}</small></strong
+                      ><span>consecutive short mocks</span>
+                    </div>
+                    <div class="readiness-track">
+                      <strong>{{ r.full.streak }}<small>/{{ r.full.required }}</small></strong
+                      ><span>consecutive full mocks</span>
+                    </div>
+                    <p class="small muted">
+                      Each result must be strictly above {{ r.threshold }}% fully correct, with
+                      fresh questions and independent work. Either streak qualifies.
+                    </p>
+                  }
+                }
+                @case ('mastery') {
+                  <p>
+                    {{ course.goal.proficientObjectives }} of {{ course.goal.objectiveCount }}
+                    objectives proficient.
+                  </p>
+                }
+                @default {
+                  <p>
+                    {{ course.goal.completedLessons }} of {{ course.goal.lessonCount }} lessons
+                    completed.
+                  </p>
+                }
+              }
+              @if (course.goal.met) {
+                <p><span class="pill success">Goal met</span></p>
+              }
             </div>
           }
         </aside>
       </div>
-    } @else if (!error()) {
+    } @else if (dashboard.isLoading()) {
       <p class="empty">Loading your workspace…</p>
     }`,
 })
 export class DashboardPage {
   readonly api = inject(Api);
-  readonly data = signal<Dashboard | null>(null);
-  readonly error = signal('');
-  constructor() {
-    this.api
-      .get<Dashboard>('/me/dashboard')
-      .then((d) => this.data.set(d))
-      .catch((e) => this.error.set(message(e)));
+  readonly dashboard = httpResource<DashboardDto>(() => '/api/me/dashboard');
+  readonly message = message;
+  goalLabel(goal: CourseGoal) {
+    return goalLabels[goal];
   }
 }

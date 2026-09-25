@@ -123,35 +123,6 @@ export interface Attempt {
     freshPercent: number;
   } | null;
 }
-export interface Readiness {
-  ready: boolean;
-  message: string;
-  threshold: number;
-  short: { required: number; streak: number; met: boolean; attemptIds: string[] };
-  full: { required: number; streak: number; met: boolean; attemptIds: string[] };
-}
-export interface CourseProgress {
-  id: string;
-  title: string;
-  version: string;
-  lessonCount: number;
-  completedLessons: number;
-  readiness: Readiness;
-  objectives: (Objective & {
-    samples: number;
-    independentSamples: number;
-    correctPercent: number | null;
-    lessonIds: string[];
-  })[];
-  recommendations: { objectiveId: string; title: string; lessonId: string; reason: string }[];
-}
-export interface Dashboard {
-  courses: CourseProgress[];
-  attempts: AttemptSummary[];
-  completedAttempts: number;
-  activeAttempts: number;
-  completedLessons: number;
-}
 // Generated from the API's OpenAPI document by `make api-types`. New code uses these;
 // the hand-written interfaces above are replaced page by page.
 export type {
