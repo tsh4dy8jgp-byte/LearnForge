@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using LearnForge.Core;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,10 +33,13 @@ public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache re
     {
         if (!Guid.TryParse(request.RequestId, out _)) throw new DomainError(400, "Invalid session settings.");
         if (request.Mode == AssessmentMode.Mock && request.Focus is not null) throw new DomainError(400, "Focused practice uses learning mode.");
+        if ((request.Focus == PracticeFocus.Objective) != (request.ObjectiveId is not null)) throw new DomainError(400, "Objective practice needs exactly one objective.");
         var replay = await db.Attempts.SingleOrDefaultAsync(a => a.UserId == user && a.StartKey == request.RequestId);
         if (replay is not null)
         {
-            if (replay.PackId != request.PackId || replay.Mode != request.Mode || replay.Focus != request.Focus || Snapshot(replay).Blueprint.Id != request.BlueprintId) throw new DomainError(409, "This request ID already belongs to another session.");
+            if (replay.PackId != request.PackId || replay.Mode != request.Mode || replay.Focus != request.Focus
+                || replay.FocusObjectiveId != request.ObjectiveId || Snapshot(replay).Blueprint.Id != request.BlueprintId)
+                throw new DomainError(409, "This request ID already belongs to another session.");
             await Expire(replay);
             return replay;
         }
@@ -47,32 +52,21 @@ public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache re
         }
         var pack = release.Pack;
         var blueprint = pack.Blueprints.FirstOrDefault(b => b.Id == request.BlueprintId) ?? throw new DomainError(400, "Unknown blueprint.");
-        var history = await db.Attempts.Where(a => a.UserId == user && a.PackId == request.PackId).ToListAsync();
-        var seen = history.SelectMany(a => Snapshot(a).Questions).Select(q => q.FamilyId).ToHashSet();
-        Question[] chosen;
-        if (request.Focus is { } focus)
-        {
-            var graded = history.Where(a => a.Status == AttemptStatus.Completed).SelectMany(a =>
-            {
-                var answers = Answers(a);
-                return Snapshot(a).Questions.Select(q => (Question: q, Grade: Grader.Score(q, answers.GetValueOrDefault(q.Id))));
-            }).ToArray();
-            var missed = graded.Where(x => !x.Grade.FullyCorrect).Select(x => x.Question.Id).ToHashSet();
-            var weak = graded.SelectMany(x => x.Question.ObjectiveIds.Select(o => new ObjectiveGradeEvidence(o, x.Grade.FullyCorrect)))
-                .GroupBy(x => x.Id).OrderBy(g => g.Count(x => x.FullyCorrect) / (double)g.Count()).Take(2).Select(g => g.Key).ToHashSet();
-            chosen = pack.Questions.Where(q => q.ScenarioId == null && (focus == PracticeFocus.Mistakes ? missed.Contains(q.Id) : q.ObjectiveIds.Any(weak.Contains)))
-                .OrderBy(q => seen.Contains(q.FamilyId)).ThenBy(_ => Guid.NewGuid()).Take(blueprint.Count).ToArray();
-            if (chosen.Length == 0) throw new DomainError(409, "Complete an assessment first to build targeted practice evidence.");
-        }
-        else chosen = ExamComposer.Compose(pack, blueprint, seen, request.RequestId);
+        // The ledger holds every question of every finished attempt, so it is also the exposure history.
+        var history = await db.Evidence.AsNoTracking().Where(e => e.UserId == user && e.PackId == request.PackId)
+            .Select(e => new EvidenceRow(e.Id, e.QuestionId, e.FamilyId, e.ObjectiveIds, e.Source, e.Answered, e.FullyCorrect, e.At)).ToListAsync();
+        var seen = history.Select(e => e.FamilyId).ToHashSet();
+        var chosen = request.Focus is { } focus
+            ? Focused(pack, blueprint, request, focus, history, seen)
+            : ExamComposer.Compose(pack, blueprint, seen, request.RequestId);
         chosen = chosen.OrderBy(q => q.ScenarioId is null ? 0 : 1).ThenBy(q => q.ScenarioId).Select(Shuffle).ToArray();
         var snapshot = new AttemptSnapshot(pack.Title, pack.Version, pack.Objectives, pack.Scenarios, blueprint, chosen, pack.Readiness ?? new());
         var attempt = new Attempt
         {
             UserId = user, PackReleaseId = release.ReleaseId, PackId = pack.Id, StartKey = request.RequestId,
             ActiveKey = user + ":" + pack.Id, Mode = request.Mode, Size = blueprint.Size, Focus = request.Focus,
-            StartedAt = Now, Deadline = Now.AddMinutes(blueprint.Minutes), SnapshotJson = Json.Write(snapshot),
-            FreshPercent = chosen.Count(q => !seen.Contains(q.FamilyId)) * 100m / chosen.Length
+            FocusObjectiveId = request.ObjectiveId, StartedAt = Now, Deadline = Now.AddMinutes(blueprint.Minutes),
+            SnapshotJson = Json.Write(snapshot), FreshPercent = chosen.Count(q => !seen.Contains(q.FamilyId)) * 100m / chosen.Length
         };
         db.Attempts.Add(attempt);
         db.Audit.Add(new() { ActorId = user, Action = "attempt.started", ResourceId = attempt.Id });
@@ -80,6 +74,51 @@ public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache re
         await db.SaveChangesAsync();
         return attempt;
     }
+
+    private sealed record EvidenceRow(long Id, string QuestionId, string FamilyId, string[] ObjectiveIds,
+        EvidenceSource Source, bool Answered, bool FullyCorrect, DateTime At);
+
+    private Question[] Focused(Pack pack, Blueprint blueprint, StartRequest request, PracticeFocus focus, List<EvidenceRow> history, HashSet<string> seen)
+    {
+        var countable = history.Where(e => EvidenceWriter.Countable(e.Source, e.Answered)).ToArray();
+        // A question counts as missed when its most recent countable answer was not fully correct.
+        var missed = countable.GroupBy(e => e.QuestionId)
+            .Where(g => !g.OrderByDescending(e => e.At).ThenByDescending(e => e.Id).First().FullyCorrect)
+            .Select(g => g.Key).ToHashSet();
+        var standalone = pack.Questions.Where(q => q.ScenarioId == null);
+        IEnumerable<Question> pool;
+        Func<Question, int> tier;
+        switch (focus)
+        {
+            case PracticeFocus.Mistakes:
+                pool = standalone.Where(q => missed.Contains(q.Id));
+                tier = _ => 0;
+                break;
+            case PracticeFocus.Weak:
+                var mastery = MasteryEvaluator.Evaluate(pack.Objectives,
+                    countable.Select(e => new MasteryEvidence(e.Id, e.FamilyId, e.ObjectiveIds, e.FullyCorrect, e.Source == EvidenceSource.MockSubmission, e.At)),
+                    pack.Mastery ?? new(), Now);
+                var weak = mastery.Where(m => m.Considered > 0).OrderBy(m => (decimal)m.Correct / m.Considered)
+                    .ThenBy(m => m.ObjectiveId, StringComparer.Ordinal).Take(2).Select(m => m.ObjectiveId).ToHashSet();
+                pool = standalone.Where(q => q.ObjectiveIds.Any(weak.Contains));
+                tier = q => seen.Contains(q.FamilyId) ? 1 : 0;
+                break;
+            default:
+                if (!pack.Objectives.Any(o => o.Id == request.ObjectiveId)) throw new DomainError(400, "Unknown objective.");
+                pool = standalone.Where(q => q.ObjectiveIds.Contains(request.ObjectiveId!));
+                // Unseen families first, then earlier mistakes, then everything else.
+                tier = q => !seen.Contains(q.FamilyId) ? 0 : missed.Contains(q.Id) ? 1 : 2;
+                break;
+        }
+        var chosen = pool.OrderBy(tier).ThenBy(q => SeededOrder(request.RequestId, q.Id), StringComparer.Ordinal).Take(blueprint.Count).ToArray();
+        if (chosen.Length == 0) throw new DomainError(409, focus == PracticeFocus.Objective
+            ? "This objective has no standalone practice questions yet; its questions are part of case studies. Try a balanced session."
+            : "Complete an assessment first to build targeted practice evidence.");
+        return chosen;
+    }
+
+    // Deterministic per request, like ExamComposer, so a replayed start selects the same questions.
+    private static string SeededOrder(string seed, string id) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(seed + id)));
 
     private static Question Shuffle(Question q)
     {

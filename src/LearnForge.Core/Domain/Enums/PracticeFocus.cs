@@ -1,3 +1,3 @@
 namespace LearnForge.Core;
 
-public enum PracticeFocus { Mistakes, Weak }
+public enum PracticeFocus { Mistakes, Weak, Objective }
