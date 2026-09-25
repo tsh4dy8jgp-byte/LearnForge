@@ -143,7 +143,7 @@ interface PracticeSetup {
                       <button class="text-button" (click)="openLesson(l.id)">Study: {{ l.title }} →</button>
                     }
                   }
-                  @if (api.user()) {
+                  @if (api.user() && mastery().get(o.id)?.standalonePractice !== false) {
                     <button class="text-button" (click)="practise(o.id)">Practise this objective →</button>
                   }
                 </article>

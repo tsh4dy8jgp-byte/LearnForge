@@ -17,7 +17,7 @@ const sample: DashboardDto = {
       completedLessons: ['sets-intro'],
       revisedLessons: [],
       objectives: [
-        { id: 'sets', title: 'Reason about sets', prerequisites: [], state: 'developing', correct: 3, considered: 5, independent: 0, lastEvidenceAt: '2026-09-24T10:00:00Z', reviewDue: false, lessonIds: ['sets-intro'] },
+        { id: 'sets', title: 'Reason about sets', prerequisites: [], state: 'developing', correct: 3, considered: 5, independent: 0, lastEvidenceAt: '2026-09-24T10:00:00Z', reviewDue: false, lessonIds: ['sets-intro'], standalonePractice: true },
       ],
       nextSteps: [
         { kind: 'practise', reason: 'belowProficient', objectiveId: 'sets', objectiveTitle: 'Reason about sets', lessonId: null, lessonTitle: null, blueprintId: null },

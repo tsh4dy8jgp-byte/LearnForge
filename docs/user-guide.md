@@ -9,7 +9,7 @@ Open **Learning library**, choose a subject, and work through its lessons. A cou
 - **Practice & exams:** session configuration.
 - **References:** author-provided source links and license.
 
-Lesson completion is a reading record, separate from assessment performance. A newly published version starts its own completion and assessment evidence; older attempts remain in history.
+Lesson completion is a reading record, separate from assessment performance. A newly published version keeps your lesson completion and mastery evidence (changed lessons are flagged); readiness evidence starts fresh for each release, and older attempts remain in history.
 
 ## My courses
 
@@ -27,7 +27,7 @@ Select a short or full blueprint defined by the author.
 
 **Mock mode** is timed and releases answers after submission. Leaving the page or changing your device clock does not pause the server deadline.
 
-**Learning mode** is untimed. **Check answer** releases feedback and locks the response for that session. It supports balanced practice, previous mistakes, weak-objective practice, or **One objective**, which is also available from **Practise this objective** on the content map. Focused practice needs earlier completed evidence, may be shorter than the blueprint, and currently selects standalone questions. Use balanced blueprints for case studies.
+**Learning mode** is untimed. **Check answer** releases feedback and locks the response for that session. It supports balanced practice, previous mistakes, weak-objective practice, or **One objective**, which is also available from **Practise this objective** on the content map. Mistake and weak-objective practice need earlier evidence. Focused sessions may be shorter than the blueprint and select standalone questions; objectives practised only in case studies are offered through a balanced session instead.
 
 One active session is allowed per account/course. Resume it through **Attempts & results**.
 

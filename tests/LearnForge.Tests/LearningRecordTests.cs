@@ -81,6 +81,7 @@ public class LearningRecordTests(ApiFactory factory) : IClassFixture<ApiFactory>
         var progress = await Progress(publisher, v1.Id);
         Assert.Equal(new[] { "sets-intro" }, Strings(progress.GetProperty("completedLessons")));
         Assert.Equal(3, progress.GetProperty("lessonCount").GetInt32());
+        Assert.Equal(1, (await publisher.GetFromJsonAsync<JsonElement>("/api/me/dashboard")).GetProperty("completedLessons").GetInt32());
     }
 
     [Fact] public async Task Enrollment_is_automatic_and_archiving_hides_but_keeps_the_course()
@@ -147,5 +148,17 @@ public class LearningRecordTests(ApiFactory factory) : IClassFixture<ApiFactory>
         var course = await client.GetFromJsonAsync<JsonElement>($"/api/catalog/{pack.Id}");
         Assert.False(course.TryGetProperty("completedLessons", out _));
         Assert.Equal("readiness", course.GetProperty("goal").GetString());
+    }
+
+    [Fact] public async Task Case_study_only_objectives_are_flagged_and_practised_through_a_blueprint()
+    {
+        var client = await TestApi.Account(factory);
+        await client.PutAsync("/api/me/courses/evidence-lab/lessons/evidence-first", null);
+        var lab = await Progress(client, "evidence-lab");
+        Assert.False(Objective(lab, "evaluate").GetProperty("standalonePractice").GetBoolean());
+        var step = lab.GetProperty("nextSteps").EnumerateArray().First();
+        Assert.Equal("practise", step.GetProperty("kind").GetString());
+        Assert.Equal("short", step.GetProperty("blueprintId").GetString());
+        Assert.True(Objective(await Progress(client, pack.Id), "sets").GetProperty("standalonePractice").GetBoolean());
     }
 }

@@ -50,10 +50,14 @@ public sealed class LearningRecordService(AppDb db, ReleaseCache releases, TimeP
         foreach (var enrollment in enrollments)
             if (await releases.Latest(db, enrollment.PackId) is { } release) courses.Add(await Build(user, release, enrollment));
         var recent = await db.Attempts.AsNoTracking().Where(a => a.UserId == user).OrderByDescending(a => a.StartedAt).Take(5).ToListAsync();
+        // Count only lessons that still exist in each pack's latest release.
+        var completedLessons = 0;
+        foreach (var pack in (await db.LessonProgress.AsNoTracking().Where(p => p.UserId == user).Select(p => new { p.PackId, p.LessonId }).ToListAsync()).GroupBy(p => p.PackId))
+            if (await releases.Latest(db, pack.Key) is { } release) completedLessons += pack.Count(p => release.LessonHashes.ContainsKey(p.LessonId));
         return new DashboardDto(courses.ToArray(), recent.Select(Summary).ToArray(),
             await db.Attempts.CountAsync(a => a.UserId == user && a.Status == AttemptStatus.Completed),
             await db.Attempts.CountAsync(a => a.UserId == user && a.Status == AttemptStatus.InProgress),
-            await db.LessonProgress.CountAsync(p => p.UserId == user));
+            completedLessons);
     }
 
     public async Task<MasteryEvidence[]> Evidence(string user, string packId) =>
@@ -94,7 +98,8 @@ public sealed class LearningRecordService(AppDb db, ReleaseCache releases, TimeP
             completed.ToArray(), revised,
             mastery.Select(m => new ObjectiveMasteryDto(m.ObjectiveId, objectives[m.ObjectiveId].Title, objectives[m.ObjectiveId].Prerequisites,
                 m.State, m.Correct, m.Considered, m.Independent, m.LastEvidenceAt, m.ReviewDue,
-                pack.Lessons.Where(l => l.ObjectiveIds.Contains(m.ObjectiveId)).Select(l => l.Id).ToArray())).ToArray(),
+                pack.Lessons.Where(l => l.ObjectiveIds.Contains(m.ObjectiveId)).Select(l => l.Id).ToArray(),
+                pack.Questions.Any(q => q.ScenarioId is null && q.ObjectiveIds.Contains(m.ObjectiveId)))).ToArray(),
             NextStepPlanner.Plan(pack, mastery, completed, readiness).Select(s => new NextStepDto(s.Kind, s.Reason,
                 s.ObjectiveId, s.ObjectiveId is null ? null : objectives[s.ObjectiveId].Title,
                 s.LessonId, s.LessonId is null ? null : lessons[s.LessonId].Title, s.BlueprintId)).ToArray(),

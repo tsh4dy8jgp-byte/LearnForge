@@ -13,7 +13,7 @@ The University and AI-103/AB-100 repositories were reviewed as design references
 | Attempt history | Immutable snapshot |
 | Focus/review queue | Focused learning session |
 | Citation | HTTPS SourceReference |
-| Completion | User/release/lesson record |
+| Completion | User/pack/lesson progress with a content hash (survives new releases) |
 
 ## Import process
 

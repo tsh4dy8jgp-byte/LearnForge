@@ -29,7 +29,10 @@ export function stepLink(packId: string, step: NextStepDto): { path: string[]; q
     case 'takeMock':
       return { path, query: { tab: 'practice', mode: 'mock', blueprint: step.blueprintId ?? '' } };
     default:
-      return { path, query: { tab: 'practice', objective: step.objectiveId ?? '' } };
+      // Objectives practised only inside case studies come with a blueprint for a balanced learning session.
+      return step.blueprintId
+        ? { path, query: { tab: 'practice', blueprint: step.blueprintId } }
+        : { path, query: { tab: 'practice', objective: step.objectiveId ?? '' } };
   }
 }
 

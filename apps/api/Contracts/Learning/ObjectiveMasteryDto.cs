@@ -10,4 +10,6 @@ public sealed record ObjectiveMasteryDto(
     int Independent,
     DateTime? LastEvidenceAt,
     bool ReviewDue,
-    string[] LessonIds);
+    string[] LessonIds,
+    // False when every question for the objective sits in a case study, so it cannot be practised alone.
+    bool StandalonePractice);

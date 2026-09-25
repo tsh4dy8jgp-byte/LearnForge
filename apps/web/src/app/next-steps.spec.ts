@@ -31,6 +31,11 @@ describe('next steps', () => {
     expect(stepLink('demo', step({ kind: 'takeMock', blueprintId: 'short' }))).toEqual({ path: ['/courses', 'demo'], query: { tab: 'practice', mode: 'mock', blueprint: 'short' } });
   });
 
+  it('sends practice on case-study-only objectives to a learning session on the suggested blueprint', () => {
+    expect(stepLink('demo', step({ kind: 'practise', blueprintId: 'short' }))).toEqual({ path: ['/courses', 'demo'], query: { tab: 'practice', blueprint: 'short' } });
+    expect(stepLink('demo', step({ kind: 'review', blueprintId: 'short' }))).toEqual({ path: ['/courses', 'demo'], query: { tab: 'practice', blueprint: 'short' } });
+  });
+
   it('renders an action link per step and a message when nothing is left', async () => {
     TestBed.configureTestingModule({ providers: [provideRouter([])] });
     const fixture = TestBed.createComponent(NextSteps);

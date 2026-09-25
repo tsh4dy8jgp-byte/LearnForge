@@ -15,7 +15,11 @@ The API persists Data Protection keys in data/keys. Back this directory securely
 
 ## Migrations and backup
 
-Automatic migration is convenient locally. In production set Database:AutoMigrate=false, run the reviewed migration step during maintenance, then start the API. SQLite and PostgreSQL have separate migration sets.
+Automatic migration is convenient locally. In production set Database:AutoMigrate=false, run the reviewed migration step during maintenance (`dotnet LearnForge.Api.dll --migrate`), then start the API. SQLite and PostgreSQL have separate migration sets.
+
+The migration step also backfills the evidence ledger and enrollments for attempts completed before the ledger existed, and logs how many attempts it wrote. Applying the schema another way (for example an EF SQL script) skips the backfill: the API then logs a warning at startup with the number of completed attempts that have no ledger rows, and mastery and question freshness stay incomplete until `--migrate` runs. The backfill is idempotent and safe to run on several instances.
+
+Rolling back after this release means restoring the pre-upgrade backup: older images reject pack JSON that contains `goal` or `mastery` and attempts saved with objective practice.
 
 Back up PostgreSQL, Data Protection keys, published release artifacts and configuration secrets. Test restoring to an isolated database. A database backup without keys preserves records but invalidates sessions.
 

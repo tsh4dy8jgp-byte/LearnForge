@@ -52,4 +52,14 @@ public class BackfillTests(ApiFactory factory) : IClassFixture<ApiFactory>
         using var check = factory.Services.CreateScope();
         Assert.Equal(questions, await check.ServiceProvider.GetRequiredService<AppDb>().Evidence.CountAsync(e => e.AttemptId == attemptId));
     }
+
+    [Fact] public async Task A_pending_backfill_is_detectable_until_it_runs()
+    {
+        await LegacyAttempt();
+        using var scope = factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDb>();
+        Assert.Equal(1, await EvidenceBackfill.PendingAsync(db));
+        await EvidenceBackfill.RunAsync(db);
+        Assert.Equal(0, await EvidenceBackfill.PendingAsync(db));
+    }
 }

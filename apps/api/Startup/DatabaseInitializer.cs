@@ -14,8 +14,12 @@ public static class DatabaseInitializer
         if (app.Configuration.GetValue("Database:AutoMigrate", true) || args.Contains("--migrate"))
         {
             await db.Database.MigrateAsync();
-            await EvidenceBackfill.RunAsync(db);
+            var backfilled = await EvidenceBackfill.RunAsync(db);
+            if (backfilled > 0) app.Logger.LogInformation("Evidence backfill wrote ledger rows for {Attempts} attempts.", backfilled);
         }
+        else if (!(await db.Database.GetPendingMigrationsAsync()).Any() && await EvidenceBackfill.PendingAsync(db) is var pending and > 0)
+            // Schema applied another way (for example an EF SQL script): mastery and question freshness stay incomplete until backfilled.
+            app.Logger.LogWarning("{Attempts} completed attempts have no evidence ledger rows. Run the migration step (--migrate) to backfill them.", pending);
         await SeedPacksAsync(db);
         if (args.Contains("--migrate")) return false;
         var grantIndex = Array.IndexOf(args, "--grant-publisher");

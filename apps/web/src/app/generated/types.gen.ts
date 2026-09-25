@@ -261,6 +261,7 @@ export type ObjectiveMasteryDto = {
     lastEvidenceAt: null | string;
     reviewDue: boolean;
     lessonIds: Array<string>;
+    standalonePractice: boolean;
 };
 
 export type Option = {

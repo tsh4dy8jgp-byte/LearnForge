@@ -7,10 +7,16 @@ namespace LearnForge.Api.Services.Learning;
 // need nothing: AttemptService.Finish records any question without a row when the attempt completes.
 public static class EvidenceBackfill
 {
+    // Completed attempts that predate the ledger. Nonzero after an upgrade means the migration step (--migrate) has not run.
+    public static Task<int> PendingAsync(AppDb db, CancellationToken cancellationToken = default) =>
+        Pending(db).CountAsync(cancellationToken);
+
+    private static IQueryable<Attempt> Pending(AppDb db) =>
+        db.Attempts.Where(a => a.Status == AttemptStatus.Completed && !db.Evidence.Any(e => e.AttemptId == a.Id));
+
     public static async Task<int> RunAsync(AppDb db, CancellationToken cancellationToken = default)
     {
-        var pending = await db.Attempts.Where(a => a.Status == AttemptStatus.Completed && !db.Evidence.Any(e => e.AttemptId == a.Id))
-            .Select(a => a.Id).ToListAsync(cancellationToken);
+        var pending = await Pending(db).Select(a => a.Id).ToListAsync(cancellationToken);
         var written = 0;
         foreach (var id in pending)
         {

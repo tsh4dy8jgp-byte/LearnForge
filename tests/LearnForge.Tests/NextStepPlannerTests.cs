@@ -59,4 +59,24 @@ public class NextStepPlannerTests
         Assert.Equal(new[] { "sets", "logic" }, first.Select(s => s.ObjectiveId));
         Assert.Equal(first, NextStepPlanner.Plan(flat, States(NotStarted, NotStarted, NotStarted), new HashSet<string>(), NotReady, limit: 2));
     }
+
+    [Fact] public void Objectives_practised_only_in_case_studies_point_to_a_blueprint()
+    {
+        var lab = TestApi.LoadPack("evidence-lab");
+        var steps = NextStepPlanner.Plan(lab, [M("evaluate", Emerging)], new HashSet<string> { "evidence-first" }, NotReady);
+        Assert.Equal(new[] { new NextStep(NextStepKind.Practise, NextStepReason.NeedsEvidence, "evaluate", BlueprintId: "short") }, steps);
+        var review = NextStepPlanner.Plan(lab, [M("evaluate", Proficient, reviewDue: true)], new HashSet<string> { "evidence-first" }, NotReady with { Ready = true });
+        Assert.Equal(new[] { new NextStep(NextStepKind.Review, NextStepReason.ReviewDue, "evaluate", BlueprintId: "short") }, review);
+    }
+
+    [Fact] public void Completion_goals_suggest_unread_lessons_in_pack_order_regardless_of_mastery()
+    {
+        var steps = NextStepPlanner.Plan(Demo with { Goal = CourseGoal.Completion }, States(NotStarted, NotStarted, NotStarted), new HashSet<string> { "sets-intro" }, readiness: null);
+        Assert.Equal(new[]
+        {
+            new NextStep(NextStepKind.ReadLesson, NextStepReason.StartObjective, "logic", "logic-intro"),
+            new NextStep(NextStepKind.ReadLesson, NextStepReason.StartObjective, "ordering", "ordering-intro"),
+            new NextStep(NextStepKind.Practise, NextStepReason.NeedsEvidence, "sets")
+        }, steps);
+    }
 }
