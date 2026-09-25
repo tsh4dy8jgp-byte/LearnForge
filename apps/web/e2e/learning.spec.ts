@@ -1,5 +1,15 @@
 import { test, expect } from '@playwright/test';
 
+async function register(page: import('@playwright/test').Page, name: string) {
+  await page.goto('/sign-in');
+  await page.getByRole('button', { name: 'Create an account', exact: true }).click();
+  await page.getByLabel('Display name').fill(name);
+  await page.getByLabel('Email', { exact: true }).fill(`browser-${Date.now()}-${Math.random().toString(36).slice(2)}@example.test`);
+  await page.getByLabel('Password', { exact: true }).fill('BrowserTesting123');
+  await page.getByRole('button', { name: 'Create account', exact: true }).click();
+  await expect(page.getByRole('heading', { name: `Welcome back, ${name}.` })).toBeVisible();
+}
+
 test('a learner registers, reads, uses every question format, resumes and reviews', async ({
   page,
 }) => {
@@ -69,6 +79,12 @@ test('a learner registers, reads, uses every question format, resumes and review
   await expect(page.locator('.explanation').first()).toBeVisible();
   await page.getByRole('link', { name: 'Attempts & results', exact: false }).first().click();
   await expect(page.getByText('Learning session', { exact: true })).toBeVisible();
+  await page.getByRole('link', { name: 'Overview' }).click();
+  await expect(page.getByRole('heading', { name: 'My courses' })).toBeVisible();
+  const course = page.locator('.path-panel').filter({ hasText: 'Reasoning foundations' });
+  await expect(course).toBeVisible();
+  await expect(course.locator('.next-steps li').first()).toBeVisible();
+  await expect(course.locator('lf-mastery-badge').filter({ hasNotText: 'Not started' }).first()).toBeVisible();
   expect(errors).toEqual([]);
 });
 
@@ -85,4 +101,26 @@ test('public course views fit a narrow screen and never include answer keys', as
     await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
   ).toBeTruthy();
   await page.screenshot({ path: 'test-results/course-mobile.png', fullPage: true });
+});
+
+test('learners add, archive and restore courses and switch tabs with the keyboard', async ({ page }) => {
+  await register(page, 'Kai');
+  await expect(page.getByRole('heading', { name: 'No courses yet.' })).toBeVisible();
+  await page.goto('/courses/evidence-lab');
+  await page.getByRole('button', { name: 'Add to my courses' }).click();
+  await expect(page.getByRole('button', { name: 'Archive course' })).toBeVisible();
+  await page.getByRole('link', { name: 'Overview' }).click();
+  await expect(page.locator('.path-panel').filter({ hasText: 'Evidence lab' })).toBeVisible();
+
+  await page.goto('/courses/evidence-lab');
+  await page.getByRole('button', { name: 'Archive course' }).click();
+  await expect(page.getByRole('button', { name: 'Restore to my courses' })).toBeVisible();
+  await page.getByRole('link', { name: 'Overview' }).click();
+  await expect(page.getByRole('heading', { name: 'No courses yet.' })).toBeVisible();
+
+  await page.goto('/courses/evidence-lab');
+  await page.getByRole('tab', { name: 'Lessons' }).focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(page.getByRole('tab', { name: 'Content map' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('heading', { name: 'How the ideas connect' })).toBeVisible();
 });
