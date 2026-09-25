@@ -19,7 +19,7 @@ try
         var pack = new Pack(1, "my-course", "1.0.0", "My first course", "Replace this sample with your subject.", "Private",
             [new("parity", "Recognize even integers", [])],
             [new("introduction", "Even integers", "A short introduction.", ["parity"], [new(ContentBlockKind.Text, "An integer is even when it is divisible by two.")])],
-            [q], [], [new("short", "Quick check", 1, 5, AssessmentSize.Short, ["parity"], [QuestionKind.Single])], new(), []);
+            [q], [], [new("short", "Quick check", 1, 5, AssessmentSize.Short, ["parity"], [QuestionKind.Single])], [], Readiness: new());
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         await File.WriteAllTextAsync(path, Json.Write(pack));
         Console.WriteLine($"Created {path}"); return 0;

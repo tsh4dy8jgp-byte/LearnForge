@@ -146,7 +146,7 @@ app.MapGet("/api/catalog/{id}", async (string id, AppDb db, ClaimsPrincipal user
     var p = Json.Read<Pack>(release.ContentJson);
     var completed = user.Identity?.IsAuthenticated == true ? await db.Completions.Where(c => c.UserId == UserId(user) && c.ReleaseId == release.Id).Select(c => c.LessonId).ToArrayAsync() : [];
     return Results.Ok(new CourseCatalogDto(p.Id, p.Title, p.Description, p.Version, p.License, p.Objectives,
-        p.Lessons, p.Blueprints, p.Sources, p.Readiness, completed, p.Questions.Length));
+        p.Lessons, p.Blueprints, p.Sources, p.Readiness ?? new(), completed, p.Questions.Length));
 });
 var me = app.MapGroup("/api/me").RequireAuthorization();
 me.MapPut("/courses/{id}/lessons/{lessonId}", async (string id, string lessonId, ClaimsPrincipal user, AppDb db) =>

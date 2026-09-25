@@ -171,8 +171,17 @@ public static partial class ContentEngine
                 catch (InvalidOperationException ex) { Error(b.Id, ex.Message); }
         }
         if (p.Blueprints.Length == 0) Error("blueprints", "At least one blueprint is required.");
-        var r = p.Readiness;
+        var r = p.Readiness ?? new();
         if (r.ShortAttempts is < 1 or > 20 || r.FullAttempts is < 1 or > 20 || r.Threshold is < 0 or >= 100 || r.LookbackDays is < 1 or > 365 || r.MinimumFreshPercent is < 0 or > 100) Error("readiness", "Readiness policy is out of bounds.");
+        if (!Enum.IsDefined(p.Goal)) Error("goal", "Goal must be readiness, mastery or completion.");
+        var m = p.Mastery ?? new();
+        if (m.MinimumEvidence < 1 || m.Window < m.MinimumEvidence || m.Window > 20 || m.ProficientPercent is < 50 or > 100 || m.ReviewAfterDays is < 1 or > 365)
+            Error("mastery", "Mastery policy is out of bounds: 1 ≤ minimumEvidence ≤ window ≤ 20, proficientPercent 50–100, reviewAfterDays 1–365.");
+        else if (p.Goal == CourseGoal.Mastery)
+            // Like blueprint feasibility: an objective with too few families could never become proficient.
+            foreach (var objective in p.Objectives)
+                if (p.Questions.Where(q => q.ObjectiveIds.Contains(objective.Id)).Select(q => q.FamilyId).Distinct().Count() < m.MinimumEvidence)
+                    Error(objective.Id, $"A mastery goal needs at least {m.MinimumEvidence} question families for this objective.");
         return errors.ToArray();
     }
 }

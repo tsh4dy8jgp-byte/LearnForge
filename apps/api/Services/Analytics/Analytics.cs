@@ -52,7 +52,7 @@ public static class Analytics
             .Select(a => new ReadinessEvidence(a.Id, a.Size, a.CompletedAt!.Value, a.CorrectPercent, a.Eligible));
         return new CourseDashboardDto(pack.Id, pack.Title, pack.Version, pack.Lessons.Length,
             completions.Count(c => c.ReleaseId == release.Id), objectives, recommendations,
-            ReadinessEvaluator.Evaluate(evidence, pack.Readiness, now));
+            ReadinessEvaluator.Evaluate(evidence, pack.Readiness ?? new(), now));
     }
 
 }

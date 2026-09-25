@@ -67,7 +67,7 @@ public sealed class AttemptService(AppDb db, TimeProvider clock)
         }
         else chosen = ExamComposer.Compose(pack, blueprint, seen, request.RequestId);
         chosen = chosen.OrderBy(q => q.ScenarioId is null ? 0 : 1).ThenBy(q => q.ScenarioId).Select(Shuffle).ToArray();
-        var snapshot = new AttemptSnapshot(pack.Title, pack.Version, pack.Objectives, pack.Scenarios, blueprint, chosen, pack.Readiness);
+        var snapshot = new AttemptSnapshot(pack.Title, pack.Version, pack.Objectives, pack.Scenarios, blueprint, chosen, pack.Readiness ?? new());
         var attempt = new Attempt
         {
             UserId = user, PackReleaseId = release.Id, PackId = pack.Id, StartKey = request.RequestId,
