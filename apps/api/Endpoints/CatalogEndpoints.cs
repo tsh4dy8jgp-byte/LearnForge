@@ -25,7 +25,9 @@ public static class CatalogEndpoints
                 var release = await releases.Latest(db, id);
                 if (release is null) return Results.NotFound();
                 var p = release.Pack;
-                var completed = user.Identity?.IsAuthenticated == true ? await db.Completions.Where(c => c.UserId == UserId(user) && c.ReleaseId == release.ReleaseId).Select(c => c.LessonId).ToArrayAsync() : [];
+                var completed = user.Identity?.IsAuthenticated == true
+                    ? (await db.LessonProgress.Where(c => c.UserId == UserId(user) && c.PackId == id).Select(c => c.LessonId).ToArrayAsync()).Where(release.LessonHashes.ContainsKey).ToArray()
+                    : [];
                 return Results.Ok(new CourseCatalogDto(p.Id, p.Title, p.Description, p.Version, p.License, p.Objectives,
                     p.Lessons, p.Blueprints, p.Sources, p.Readiness ?? new(), completed, p.Questions.Length));
             });

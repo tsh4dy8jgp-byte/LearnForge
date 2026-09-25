@@ -16,14 +16,14 @@ public static class Analytics
     {
         var attempts = await db.Attempts.Where(a => a.UserId == user).OrderByDescending(a => a.StartedAt).ToListAsync();
         var releases = (await db.Packs.OrderByDescending(p => p.PublishedAt).ToListAsync()).DistinctBy(p => p.PackId);
-        var completions = await db.Completions.Where(c => c.UserId == user).ToListAsync();
+        var completions = await db.LessonProgress.Where(c => c.UserId == user).ToListAsync();
         var courses = releases.Select(release => BuildCourse(release, attempts, completions, now)).ToArray();
         return new(courses, attempts.Select(Summary).ToArray(), attempts.Count(a => a.Status == AttemptStatus.Completed),
             attempts.Count(a => a.Status == AttemptStatus.InProgress), completions.Count);
     }
 
     private static CourseDashboardDto BuildCourse(PackRelease release, IReadOnlyCollection<Attempt> attempts,
-        IReadOnlyCollection<Completion> completions, DateTime now)
+        IReadOnlyCollection<LessonProgress> completions, DateTime now)
     {
         var pack = Json.Read<Pack>(release.ContentJson);
         var history = attempts.Where(a => a.PackReleaseId == release.Id).ToArray();
@@ -51,7 +51,7 @@ public static class Analytics
         var evidence = history.Where(a => a.Mode == AssessmentMode.Mock && a.Status == AttemptStatus.Completed)
             .Select(a => new ReadinessEvidence(a.Id, a.Size, a.CompletedAt!.Value, a.CorrectPercent, a.Eligible));
         return new CourseDashboardDto(pack.Id, pack.Title, pack.Version, pack.Lessons.Length,
-            completions.Count(c => c.ReleaseId == release.Id), objectives, recommendations,
+            completions.Count(c => c.PackId == release.PackId), objectives, recommendations,
             ReadinessEvaluator.Evaluate(evidence, pack.Readiness ?? new(), now));
     }
 

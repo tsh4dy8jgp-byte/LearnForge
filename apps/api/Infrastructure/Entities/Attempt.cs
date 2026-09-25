@@ -28,4 +28,5 @@ public sealed class Attempt
     public bool Eligible { get; set; }
     public bool TimedOut { get; set; }
     public PracticeFocus? Focus { get; set; }
+    public string? FocusObjectiveId { get; set; }
 }

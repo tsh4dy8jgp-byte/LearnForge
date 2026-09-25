@@ -16,8 +16,11 @@ public static class LearnerEndpoints
             me.MapPut("/courses/{id}/lessons/{lessonId}", async (string id, string lessonId, ClaimsPrincipal user, AppDb db, ReleaseCache releases) =>
             {
                 var release = await releases.Latest(db, id);
-                if (release is null || !release.LessonHashes.ContainsKey(lessonId)) return Results.NotFound();
-                if (await db.Completions.FindAsync(UserId(user), release.ReleaseId, lessonId) is null) { db.Completions.Add(new() { UserId = UserId(user), ReleaseId = release.ReleaseId, LessonId = lessonId }); await db.SaveChangesAsync(); }
+                if (release is null || !release.LessonHashes.TryGetValue(lessonId, out var hash)) return Results.NotFound();
+                var progress = await db.LessonProgress.FindAsync(UserId(user), id, lessonId);
+                if (progress is null) db.LessonProgress.Add(new() { UserId = UserId(user), PackId = id, LessonId = lessonId, ContentHash = hash });
+                else progress.ContentHash = hash;
+                await db.SaveChangesAsync();
                 return Results.NoContent();
             });
             me.MapGet("/dashboard", async (ClaimsPrincipal user, AppDb db, AttemptService service) =>

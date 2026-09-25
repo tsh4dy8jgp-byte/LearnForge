@@ -56,6 +56,9 @@ namespace LearnForge.Api.Migrations.Postgres
                     b.Property<string>("Focus")
                         .HasColumnType("text");
 
+                    b.Property<string>("FocusObjectiveId")
+                        .HasColumnType("text");
+
                     b.Property<decimal>("FreshPercent")
                         .HasColumnType("numeric");
 
@@ -150,23 +153,114 @@ namespace LearnForge.Api.Migrations.Postgres
                     b.ToTable("Audit");
                 });
 
-            modelBuilder.Entity("LearnForge.Api.Completion", b =>
+            modelBuilder.Entity("LearnForge.Api.Enrollment", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("text");
 
+                    b.Property<string>("PackId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("EnrolledAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("LastActivityAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("UserId", "PackId");
+
+                    b.ToTable("Enrollments");
+                });
+
+            modelBuilder.Entity("LearnForge.Api.EvidenceRecord", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("Answered")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("At")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("AttemptId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("Earned")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("FamilyId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("FullyCorrect")
+                        .HasColumnType("boolean");
+
+                    b.PrimitiveCollection<string[]>("ObjectiveIds")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.Property<string>("PackId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("Possible")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("QuestionId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("ReleaseId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AttemptId", "QuestionId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId", "PackId", "At");
+
+                    b.ToTable("Evidence");
+                });
+
+            modelBuilder.Entity("LearnForge.Api.LessonProgress", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PackId")
                         .HasColumnType("text");
 
                     b.Property<string>("LessonId")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("At")
+                    b.Property<DateTime>("CompletedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("UserId", "ReleaseId", "LessonId");
+                    b.Property<string>("ContentHash")
+                        .HasColumnType("text");
 
-                    b.ToTable("Completions");
+                    b.HasKey("UserId", "PackId", "LessonId");
+
+                    b.ToTable("LessonProgress");
                 });
 
             modelBuilder.Entity("LearnForge.Api.PackRelease", b =>
@@ -447,7 +541,31 @@ namespace LearnForge.Api.Migrations.Postgres
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("LearnForge.Api.Completion", b =>
+            modelBuilder.Entity("LearnForge.Api.Enrollment", b =>
+                {
+                    b.HasOne("LearnForge.Api.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LearnForge.Api.EvidenceRecord", b =>
+                {
+                    b.HasOne("LearnForge.Api.Attempt", null)
+                        .WithMany()
+                        .HasForeignKey("AttemptId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LearnForge.Api.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LearnForge.Api.LessonProgress", b =>
                 {
                     b.HasOne("LearnForge.Api.User", null)
                         .WithMany()
