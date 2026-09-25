@@ -13,25 +13,26 @@ public static class LearnerEndpoints
         public void MapLearner()
         {
             var me = app.MapGroup("/api/me").RequireAuthorization();
-            me.MapPut("/courses/{id}/lessons/{lessonId}", async (string id, string lessonId, ClaimsPrincipal user, AppDb db, ReleaseCache releases) =>
+            me.MapPut("/courses/{id}/lessons/{lessonId}", async (string id, string lessonId, ClaimsPrincipal user, LearningRecordService learning) =>
             {
-                var release = await releases.Latest(db, id);
-                if (release is null || !release.LessonHashes.TryGetValue(lessonId, out var hash)) return Results.NotFound();
-                var progress = await db.LessonProgress.FindAsync(UserId(user), id, lessonId);
-                if (progress is null) db.LessonProgress.Add(new() { UserId = UserId(user), PackId = id, LessonId = lessonId, ContentHash = hash });
-                else progress.ContentHash = hash;
-                await db.SaveChangesAsync();
+                await learning.CompleteLesson(UserId(user), id, lessonId);
                 return Results.NoContent();
             });
-            me.MapGet("/dashboard", async (ClaimsPrincipal user, AppDb db, AttemptService service) =>
+            me.MapGet("/courses/{id}", (string id, ClaimsPrincipal user, LearningRecordService learning) => learning.CourseProgress(UserId(user), id));
+            me.MapPut("/enrollments/{id}", async (string id, EnrollmentRequest request, ClaimsPrincipal user, LearningRecordService learning) =>
+            {
+                await learning.SetEnrollment(UserId(user), id, request.Status);
+                return Results.NoContent();
+            });
+            me.MapGet("/dashboard", async (ClaimsPrincipal user, AppDb db, AttemptService service, LearningRecordService learning) =>
             {
                 foreach (var a in await db.Attempts.Where(a => a.UserId == UserId(user) && a.Status == AttemptStatus.InProgress).ToListAsync()) await service.Expire(a);
-                return await Analytics.Dashboard(db, UserId(user), service.Now);
+                return await learning.Dashboard(UserId(user));
             });
-            me.MapGet("/export", async (ClaimsPrincipal user, AppDb db, AttemptService service) =>
+            me.MapGet("/export", async (ClaimsPrincipal user, AppDb db, AttemptService service, LearningRecordService learning) =>
             {
                 var attempts = await db.Attempts.Where(a => a.UserId == UserId(user)).ToListAsync();
-                var export = new LearnerExportDto(service.Now, await Analytics.Dashboard(db, UserId(user), service.Now), attempts.Select(service.View).ToArray());
+                var export = new LearnerExportDto(service.Now, await learning.Dashboard(UserId(user)), attempts.Select(service.View).ToArray());
                 return Results.File(System.Text.Encoding.UTF8.GetBytes(Json.Write(export)), "application/json", "learnforge-history.json");
             });
             me.MapDelete("/account", async ([FromBody] DeleteAccountRequest request, ClaimsPrincipal principal, UserManager<User> users, SignInManager<User> signIn, AppDb db) =>

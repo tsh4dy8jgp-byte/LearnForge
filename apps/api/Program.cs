@@ -58,6 +58,7 @@ builder.Services.AddDataProtection().SetApplicationName("LearnForge").PersistKey
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<AttemptService>();
 builder.Services.AddSingleton<ReleaseCache>();
+builder.Services.AddScoped<LearningRecordService>();
 builder.Services.AddHostedService<ExpiryWorker>();
 builder.Services.AddOpenApi();
 builder.Services.AddRateLimiter(o =>

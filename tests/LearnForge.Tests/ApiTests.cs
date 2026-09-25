@@ -199,7 +199,7 @@ public class ApiTests(ApiFactory factory) : IClassFixture<ApiFactory>
         async Task<bool> Ready()
         {
             var dashboard = await client.GetFromJsonAsync<JsonElement>("/api/me/dashboard");
-            return dashboard.GetProperty("courses").EnumerateArray().Single(c => c.GetProperty("id").GetString() == pack.Id).GetProperty("readiness").GetProperty("ready").GetBoolean();
+            return dashboard.GetProperty("courses").EnumerateArray().Single(c => c.GetProperty("packId").GetString() == pack.Id).GetProperty("goal").GetProperty("readiness").GetProperty("ready").GetBoolean();
         }
         Assert.True(await Ready());
         var failed = await Start(client);

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LearnForge.Api.Services.Attempts;
 
-public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache releases)
+public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache releases, LearningRecordService learning)
 {
     public DateTime Now => clock.GetUtcNow().UtcDateTime;
     public static AttemptSnapshot Snapshot(Attempt a) => Json.Read<AttemptSnapshot>(a.SnapshotJson);
@@ -76,6 +76,7 @@ public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache re
         };
         db.Attempts.Add(attempt);
         db.Audit.Add(new() { ActorId = user, Action = "attempt.started", ResourceId = attempt.Id });
+        await learning.Touch(user, pack.Id);
         await db.SaveChangesAsync();
         return attempt;
     }
