@@ -31,8 +31,16 @@ public static class LearnerEndpoints
             });
             me.MapGet("/export", async (ClaimsPrincipal user, AppDb db, AttemptService service, LearningRecordService learning) =>
             {
-                var attempts = await db.Attempts.Where(a => a.UserId == UserId(user)).ToListAsync();
-                var export = new LearnerExportDto(service.Now, await learning.Dashboard(UserId(user)), attempts.Select(service.View).ToArray());
+                var id = UserId(user);
+                var attempts = await db.Attempts.Where(a => a.UserId == id).ToListAsync();
+                var enrollments = await db.Enrollments.Where(e => e.UserId == id)
+                    .Select(e => new EnrollmentExportDto(e.PackId, e.Status, e.EnrolledAt, e.LastActivityAt)).ToArrayAsync();
+                var lessons = await db.LessonProgress.Where(p => p.UserId == id)
+                    .Select(p => new LessonProgressExportDto(p.PackId, p.LessonId, p.CompletedAt, p.ContentHash)).ToArrayAsync();
+                var evidence = await db.Evidence.Where(e => e.UserId == id).OrderBy(e => e.Id)
+                    .Select(e => new EvidenceExportDto(e.PackId, e.ReleaseId, e.AttemptId, e.QuestionId, e.FamilyId, e.ObjectiveIds,
+                        e.Source, e.Answered, e.FullyCorrect, e.Earned, e.Possible, e.At)).ToArrayAsync();
+                var export = new LearnerExportDto(service.Now, await learning.Dashboard(id), attempts.Select(service.View).ToArray(), enrollments, lessons, evidence);
                 return Results.File(System.Text.Encoding.UTF8.GetBytes(Json.Write(export)), "application/json", "learnforge-history.json");
             });
             me.MapDelete("/account", async ([FromBody] DeleteAccountRequest request, ClaimsPrincipal principal, UserManager<User> users, SignInManager<User> signIn, AppDb db) =>
