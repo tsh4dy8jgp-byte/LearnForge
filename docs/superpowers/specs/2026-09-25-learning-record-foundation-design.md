@@ -114,6 +114,7 @@ The caller filters the input: mock records always count, and learning records co
 | `Enrollment` | `(UserId, PackId)`; `Status`, `EnrolledAt`, `LastActivityAt` | FK to user, cascade on delete |
 | `EvidenceRecord` | `long Id`; `UserId`, `PackId`, `ReleaseId`, `AttemptId`, `QuestionId`, `FamilyId`, `ObjectiveIds`, `Source`, `Answered`, `FullyCorrect`, `Earned`, `Possible`, `At` | Append-only. Unique `(AttemptId, QuestionId)`; index `(UserId, PackId, At)`; FKs to user and attempt with cascade. `ObjectiveIds` is an EF primitive collection (JSON in SQLite, `text[]` in PostgreSQL) |
 | `LessonProgress` | `(UserId, PackId, LessonId)`; `CompletedAt`, `ContentHash?` | Replaces `Completion`. A null hash means unknown, so the lesson is not flagged |
+| `Attempt` (changed) | adds `FocusObjectiveId?` | Records the objective of an objective-focused session, so a replayed start request with a different objective is rejected |
 
 Enums use string conversion, matching the existing `Attempt` configuration.
 
@@ -133,7 +134,7 @@ Enums use string conversion, matching the existing `Attempt` configuration.
 `Services/Learning/EvidenceBackfill` runs only in the migration step (automatic migration or `--migrate`), never on every replica start.
 
 - Completed attempts without evidence get one record per snapshot question, graded with `Grader.Score`. Mock attempts produce `MockSubmission`; checked learning questions produce `LearningCheck`; other learning questions produce `LearningSubmission`. `At` is the completion time.
-- In-progress attempts get records for checked questions only. `At` is the start time, which is approximate and documented as such.
+- In-progress attempts need no backfill: `Finish` records any question without a row when the attempt completes.
 - Enrollments are created for every user and pack with attempts or lesson progress.
 - Each attempt is saved separately. A unique-key violation means another run finished it, so it is skipped. Running the backfill twice is safe.
 
@@ -141,8 +142,8 @@ Enums use string conversion, matching the existing `Attempt` configuration.
 
 ### Services
 - **`ReleaseCache` and `ReleaseView`** (a deserialized `Pack` plus a lesson-hash map):
-  - `IMemoryCache` with a size limit; entries are sized by content length.
-  - Values are `Lazy<Task<ReleaseView>>` keyed by the immutable release ID, so concurrent misses load once.
+  - A bounded `MemoryCache` holds up to `ReleaseCache:Capacity` releases (default 64) with a sliding expiry.
+  - Values are `Lazy<Task<ReleaseView>>` keyed by the immutable release ID, created under a lock, so concurrent misses load once. A failed load is evicted so it is retried.
   - Finding the latest release for a pack stays a single indexed query, so replicas never need cache invalidation.
 - **`LearningRecordService`:**
   - Enroll, archive and touch activity. New activity reactivates an archived enrollment.
@@ -154,7 +155,7 @@ Enums use string conversion, matching the existing `Attempt` configuration.
 
 ### Attempt changes
 - A learning-mode check appends one `LearningCheck` record.
-- Finishing an attempt appends records for every question without released feedback. Mocks produce `MockSubmission`, learning sessions `LearningSubmission`. `Answered` means a non-empty answer.
+- Finishing an attempt (now `async`) appends a record for every question that has no evidence row yet. Questions with released feedback use `LearningCheck`; otherwise mocks produce `MockSubmission` and learning sessions `LearningSubmission`. `Answered` means a non-empty answer. Checks made before the upgrade are therefore recorded when their attempt completes.
 - Records are written in the same `SaveChanges` as the attempt transition, guarded by the attempt's revision concurrency token. An expiry-versus-submit race therefore commits or rolls back both together.
 - Starting an attempt reads seen families from the ledger instead of deserializing every past snapshot.
 - The "mistakes" focus uses questions whose latest countable record is not fully correct. The "weak" focus uses the two objectives with the lowest `k/n` among objectives with evidence.
@@ -181,13 +182,14 @@ Enums use string conversion, matching the existing `Attempt` configuration.
 - Migration, seeding, backfill and publisher grants move to `Startup/DatabaseInitializer`. `Program.cs` becomes composition only.
 - `builder.Services.AddValidation()` validates request records annotated with `[property: ...]` DataAnnotations. This replaces the manual length checks on registration, login, password change, start and enrollment requests.
 - The existing cookie 401/403 handlers stay.
-- `Microsoft.Extensions.ApiDescription.Server` generates the OpenAPI document at build time.
+- `Microsoft.Extensions.ApiDescription.Server` generates the OpenAPI document on demand (`make api-types`), skipped by default so ordinary and Docker builds are unaffected. Startup database work is skipped when the entry assembly is `GetDocument.Insider`.
+- HTTP JSON uses `JsonNumberHandling.Strict`, so the schema describes numbers as numbers rather than `number | string`.
 
 ### Endpoints and contracts (`Contracts/Learning`, one type per file)
 
 | Endpoint | Change |
 | --- | --- |
-| `GET /api/catalog`, `GET /api/catalog/{packId}` | Served from `ReleaseCache`. `CompletedLessons` is removed from `CourseCatalogDto`, so the catalog is public data only |
+| `GET /api/catalog`, `GET /api/catalog/{packId}` | Served from `ReleaseCache`. `CompletedLessons` is removed from `CourseCatalogDto`, so the catalog is public data only; `Goal` is added |
 | `GET /api/me/dashboard` | `DashboardDto(CourseProgressDto[] Courses, AttemptSummaryDto[] RecentAttempts, int CompletedAttempts, int ActiveAttempts, int CompletedLessons)` |
 | `GET /api/me/courses/{packId}` | New: `CourseProgressDto` |
 | `PUT /api/me/enrollments/{packId}` | New: `EnrollmentRequest(EnrollmentStatus Status)`; 204, or 404 for an unknown pack |
@@ -206,7 +208,7 @@ Reasons travel as enums, not English sentences, so the UI can localize them late
 
 ## Web (`apps/web`)
 - **`app.config.ts`:** add `provideHttpClient(withFetch(), withInterceptors([csrfInterceptor]))` and `withComponentInputBinding()`. `Api` keeps its promise methods but is implemented over `HttpClient`, so untouched pages keep working and there is one HTTP stack.
-- **Generated types:** `npm run api:types` runs `openapi-typescript` on the build-time OpenAPI document to produce `src/app/api-types.ts`. `models.ts` re-exports and aliases these types, so enums become string-literal unions. CI fails on drift.
+- **Generated types:** `npm run api:types` runs `@hey-api/openapi-ts` (types plugin only; it supports TypeScript 6, unlike `openapi-typescript`) on `apps/web/openapi/learnforge.json` to produce `src/app/generated/types.gen.ts`. `models.ts` re-exports and aliases these types, so enums become string-literal unions. `make check-api-types` fails on drift.
 - **Shared components:**
   - `mastery-badge`: state label plus icon plus "k of last n", so meaning never depends on color alone.
   - `next-steps`: maps reason enums to sentences and links to a lesson, to objective practice or to a mock.
