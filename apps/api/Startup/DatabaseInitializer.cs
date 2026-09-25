@@ -12,7 +12,10 @@ public static class DatabaseInitializer
         var db = scope.ServiceProvider.GetRequiredService<AppDb>();
         // Separate migrations preserve each provider's native types and identity columns.
         if (app.Configuration.GetValue("Database:AutoMigrate", true) || args.Contains("--migrate"))
+        {
             await db.Database.MigrateAsync();
+            await EvidenceBackfill.RunAsync(db);
+        }
         await SeedPacksAsync(db);
         if (args.Contains("--migrate")) return false;
         var grantIndex = Array.IndexOf(args, "--grant-publisher");
