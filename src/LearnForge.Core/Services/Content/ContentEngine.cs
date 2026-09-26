@@ -158,7 +158,26 @@ public static partial class ContentEngine
                 }
                 if (q.Kind == QuestionKind.Matching && !q.Reuse && q.Grading.Matches is { } keys && keys.Values.Distinct().Count() != keys.Count) Error(q.Id, "Matching key reuses a token while reuse is disabled.");
             }
+            else if (q.Kind is QuestionKind.Numeric or QuestionKind.CodeOutput)
+            {
+                if (q.Options.Length > 0 || q.Slots.Length > 0 || q.SelectCount != 0 || q.Grading.Matches is { Count: > 0 }) Error(q.Id, "Typed-response questions cannot contain options, slots, matches or a selection count.");
+                if (q.Grading.Policy != ScoringPolicy.Exact) Error(q.Id, "Typed-response questions use exact scoring.");
+                if (q.Grading.Correct.Length is < 1 or > 20) Error(q.Id, "Typed-response questions need 1–20 accepted answers.");
+                if (q.Kind == QuestionKind.Numeric)
+                {
+                    if (q.Grading.Correct.Any(key => !ResponseText.TryParseNumber(key, out _))) Error(q.Id, "Numeric keys must be invariant-culture numbers such as 4 or -2.5.");
+                    if (q.Grading.Tolerance is < 0) Error(q.Id, "Numeric tolerance cannot be negative.");
+                }
+                else
+                {
+                    if (q.Grading.Correct.Any(key => key.Length > ResponseText.MaxLength || ResponseText.NormalizeOutput(key).Length == 0)) Error(q.Id, $"Accepted outputs must be nonblank and at most {ResponseText.MaxLength} characters.");
+                    if (q.Code is not { } code || !Identifier().IsMatch(code.Language) || string.IsNullOrWhiteSpace(code.Source) || code.Source.Length > 20_000)
+                        Error(q.Id, "Code-output questions need a program of at most 20,000 characters and a lowercase language ID.");
+                }
+            }
             else Error(q.Id, $"Unsupported question kind '{q.Kind}'.");
+            if (q.Kind != QuestionKind.CodeOutput && q.Code is not null) Error(q.Id, "Only code-output questions carry a program.");
+            if (q.Kind != QuestionKind.Numeric && q.Grading.Tolerance is not null) Error(q.Id, "Only numeric questions have a tolerance.");
         }
         foreach (var source in p.Sources)
             if (!Uri.TryCreate(source.Url, UriKind.Absolute, out var uri) || uri.Scheme != "https") Error("sources", "Reference URLs must use HTTPS.");

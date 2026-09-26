@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Api, message } from '../api';
 import { Answer, Attempt, Grade, Question } from '../models';
 import { QuestionInput } from '../question-input';
+import { describeAnswer, describeExpected, hasResponse } from '../answers';
 @Component({
   imports: [RouterLink, DecimalPipe, DatePipe, QuestionInput],
   template: ` @if (error()) {
@@ -255,10 +256,7 @@ export class AttemptPage {
     this.attempt()?.scenarios.find((s) => s.id === this.current()?.scenarioId),
   );
   readonly answered = computed(
-    () =>
-      Object.values(this.attempt()?.answers || {}).filter(
-        (a) => a.selected.length || Object.keys(a.slots).length,
-      ).length,
+    () => Object.values(this.attempt()?.answers || {}).filter(hasResponse).length,
   );
   private offset = 0;
   private refreshExpired = false;
@@ -340,8 +338,7 @@ export class AttemptPage {
     if (this.canGo(i)) this.index.set(i);
   }
   isAnswered(id: string) {
-    const a = this.attempt()?.answers[id];
-    return !!a && (a.selected.length > 0 || Object.keys(a.slots).length > 0);
+    return hasResponse(this.attempt()?.answers[id]);
   }
   kindLabel(kind: string) {
     return (
@@ -352,6 +349,8 @@ export class AttemptPage {
           sequence: 'Sequence',
           matching: 'Drag & match',
           dropdown: 'Dropdown blanks',
+          numeric: 'Numeric answer',
+          codeOutput: 'Program output',
         } as Record<string, string>
       )[kind] || kind
     );
@@ -426,24 +425,9 @@ export class AttemptPage {
     }
   }
   describe(q: Question, a?: Answer): string {
-    if (!a) return 'Unanswered';
-    if (q.kind === 'single' || q.kind === 'multiple' || q.kind === 'sequence')
-      return (
-        a.selected
-          .map((id) => q.options.find((o) => o.id === id)?.text || id)
-          .join(q.kind === 'sequence' ? ' → ' : ', ') || 'Unanswered'
-      );
-    return q.slots
-      .map(
-        (s) =>
-          s.text +
-          ': ' +
-          ((q.kind === 'matching' ? q.options : s.options).find((o) => o.id === a.slots[s.id])
-            ?.text || 'Unanswered'),
-      )
-      .join(' · ');
+    return describeAnswer(q, a);
   }
   expected(q: Question, g: Grade) {
-    return this.describe(q, { selected: g.correct, slots: g.matches || {} });
+    return describeExpected(q, g);
   }
 }

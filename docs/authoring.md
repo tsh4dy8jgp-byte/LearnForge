@@ -23,7 +23,11 @@ Keep lesson IDs stable. Learner progress is keyed by lesson ID, and changing a l
 
 Single questions have one correct option and selectCount 1. Multiple questions have exactly selectCount correct options and at least one distractor. Sequence questions use a complete permutation as grading.correct. Matching questions use slots, a shared options bank and grading.matches; set reuse true when a token may fill multiple slots. Dropdown questions put their option banks on each slot and also use grading.matches.
 
-Question kinds are single, multiple, sequence, matching and dropdown. The Angular player provides drag/drop plus click or keyboard alternatives for matching and ordering. The server remains authoritative for all contracts.
+Numeric and codeOutput questions take a typed answer instead of a selection. They have no options, slots or matches, selectCount 0 and exact scoring. List 1–20 accepted answers in grading.correct.
+- **Numeric:** each key is an invariant-culture number such as `4` or `-2.5`. The optional grading.tolerance sets the allowed absolute difference and defaults to 0.
+- **codeOutput:** the question carries `code: { language, source }`. The program is shown as text and never executed. A response matches an accepted output when both are equal after trimming, normalizing line endings and collapsing runs of spaces or tabs.
+
+Question kinds are single, multiple, sequence, matching, dropdown, numeric and codeOutput. The Angular player provides drag/drop plus click or keyboard alternatives for matching and ordering. The server remains authoritative for all contracts.
 
 ## Templates
 

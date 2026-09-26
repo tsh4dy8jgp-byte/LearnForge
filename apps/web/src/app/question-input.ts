@@ -1,4 +1,4 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import { Component, computed, input, linkedSignal, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CdkDrag, CdkDropList, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Answer, Question } from './models';
@@ -143,6 +143,43 @@ import { Answer, Question } from './models';
           >
         }
       </fieldset>
+    } @else if (question().kind === 'numeric') {
+      <label class="typed-answer"
+        >Your answer
+        <input
+          type="text"
+          inputmode="decimal"
+          autocomplete="off"
+          [disabled]="disabled()"
+          [value]="draft()"
+          (input)="draft.set($any($event.target).value)"
+          (keydown.enter)="saveText()"
+      /></label>
+      <p class="muted small">Enter a number such as 4 or -2.5.</p>
+      <button class="button secondary" [disabled]="!canSaveText()" (click)="saveText()">
+        Save answer
+      </button>
+    } @else if (question().kind === 'codeOutput') {
+      @if (question().code; as code) {
+        <figure class="code-sample">
+          <figcaption class="muted small">{{ code.language }}</figcaption>
+          <pre><code>{{ code.source }}</code></pre>
+        </figure>
+      }
+      <label class="typed-answer"
+        >Exact output
+        <textarea
+          rows="3"
+          spellcheck="false"
+          [disabled]="disabled()"
+          [value]="draft()"
+          (input)="draft.set($any($event.target).value)"
+        ></textarea>
+      </label>
+      <p class="muted small">Spacing and line endings do not affect the mark.</p>
+      <button class="button secondary" [disabled]="!canSaveText()" (click)="saveText()">
+        Save answer
+      </button>
     }
     <p class="sr-only" aria-live="polite">{{ announcement() }}</p>`,
 })
@@ -161,6 +198,16 @@ export class QuestionInput {
       : q.options;
   });
   readonly targetIds = computed(() => this.question().slots.map((s) => 'target-' + s.id));
+  // Typed answers are saved explicitly, like a sequence, so each keystroke is not a revision.
+  readonly draft = linkedSignal(() => this.answer().text ?? '');
+  readonly canSaveText = computed(
+    () => !this.disabled() && !!this.draft().trim() && this.draft() !== (this.answer().text ?? ''),
+  );
+  saveText() {
+    if (!this.canSaveText()) return;
+    this.changed.emit({ selected: [], slots: {}, text: this.draft() });
+    this.announcement.set('Answer saved');
+  }
   letter(i: number) {
     return String.fromCharCode(65 + i);
   }

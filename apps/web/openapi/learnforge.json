@@ -598,6 +598,12 @@
             "additionalProperties": {
               "type": "string"
             }
+          },
+          "text": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -999,6 +1005,21 @@
           }
         }
       },
+      "CodeSample": {
+        "required": [
+          "language",
+          "source"
+        ],
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      },
       "ContentBlock": {
         "required": [
           "kind",
@@ -1364,6 +1385,16 @@
           "weight": {
             "type": "number",
             "format": "double"
+          },
+          "code": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CodeSample"
+              }
+            ]
           }
         }
       },
@@ -1688,7 +1719,9 @@
           "multiple",
           "matching",
           "dropdown",
-          "sequence"
+          "sequence",
+          "numeric",
+          "codeOutput"
         ]
       },
       "ReadinessPolicy": {

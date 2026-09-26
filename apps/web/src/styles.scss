@@ -896,6 +896,12 @@ td {
   display: grid;
   gap: 11px;
 }
+.code-sample {
+  margin: 0 0 20px;
+}
+.code-sample figcaption {
+  margin-bottom: 6px;
+}
 .choice {
   display: flex;
   align-items: center;

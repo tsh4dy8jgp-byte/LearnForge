@@ -16,10 +16,15 @@ public static class ExamComposer
             .ToArray();
         var chosen = new List<Question>();
         var steps = 0;
+        // Each remaining slot can cover at most this many blueprint objectives, so a branch whose uncovered objectives
+        // exceed that capacity can never succeed. Pruning it never changes which selection the search returns.
+        var coverPerSlot = Math.Max(1, groups.SelectMany(g => g).Select(q => q.ObjectiveIds.Count(blueprint.ObjectiveIds.Contains)).DefaultIfEmpty(1).Max());
         bool Search(int start)
         {
             if (++steps > 100_000) return false;
-            if (chosen.Count == blueprint.Count) return blueprint.ObjectiveIds.All(id => chosen.Any(q => q.ObjectiveIds.Contains(id)))
+            var uncovered = blueprint.ObjectiveIds.Count(id => !chosen.Any(q => q.ObjectiveIds.Contains(id)));
+            if (uncovered > (blueprint.Count - chosen.Count) * coverPerSlot) return false;
+            if (chosen.Count == blueprint.Count) return uncovered == 0
                 && blueprint.RequiredKinds.All(kind => chosen.Any(q => q.Kind == kind));
             if (chosen.Count > blueprint.Count || groups.Skip(start).Sum(g => g.Length) + chosen.Count < blueprint.Count) return false;
             for (var i = start; i < groups.Length; i++)

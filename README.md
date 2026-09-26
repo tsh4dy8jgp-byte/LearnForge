@@ -45,7 +45,7 @@ Compose is configured for **local development**, bound to loopback. Its sample p
 | --- | --- |
 | Teaching | Course library, lesson reader, text/callout/example/code blocks, saved completion |
 | Curriculum | Objective map, prerequisite relationships, linked teaching and practice |
-| Questions | Single choice, select N of M, matching with drag/drop or click placement, dropdown blanks, sequences |
+| Questions | Single choice, select N of M, matching with drag/drop or click placement, dropdown blanks, sequences, numeric answers with tolerance, program-output answers |
 | Scoring | Server-side exact or normalized partial credit, stable IDs, explanations, unanswered items scored zero |
 | Sessions | Timed short/full mocks, untimed learning with checked feedback, mistake and weak-objective practice |
 | Case studies | Shared backgrounds, atomic selection, optional forward-only mock sections |

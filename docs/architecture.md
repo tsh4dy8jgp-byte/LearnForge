@@ -18,7 +18,7 @@ The API loads a compiled pack into a PackRelease. Starting an attempt copies the
 
 ## Core contracts
 
-A pack contains Objective, Lesson, Question, Scenario, Blueprint, ReadinessPolicy and SourceReference records. Lessons use text, callout, example and code blocks. Questions use stable IDs, family IDs, objective links, typed options/slots, grading contracts and explanations.
+A pack contains Objective, Lesson, Question, Scenario, Blueprint, ReadinessPolicy and SourceReference records. Lessons use text, callout, example and code blocks. Questions use stable IDs, family IDs, objective links, typed options/slots, grading contracts and explanations. Numeric and code-output questions take a typed text response instead (`Answer.Text`), graded by the shared `ResponseText` rules.
 
 The implementation uses enums for question kinds, block kinds, scoring policies, assessment mode/size, attempt status and practice focus. API request and response contracts are named records; dashboard, attempt and result endpoints do not expose untyped object return values or anonymous public response shapes.
 

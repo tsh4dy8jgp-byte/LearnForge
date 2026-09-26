@@ -9,6 +9,7 @@ export type Answer = {
     slots: {
         [key: string]: string;
     };
+    text?: null | string;
 };
 
 export type AssessmentMode = 'mock' | 'learn';
@@ -105,6 +106,11 @@ export type ChangePasswordRequest = {
     newPassword: string;
 };
 
+export type CodeSample = {
+    language: string;
+    source: string;
+};
+
 export type ContentBlock = {
     kind: ContentBlockKind;
     text: string;
@@ -188,6 +194,7 @@ export type DeliveryQuestion = {
     reuse: boolean;
     scenarioId: null | string;
     weight: number;
+    code?: null | CodeSample;
 };
 
 export type Diagnostic = {
@@ -271,7 +278,7 @@ export type Option = {
 
 export type PracticeFocus = 'mistakes' | 'weak' | 'objective';
 
-export type QuestionKind = 'single' | 'multiple' | 'matching' | 'dropdown' | 'sequence';
+export type QuestionKind = 'single' | 'multiple' | 'matching' | 'dropdown' | 'sequence' | 'numeric' | 'codeOutput';
 
 export type ReadinessPolicy = {
     shortAttempts?: number;
