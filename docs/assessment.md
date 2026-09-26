@@ -1,5 +1,7 @@
 # Assessment and readiness
 
+The [accessible learning and assessment design](accessibility/learning-and-assessment.md) specifies required question interactions, review/confirmation and planned pre-start mock-duration adjustment. The behavior below describes the current implementation; it does not establish that timing or other WCAG 2.2 AA requirements have been verified.
+
 ## Grading
 
 The server grades every response. Clients submit stable option IDs and slot mappings; they never submit a score or trusted answer key.

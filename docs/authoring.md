@@ -1,5 +1,7 @@
 # Authoring guide
 
+Every content release must follow the [accessible content and authoring design](accessibility/content-and-authoring.md). Current text packs need manual accessibility review; the richer media/schema checks described there are planned additions, not fields accepted by today's compiler.
+
 ## Build a pack
 
 Start with a copy of the complete starter:

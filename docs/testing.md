@@ -1,5 +1,7 @@
 # Testing
 
+Accessibility acceptance is defined in the [WCAG 2.2 AA verification plan](accessibility/verification.md), with [criterion traceability](accessibility/conformance-matrix.md) and complete learner/publisher journeys. It requires manual keyboard, assistive-technology and content evaluation as well as planned automated scans. The commands below run existing tests; they are not evidence of full WCAG conformance.
+
 Run the native suite:
 
 ~~~sh

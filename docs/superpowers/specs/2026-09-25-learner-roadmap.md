@@ -17,6 +17,8 @@ Decisions made during brainstorming:
 
 Invariants every sub-project keeps: server-side grading, immutable releases and attempt snapshots, idempotent writes, stable family IDs, transparent readiness, a strict compiler, sanitized delivery.
 
+Accessibility is a cross-cutting acceptance requirement from the first release of each sub-project. Follow the [WCAG 2.2 AA design baseline](../../accessibility/README.md) and complete its feature template and verification gates. The analysis below records the original planning snapshot; current implementation starting points are recorded in that baseline. Keyboard/focus behavior, accessible timing and content alternatives must not wait for SP5.
+
 ## Analysis of the current solution
 
 ### Universality gaps (content model)
@@ -96,7 +98,7 @@ Enrollment, an append-only evidence ledger, lesson progress that survives releas
 
 ### SP2 Rich, safe content
 - A restricted Markdown and TeX subset, compiled in Core into a typed AST (never HTML) and rendered by Angular components.
-- Blocks: figure (required alt text), media (required transcript), table, list, math, worked example, misconception, definition, primary source, inline check.
+- Blocks: figure (reviewed alternatives with explicit decorative handling), media (required alternatives by media type, including captions and AA audio description), table, list, math, worked example, misconception, definition, primary source, inline check. Follow the [content accessibility contract](../../accessibility/content-and-authoring.md).
 - Stable block IDs, modules, glossary terms, language and direction, catalog metadata.
 - Pack-scoped assets with a SHA-256 manifest, MIME allowlist and a storage abstraction.
 - Duplicate JSON properties rejected.
@@ -118,7 +120,7 @@ Enrollment, an append-only evidence ledger, lesson progress that survives releas
 - A "Today" plan from a target date and weekly minutes.
 - Notes, highlights and bookmarks anchored to block IDs; search.
 - Results v2 with per-objective breakdown, timing, trends and mistake practice.
-- Display preferences, extended-time accommodations, a PWA with offline reading, calendar export.
+- Display preferences, a PWA with offline reading, calendar export. Accessible mock timing is a foundation requirement under the [assessment accessibility design](../../accessibility/learning-and-assessment.md); SP5 may refine its personalization.
 - SSE deadline and multi-tab sync; accessible dialogs.
 
 ### SP6 Public-service trust
@@ -136,4 +138,4 @@ Enrollment, an append-only evidence ledger, lesson progress that survives releas
 - TypeScript types generated from OpenAPI, with a drift check (from SP1).
 - `HttpClient` and `httpResource` (from SP1).
 - Vitest unit tests (from SP1).
-- Unique drag-and-drop list IDs (SP3).
+- Unique question-instance and drag-and-drop list IDs, verified keyboard and single-pointer alternatives, route focus, accessible forms/status, adjustable mock timing and accessibility evidence (shared foundation; maintained in every sub-project).

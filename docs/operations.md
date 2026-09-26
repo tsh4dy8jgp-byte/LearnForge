@@ -10,6 +10,9 @@ Use environment variables or a secret store:
 - Auth__AllowRegistration=false for closed enrollment
 - AllowedHosts
 - ASPNETCORE_ENVIRONMENT=Production
+- Content__PackDirectories__0, Content__PackDirectories__1, … to seed packs kept outside this repository, such as a content repository's generated packs
+
+Pack directories are seeded with the same compiler rules as the bundled `packs/` folder: one invalid pack stops startup, and a configured directory that does not exist is an error. Seeding never replaces a stored release. When a file changes but keeps a stored version, the API logs a warning and keeps serving the stored release; bump the version to publish the change.
 
 The API persists Data Protection keys in data/keys. Back this directory securely and restrict access. Loss invalidates cookies and requires sign-in again.
 

@@ -155,6 +155,7 @@ See [testing](docs/testing.md) for PostgreSQL tests and container verification. 
 | [Content engine](docs/content-engine.md) | Validation, artifacts and cross-validation limits |
 | [Assessment](docs/assessment.md) | Scoring, composition, timing and readiness |
 | [Architecture](docs/architecture.md) | Modules, data contracts and extension points |
+| [Accessibility design](docs/accessibility/README.md) | WCAG 2.2 AA requirements, interaction/content contracts and release verification |
 | [API](docs/api.md) | Integrate accounts, attempts, analytics and publishing |
 | [Security](docs/security.md) | Trust boundaries and deployment requirements |
 | [Operations](docs/operations.md) | Hosting, migrations, backups and upgrades |
