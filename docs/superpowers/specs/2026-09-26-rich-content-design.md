@@ -43,7 +43,7 @@ Authors opt in with `"schemaVersion": 2`. Version 1 sources still compile, and t
 
 | Field | Rule |
 | --- | --- |
-| `language` | Required. A canonical BCP 47 tag `language[-Script][-REGION]`, e.g. `en`, `pt-BR`, `zh-Hant`, `es-419`. The primary subtag must appear in an embedded ISO 639-1/639-2 table, so results never depend on ICU. |
+| `language` | Required. A canonical BCP 47 tag `language[-Script][-REGION]`, e.g. `en`, `pt-BR`, `zh-Hant`, `es-419`. The primary subtag must be an ISO 639-1 code, or a code from an embedded list of three-letter ISO 639-2/3 codes for languages without one, so results never depend on ICU. |
 | `direction` | `ltr` (default) or `rtl`. The expected direction comes from the script subtag when present (`Arab`, `Hebr`, `Thaa`, `Syrc` are right-to-left), otherwise from the language (`ar`, `arc`, `ckb`, `dv`, `fa`, `he`, `ks`, `ps`, `sd`, `syr`, `ug`, `ur`, `yi`). A mismatch is `A11Y_LANGUAGE`. |
 | `catalog` | Required: `{ subject, level, tags?, estimatedHours? }`. `subject` is plain text of 1–60 characters. `level` is `introductory`, `intermediate` or `advanced`. `tags` holds up to 10 identifiers. `estimatedHours` is 0.5–1000. |
 | `modules` | Optional: `[{ id, title, lessonIds[] }]`, up to 100. When present, every lesson belongs to exactly one module, each module is nonempty, and the compiler orders the release's lessons by module order. |
@@ -87,7 +87,7 @@ Dropdown slot options render inside native `<option>` elements, which can hold o
 
 ### Lesson blocks
 
-Every block has an `id` that is unique within its lesson and matches the existing identifier rule. Every block may have a plain-text `title` and a `language` override.
+Every block has an `id` that is unique within its lesson and matches the existing identifier rule. Every block may have a plain-text `title` and a `language` override, with two exceptions. In a `code` block, `language` is the programming-language label, and there is no human-language override. A `definition` block takes its title from the glossary term.
 
 | Kind | Fields | Rules |
 | --- | --- | --- |
@@ -143,7 +143,7 @@ Any other command, an unbalanced group or a misplaced `&` is an `LF3xx` diagnost
 | `Domain/Rich/*` | The AST. |
 
 Release records:
-- `Pack` adds `string? Language`, `TextDirection Direction`, `CatalogMetadata? Catalog`, `Module[] Modules`, `GlossaryEntry[] Glossary` and `InlineCheckKey[] Checks`. `SchemaVersion` records the source version.
+- `Pack` adds `int Format` (2 marks the AST release shape), `string? Language`, `TextDirection Direction`, `CatalogMetadata? Catalog`, `Module[] Modules`, `GlossaryEntry[] Glossary`, `InlineCheckKey[] Checks` and `Dictionary<string, string> LessonHashes`, computed at compile time. `SchemaVersion` records the source version.
 - `Lesson(Id, Title, Summary, ObjectiveIds, LessonBlock[] Blocks, int? Minutes, string? Language)`.
 - `Question.Prompt` and `Question.Explanation` become `RichBlock[]`. `Option.Text` and `Slot.Text` become `RichInline[]`. `Scenario.Background` becomes `RichBlock[]`.
 - `InlineCheckKey(LessonId, BlockId, Grading, RichBlock[] Explanation)` holds the private half of each inline check.
@@ -213,7 +213,7 @@ These bound every serialized document. `Json.Options.MaxDepth` rises from 32 to 
 Each new diagnostic carries plain-language guidance, e.g. "Use a `math` block with a `description` instead of `$$…$$`."
 
 ### Supporting changes
-- `ReleaseReader.Read(string json)` returns the release `Pack` and its lesson hashes. It detects the schema from `schemaVersion`. v1 lesson hashes are computed on the `V1Lesson` records, exactly as today, so existing lesson progress is never falsely flagged as updated. v2 hashes use the release `Lesson`.
+- `ReleaseReader.Read(string json)` returns the release `Pack`. Stored releases carry `format: 2` and precomputed lesson hashes; rows without `format` hold schema 1 records and are upcast. Lesson hashes for schema 1 content, whether from old rows or from v1 packs published after the upgrade, are computed on the `V1Lesson` records exactly as today, so existing lesson progress is never falsely flagged as updated. v2 hashes use the release `Lesson`.
 - `RichText.PlainText(...)` flattens an AST, using the TeX source for math.
 - `Grader`, `ExamComposer`, `MasteryEvaluator`, `ReadinessEvaluator` and `NextStepPlanner` are unchanged.
 - Markdig 1.4.0 becomes Core's only package reference.
@@ -235,7 +235,7 @@ Each new diagnostic carries plain-language guidance, e.g. "Use a `math` block wi
 ### Attempts
 - `DeliveryQuestion` carries the new rich types. Scenarios in `AttemptView` carry rich backgrounds.
 - `Grade` drops `Explanation`. `AttemptView.Feedback` and `AttemptView.Results` become `Dictionary<string, FeedbackDto>`, where `FeedbackDto(Grade Grade, RichBlock[] Explanation)` takes the explanation from the snapshot question.
-- `AttemptSnapshot` adds `int ContentSchema = 1`, and new snapshots write 2. `AttemptService.Snapshot` reads v1 snapshots through `V1AttemptSnapshot` and the upcaster, so old attempts render their original text.
+- `AttemptSnapshot` adds `int ContentSchema`, which new snapshots write as 2. Snapshots without the property are schema 1: `AttemptService.Snapshot` reads them through `V1AttemptSnapshot` and the upcaster, so old attempts render their original text.
 - Stored feedback is read through a record that tolerates the legacy `explanation` property. New rows no longer store explanation text.
 - `EvidenceBackfill` and the export use the same read helpers.
 
@@ -265,7 +265,7 @@ Standalone components using `@switch` on `kind`. None uses `innerHTML`, `bypassS
 Rendering rules:
 - **External links:** `rel="noopener noreferrer"`, same tab.
 - **Lesson links:** use the router to select the lesson, scroll to `block-{lessonId}-{blockId}` (which has `tabindex="-1"`) and move focus there.
-- **Terms:** a button with `aria-expanded` and `aria-controls` that reveals the glossary definition inline, immediately after the term. There is no hover tooltip.
+- **Terms:** a button with `aria-expanded` and `aria-controls` that reveals the glossary definition inline, immediately after the term. There is no hover tooltip. Attempts carry no glossary, so terms in questions render as plain text with no button.
 - **Language:** blocks and spans set `lang`, and set `dir` only when it differs from the parent.
 - **Math:** inline math renders `<math>`. Math blocks render `<math display="block">` inside a `<figure>` whose visible description is linked through `aria-describedby`.
 - **Tables:** `<table>` with `<caption>` and `<th scope="col">`, plus `<th scope="row">` when `rowHeaders` is set. The table sits in a focusable region (`tabindex="0"`, `role="region"`, labelled by the caption) so it scrolls on its own at narrow widths.
@@ -277,7 +277,7 @@ Rendering rules:
 - **Inline checks:** the check shows the result once through a polite live region, leaves focus on the button, and renders the explanation in reading order after the question. The button is disabled while a request is pending. Failures show an error with a retry.
 
 ### `question-input`
-Gains a required `instanceId` input. Every generated ID (token bank, targets, groups) derives from instance, question and slot identity, which replaces the global `token-bank` ID. Choice and token labels render rich inline content; dropdown `<option>`s render plain text.
+Gains a required `instanceId` input. Every generated ID (token bank, targets, groups) derives from instance, question and slot identity, which replaces the global `token-bank` ID. Choice and token labels render rich inline content; dropdown `<option>`s render plain text. Where markup is impossible (options, `aria-label`, review summaries), a plain-text helper reads math as Unicode text, e.g. `P ∧ Q`.
 
 ### Pages
 - **Course:**
@@ -310,7 +310,7 @@ Gains a required `instanceId` input. Every generated ID (token bank, targets, gr
 - v1 content is read through `Legacy` records and `V1Upcaster`, never rewritten.
 
 ## Content migration
-- `reasoning-foundations` is migrated by hand to schema 2 and version 2.0.0, keeping its templates, lesson IDs, question IDs and family IDs. It gains `language`, `catalog`, modules, a glossary, inline and display math, a table, a worked example, a misconception, a definition, a primary source and an inline check, so every block kind is exercised. Learners who completed a changed lesson see "Updated since you read it", which is intended.
+- `reasoning-foundations` is migrated by hand to schema 2 and version 2.0.0, keeping its templates, lesson IDs, question IDs and family IDs. It gains `language`, `catalog`, modules, a glossary, inline and display math, a table, a worked example, a misconception, a definition, a primary source and two inline checks, so every block kind is exercised. Dropdown blank labels (`P AND Q`, `P OR Q`) become math, so every short session shows math in an attempt. Learners who completed a changed lesson see "Updated since you read it", which is intended.
 - `evidence-lab` stays at schema 1, exercising the v1 path in seeding, the catalog, attempts and end-to-end tests.
 - CLI:
   - `init` writes a v2 starter.
