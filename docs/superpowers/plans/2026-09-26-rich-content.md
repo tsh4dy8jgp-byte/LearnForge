@@ -2443,6 +2443,14 @@ and later in the same test:
         Assert.Equal(HttpStatusCode.OK, (await client.PostAsync("/api/authoring/publish", TestPacks.Content(pack with { Version = "2.0.0", Title = "New title" }))).StatusCode);
 ```
 
+`PackDirectoryTests.cs` (external pack directories; present if that work has landed on the base branch) writes compiled packs as seed sources. Change it the same way:
+
+```csharp
+    private async Task WritePack(V1Pack pack) => await File.WriteAllTextAsync(Path.Combine(Packs, pack.Id + ".json"), Json.Write(pack));
+```
+
+and replace each `CoreTests.Demo() with { … }` in that file with `TestPacks.V1() with { … }`.
+
 - [ ] **Step 10: Run the full suite**
 
 Run: `dotnet build LearnForge.slnx -c Release && dotnet test LearnForge.slnx && make check-content`
