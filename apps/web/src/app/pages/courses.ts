@@ -3,12 +3,13 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Api, message } from '../api';
 import { CourseCard } from '../models';
+import { Site } from '../site-settings';
 @Component({
   imports: [RouterLink, FormsModule],
   template: ` <div class="page-heading">
       <div>
         <p class="eyebrow">A WORLD OF UNDERSTANDING</p>
-        <h1>Learning library<span class="accent">.</span></h1>
+        <h1>{{ site.settings().libraryLabel }}<span class="accent">.</span></h1>
         <p class="lead">Find a subject. Follow its connections. Put your knowledge to work.</p>
       </div>
       <span class="pill">{{ courses().length }} courses</span>
@@ -29,7 +30,7 @@ import { CourseCard } from '../models';
           ><div class="course-art" [class.alternate]="i % 2">
             <span class="course-number">0{{ i + 1 }}</span>
             <div class="art-orbit"></div>
-            <span class="tiny-label">LEARNING PATH</span>
+            <span class="tiny-label">{{ course.profile === 'exam' ? 'EXAM PREP' : course.profile === 'hybrid' ? 'LEARNING PATH' : 'COURSE' }}</span>
           </div>
           <div class="course-card-body">
             <div class="row">
@@ -39,8 +40,8 @@ import { CourseCard } from '../models';
             <h2>{{ course.title }}</h2>
             <p>{{ course.description }}</p>
             <div class="card-meta">
-              <span>{{ course.lessonCount }} lessons</span
-              ><span>{{ course.questionCount }} practice questions</span>
+              @if (course.capabilities.lessons) { <span>{{ course.lessonCount }} lessons</span> }
+              @if (course.capabilities.practice || course.capabilities.assessments) { <span>{{ course.questionCount }} questions</span> }
             </div>
           </div></a
         >
@@ -52,6 +53,7 @@ import { CourseCard } from '../models';
     </div>`,
 })
 export class CoursesPage {
+  readonly site = inject(Site);
   private readonly api = inject(Api);
   readonly courses = signal<CourseCard[]>([]);
   readonly query = signal('');

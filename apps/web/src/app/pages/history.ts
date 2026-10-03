@@ -4,12 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Api, message } from '../api';
 import { AttemptSummary } from '../models';
+import { Site } from '../site-settings';
 @Component({
   imports: [DatePipe, DecimalPipe, FormsModule, RouterLink],
   template: ` <div class="page-heading">
       <div>
         <p class="eyebrow">EVERY ATTEMPT TELLS A STORY</p>
-        <h1>Attempts & results<span class="accent">.</span></h1>
+        <h1>{{ site.settings().historyLabel }}<span class="accent">.</span></h1>
         <p class="lead">Reflect on your progress. Find the patterns. Choose your next step.</p>
       </div>
       <a href="/api/me/export" class="button secondary">Export history ↓</a>
@@ -45,7 +46,7 @@ import { AttemptSummary } from '../models';
             <th>Session</th>
             <th>Fully correct</th>
             <th>Points score</th>
-            <th>Readiness evidence</th>
+            @if (hasReadiness()) { <th>Readiness evidence</th> }
             <th><span class="sr-only">Open</span></th>
           </tr>
         </thead>
@@ -68,9 +69,9 @@ import { AttemptSummary } from '../models';
                 }}
               </td>
               <td>{{ a.status === 'completed' ? (a.score | number: '1.0-1') + '%' : '—' }}</td>
-              <td>
+              @if (hasReadiness()) { <td>
                 <span class="pill subtle">{{
-                  a.status !== 'completed'
+                  a.goal !== 'readiness' ? 'Not applicable' : a.status !== 'completed'
                     ? 'Pending'
                     : a.eligible
                       ? 'Eligible'
@@ -80,7 +81,7 @@ import { AttemptSummary } from '../models';
                           ? 'Time expired'
                           : 'Repeated questions'
                 }}</span>
-              </td>
+              </td> }
               <td>
                 <a [routerLink]="['/attempts', a.id]" class="text-link"
                   >{{ a.status === 'completed' ? 'Review' : 'Resume' }} →</a
@@ -89,7 +90,7 @@ import { AttemptSummary } from '../models';
             </tr>
           } @empty {
             <tr>
-              <td colspan="6" class="empty">
+              <td [attr.colspan]="hasReadiness() ? 6 : 5" class="empty">
                 No attempts match these filters. Start a session from the learning library.
               </td>
             </tr>
@@ -97,15 +98,17 @@ import { AttemptSummary } from '../models';
         </tbody>
       </table>
     </div>
-    <p class="muted small">
+    @if (hasReadiness()) { <p class="muted small">
       Readiness uses the latest consecutive mock results per course release and length. Exactly 90%
       does not meet a strictly-above-90% rule. Partial-credit points and fully-correct questions are
       shown separately.
-    </p>`,
+    </p> }`,
 })
 export class HistoryPage {
+  readonly site = inject(Site);
   private readonly api = inject(Api);
   readonly attempts = signal<AttemptSummary[]>([]);
+  readonly hasReadiness = computed(() => this.attempts().some(a => a.goal === 'readiness'));
   readonly error = signal('');
   readonly query = signal('');
   readonly mode = signal('');

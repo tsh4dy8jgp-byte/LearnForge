@@ -17,4 +17,5 @@ public sealed record AttemptSummaryDto(
     decimal FreshPercent,
     PracticeFocus? Focus,
     decimal Score,
-    int ItemCount);
+    int ItemCount,
+    CourseGoal Goal);

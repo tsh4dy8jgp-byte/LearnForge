@@ -1,5 +1,13 @@
 // All API types are generated from the OpenAPI document (`make api-types`); never edit generated/.
 export type {
+  SiteSettings,
+  SiteLayout,
+  SiteColorScheme,
+  ProductProfile,
+  PackCapabilities,
+  AuthoringPreviewDto,
+  DraftDto,
+  DraftSummaryDto,
   Answer,
   AttemptSummaryDto as AttemptSummary,
   AttemptView as Attempt,

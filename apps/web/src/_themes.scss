@@ -1,0 +1,94 @@
+// Shared surface and feedback tokens also scope the palette previews on the Appearance page.
+:root,
+[data-color-scheme] {
+  color-scheme: light;
+  --paper: #f7f7f2;
+  --white: #ffffff;
+  --sidebar: #fffefa;
+  --ink: #243b38;
+  --muted: #596a62;
+  --line: #dfe5dc;
+  --border-strong: #83958b;
+  --green: var(--brand-primary, #315b4b);
+  --on-primary: #ffffff;
+  --orange: #9d472c;
+  --focus: #9d472c;
+  --lime: color-mix(in srgb, var(--green) 12%, var(--white));
+  --subtle: color-mix(in srgb, var(--green) 5%, var(--white));
+  --secondary-tint: color-mix(in srgb, var(--orange) 12%, var(--white));
+  --success-bg: #e7f0de;
+  --success-text: #365e38;
+  --success-border: #8fa785;
+  --warning-bg: #fff2d9;
+  --warning-text: #695323;
+  --warning-border: #bba879;
+  --danger-bg: #fceeea;
+  --danger-text: #913e2d;
+  --danger-border: #c79182;
+  --danger-solid: #a34131;
+  --on-danger: #ffffff;
+  --shadow: #172c231c;
+}
+
+[data-color-scheme='ocean'] {
+  --paper: #f1f6fa;
+  --sidebar: #f9fcff;
+  --ink: #193447;
+  --muted: #536b7b;
+  --line: #d4e2ec;
+  --border-strong: #7d98aa;
+  --green: #1e5d86;
+  --orange: #9c481e;
+  --focus: #a44617;
+}
+
+[data-color-scheme='plum'] {
+  --paper: #f8f4fa;
+  --sidebar: #fdfaff;
+  --ink: #3c2c45;
+  --muted: #716078;
+  --line: #e5dbe9;
+  --border-strong: #a48baa;
+  --green: #72438a;
+  --orange: #965026;
+  --focus: #9c471c;
+}
+
+[data-color-scheme='terracotta'] {
+  --paper: #fbf5ed;
+  --sidebar: #fffbf6;
+  --ink: #49352b;
+  --muted: #796356;
+  --line: #eaded0;
+  --border-strong: #ac8c77;
+  --green: #9c442e;
+  --orange: #775817;
+  --focus: #256a76;
+}
+
+[data-color-scheme='midnight'] {
+  color-scheme: dark;
+  --paper: #141e26;
+  --white: #1e2b34;
+  --sidebar: #18232c;
+  --ink: #e5edf0;
+  --muted: #acbdc8;
+  --line: #354651;
+  --border-strong: #738b98;
+  --green: #9fdac5;
+  --on-primary: #102a23;
+  --orange: #edb694;
+  --focus: #edb694;
+  --success-bg: #263c30;
+  --success-text: #b8dfb0;
+  --success-border: #6e9467;
+  --warning-bg: #3c3425;
+  --warning-text: #f0d39c;
+  --warning-border: #9d865e;
+  --danger-bg: #412a2b;
+  --danger-text: #f7b5a8;
+  --danger-border: #af7a71;
+  --danger-solid: #f0b1a3;
+  --on-danger: #3e1e17;
+  --shadow: #00000040;
+}

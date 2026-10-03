@@ -1,24 +1,28 @@
 <a class="skip" href="#main">Skip to content</a>
 <div class="shell">
   <aside class="sidebar">
-    <a routerLink="/dashboard" class="brand"
-      ><span class="brand-mark">L<span>f</span></span
-      ><span>LearnForge<small>A little further, every day.</small></span></a
-    >
+    <a [routerLink]="'/' + site.settings().homePage" class="brand">
+      @if (site.settings().logoPath; as logo) {
+        <img class="brand-logo" [src]="logo" alt="" />
+      } @else {
+        <span class="brand-mark" aria-hidden="true">{{ (site.settings().name ?? 'L').slice(0, 1) }}</span>
+      }
+      <span>{{ site.settings().name }}<small>{{ site.settings().tagline }}</small></span>
+    </a>
     <div class="nav-label">YOUR WORKSPACE</div>
     <nav aria-label="Main navigation">
       <a routerLink="/dashboard" routerLinkActive="active"
-        ><span aria-hidden="true">◈</span> Overview</a
+        ><span aria-hidden="true">◈</span> {{ site.settings().overviewLabel }}</a
       >
       <a routerLink="/courses" routerLinkActive="active"
-        ><span aria-hidden="true">▤</span> Learning library</a
+        ><span aria-hidden="true">▤</span> {{ site.settings().libraryLabel }}</a
       >
       <a routerLink="/attempts" routerLinkActive="active"
-        ><span aria-hidden="true">◷</span> Attempts & results</a
+        ><span aria-hidden="true">◷</span> {{ site.settings().historyLabel }}</a
       >
       @if (api.user()?.publisher) {
         <a routerLink="/studio" routerLinkActive="active"
-          ><span aria-hidden="true">✧</span> Content studio</a
+          ><span aria-hidden="true">✧</span> {{ site.settings().studioLabel }}</a
         >
       }
       <a routerLink="/settings" routerLinkActive="active"
@@ -27,7 +31,7 @@
     </nav>
     <div class="sidebar-note">
       <span class="tiny-label">BUILT FOR UNDERSTANDING</span>
-      <p>Learn the idea.<br />Put it into practice.<br />Make it yours.</p>
+      <p>{{ site.settings().description }}</p>
       <div class="note-line"></div>
     </div>
     <div class="profile">
@@ -44,9 +48,16 @@
   </aside>
   <div class="workspace">
     <header class="topbar">
-      <span>YOUR SPACE TO GROW</span><span class="status-dot">Learning, connected.</span>
+      <span>YOUR SPACE TO GROW</span>
+      <div class="topbar-actions">
+        <span class="status-dot">Learning, connected.</span>
+        <a routerLink="/appearance" routerLinkActive="active" ariaCurrentWhenActive="page" class="appearance-link"><span aria-hidden="true">◐</span> Appearance</a>
+      </div>
     </header>
     <main id="main" tabindex="-1">
+      @if (site.error()) {
+        <p class="alert error" role="alert">{{ site.error() }}</p>
+      }
       @if (api.unavailable()) {
         <p class="alert error">The API is unavailable. Start the backend and refresh this page.</p>
       }
@@ -55,6 +66,6 @@
       }
       <router-outlet />
     </main>
-    <footer>LearnForge <span>Purposeful practice. Measurable progress.</span></footer>
+    <footer>{{ site.settings().name }} <span>{{ site.settings().description }}</span></footer>
   </div>
 </div>

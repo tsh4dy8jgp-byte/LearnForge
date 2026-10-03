@@ -11,4 +11,5 @@ public sealed record CourseProgressDto(
     ObjectiveMasteryDto[] Objectives,
     NextStepDto[] NextSteps,
     CourseGoalStatusDto Goal,
-    DateTime? LastActivityAt);
+    DateTime? LastActivityAt,
+    PackCapabilities Capabilities);

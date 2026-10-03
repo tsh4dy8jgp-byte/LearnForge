@@ -11,6 +11,7 @@
     "api:types": "openapi-ts"
   },
   "private": true,
+  "license": "MIT",
   "packageManager": "npm@10.9.8",
   "dependencies": {
     "@angular/aria": "22.2.0",

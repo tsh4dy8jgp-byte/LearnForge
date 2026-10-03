@@ -40,7 +40,9 @@ public static class LearnerEndpoints
                 var evidence = await db.Evidence.Where(e => e.UserId == id).OrderBy(e => e.Id)
                     .Select(e => new EvidenceExportDto(e.PackId, e.ReleaseId, e.AttemptId, e.QuestionId, e.FamilyId, e.ObjectiveIds,
                         e.Source, e.Answered, e.FullyCorrect, e.Earned, e.Possible, e.At)).ToArrayAsync();
-                var export = new LearnerExportDto(service.Now, await learning.Dashboard(id), attempts.Select(service.View).ToArray(), enrollments, lessons, evidence);
+                var drafts = await db.Drafts.AsNoTracking().Where(d => d.OwnerId == id)
+                    .Select(d => new DraftDto(d.Id, d.Title, d.Source, d.Revision, d.UpdatedAt)).ToArrayAsync();
+                var export = new LearnerExportDto(service.Now, await learning.Dashboard(id), attempts.Select(service.View).ToArray(), enrollments, lessons, evidence, drafts);
                 return Results.File(System.Text.Encoding.UTF8.GetBytes(Json.Write(export)), "application/json", "learnforge-history.json");
             });
             me.MapDelete("/account", async ([FromBody] DeleteAccountRequest request, ClaimsPrincipal principal, UserManager<User> users, SignInManager<User> signIn, AppDb db) =>

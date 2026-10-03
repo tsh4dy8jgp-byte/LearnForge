@@ -20,6 +20,8 @@ public static partial class ContentEngine
             var templates = root["templates"] as JsonObject ?? new JsonObject();
             var node = Expand(root["pack"] ?? root, templates, new JsonObject(), 0, new ExpansionBudget());
             var pack = node!.Deserialize<Pack>(Json.Options) ?? throw new JsonException("Missing pack.");
+            if (pack.Profile == ProductProfile.Course && node is JsonObject body && !body.ContainsKey("goal"))
+                pack = pack with { Goal = CourseGoal.Completion };
             var errors = Validate(pack);
             return new(pack, errors, hash);
         }
@@ -94,8 +96,21 @@ public static partial class ContentEngine
         Ids("id", [p.Id]);
         if (!Version.TryParse(p.Version, out _)) Error("version", "Use a numeric release version, e.g. 1.0.0.");
         if (string.IsNullOrWhiteSpace(p.Title) || string.IsNullOrWhiteSpace(p.License)) Error("title", "Title and license are required.");
-        if (p.Objectives.Length is < 1 or > 200 || p.Questions.Length is < 1 or > 2000 || p.Lessons.Length is < 1 or > 500)
-            Error("pack", "Require 1–200 objectives, 1–2000 questions and 1–500 lessons.");
+        var features = p.Features;
+        var questionsEnabled = features.Practice || features.Assessments;
+        if (!Enum.IsDefined(p.Profile)) Error("profile", "Profile must be course, exam or hybrid.");
+        if (!features.Lessons && !questionsEnabled) Error("capabilities", "Enable lessons, practice or assessments.");
+        if (p.Objectives.Length is < 1 or > 200 || p.Questions.Length > 2000 || p.Lessons.Length > 500)
+            Error("pack", "Require 1–200 objectives, at most 2000 questions and at most 500 lessons.");
+        if (features.Lessons != (p.Lessons.Length > 0)) Error("lessons", features.Lessons
+            ? "The lessons capability requires at least one lesson." : "Remove lessons or enable the lessons capability.");
+        if (questionsEnabled != (p.Questions.Length > 0)) Error("questions", questionsEnabled
+            ? "Practice or assessments require at least one question." : "Remove questions or enable practice or assessments.");
+        if (!questionsEnabled && (p.Blueprints.Length > 0 || p.Scenarios.Length > 0))
+            Error("capabilities", "Blueprints and scenarios require practice or assessments.");
+        if (p.Goal == CourseGoal.Completion && !features.Lessons) Error("goal", "A completion goal requires lessons.");
+        if (p.Goal == CourseGoal.Readiness && !features.Assessments) Error("goal", "A readiness goal requires assessments.");
+        if (p.Goal == CourseGoal.Mastery && !questionsEnabled) Error("goal", "A mastery goal requires practice or assessments.");
         Ids("objectives", p.Objectives.Select(o => o.Id));
         Ids("lessons", p.Lessons.Select(l => l.Id));
         Ids("questions", p.Questions.Select(q => q.Id));
@@ -120,8 +135,8 @@ public static partial class ContentEngine
                 visiting.Remove(id); visited.Add(id); return result;
             }
             if (Cycle(objective.Id)) Error(objective.Id, "Prerequisite cycle.");
-            if (!p.Lessons.Any(l => l.ObjectiveIds.Contains(objective.Id))) Error(objective.Id, "Objective has no teaching lesson.");
-            if (!p.Questions.Any(q => q.ObjectiveIds.Contains(objective.Id))) Error(objective.Id, "Objective has no practice.");
+            if (features.Lessons && !p.Lessons.Any(l => l.ObjectiveIds.Contains(objective.Id))) Error(objective.Id, "Objective has no teaching lesson.");
+            if (questionsEnabled && !p.Questions.Any(q => q.ObjectiveIds.Contains(objective.Id))) Error(objective.Id, "Objective has no questions.");
         }
         foreach (var l in p.Lessons)
         {
@@ -189,7 +204,7 @@ public static partial class ContentEngine
                 try { ExamComposer.Compose(p, b, [], "validation"); }
                 catch (InvalidOperationException ex) { Error(b.Id, ex.Message); }
         }
-        if (p.Blueprints.Length == 0) Error("blueprints", "At least one blueprint is required.");
+        if (questionsEnabled && p.Blueprints.Length == 0) Error("blueprints", "Practice or assessments require at least one session blueprint.");
         var r = p.Readiness ?? new();
         if (r.ShortAttempts is < 1 or > 20 || r.FullAttempts is < 1 or > 20 || r.Threshold is < 0 or >= 100 || r.LookbackDays is < 1 or > 365 || r.MinimumFreshPercent is < 0 or > 100) Error("readiness", "Readiness policy is out of bounds.");
         if (!Enum.IsDefined(p.Goal)) Error("goal", "Goal must be readiness, mastery or completion.");

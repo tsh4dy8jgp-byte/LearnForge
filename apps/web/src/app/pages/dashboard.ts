@@ -51,24 +51,24 @@ const goalLabels: Record<CourseGoal, string> = {
           @for (course of d.courses; track course.packId) {
             <article class="panel path-panel">
               <div class="row">
-                <span class="tiny-label">CONTINUE LEARNING</span
-                ><span class="muted small"
+                <span class="tiny-label">{{ course.capabilities.assessments && !course.capabilities.lessons ? 'CONTINUE PREPARATION' : 'CONTINUE LEARNING' }}</span
+                >@if (course.capabilities.lessons) { <span class="muted small"
                   >{{ course.completedLessons.length }} / {{ course.lessonCount }} lessons</span
-                >
+                > }
               </div>
               <h2>
                 <a [routerLink]="['/courses', course.packId]"
                   >{{ course.title }} <span class="accent">↗</span></a
                 >
               </h2>
-              <progress
+              @if (course.capabilities.lessons) { <progress
                 [value]="course.completedLessons.length"
                 [max]="course.lessonCount"
                 [attr.aria-label]="course.title + ' completion'"
-              ></progress>
+              ></progress> }
               <h3 class="small">Next steps</h3>
               <lf-next-steps [packId]="course.packId" [steps]="course.nextSteps" />
-              <div class="objective-list">
+              @if (course.capabilities.practice || course.capabilities.assessments) { <div class="objective-list">
                 @for (objective of course.objectives; track objective.id) {
                   <div>
                     <span>{{ objective.title }}</span>
@@ -80,7 +80,7 @@ const goalLabels: Record<CourseGoal, string> = {
                     />
                   </div>
                 }
-              </div>
+              </div> }
             </article>
           } @empty {
             <div class="panel empty">

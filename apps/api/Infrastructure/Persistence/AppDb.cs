@@ -13,10 +13,15 @@ public class AppDb(DbContextOptions options) : IdentityDbContext<User>(options)
     public DbSet<Enrollment> Enrollments => Set<Enrollment>();
     public DbSet<EvidenceRecord> Evidence => Set<EvidenceRecord>();
     public DbSet<AuditEvent> Audit => Set<AuditEvent>();
+    public DbSet<AuthoringDraft> Drafts => Set<AuthoringDraft>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        builder.Entity<AuthoringDraft>().Property(x => x.Title).HasMaxLength(120);
+        builder.Entity<AuthoringDraft>().Property(x => x.Revision).IsConcurrencyToken();
+        builder.Entity<AuthoringDraft>().HasIndex(x => new { x.OwnerId, x.UpdatedAt });
+        builder.Entity<AuthoringDraft>().HasOne<User>().WithMany().HasForeignKey(x => x.OwnerId).OnDelete(DeleteBehavior.Cascade);
         builder.Entity<PackRelease>().HasIndex(x => new { x.PackId, x.Version }).IsUnique();
         builder.Entity<Attempt>().HasIndex(x => new { x.UserId, x.StartKey }).IsUnique();
         builder.Entity<Attempt>().HasIndex(x => x.ActiveKey).IsUnique();

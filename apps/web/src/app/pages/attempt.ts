@@ -30,7 +30,7 @@ import { describeAnswer, describeExpected, hasResponse } from '../answers';
             <div class="stat">
               <span>FULLY CORRECT</span
               ><strong>{{ s.correctPercent | number: '1.0-1' }}<em>%</em></strong
-              ><small>Used for exam readiness</small>
+              ><small>{{ a.goal === 'readiness' ? 'Used for exam readiness' : 'Independent correct answers' }}</small>
             </div>
             <div class="stat">
               <span>POINTS SCORE</span><strong>{{ s.score | number: '1.0-1' }}<em>%</em></strong
@@ -39,7 +39,7 @@ import { describeAnswer, describeExpected, hasResponse } from '../answers';
                 credit</small
               >
             </div>
-            <div class="stat">
+            @if (a.goal === 'readiness') { <div class="stat">
               <span>FRESH QUESTIONS</span
               ><strong>{{ s.freshPercent | number: '1.0-0' }}<em>%</em></strong
               ><small>{{
@@ -51,7 +51,7 @@ import { describeAnswer, describeExpected, hasResponse } from '../answers';
                       ? 'Learning evidence'
                       : 'Repeated question families'
               }}</small>
-            </div>
+            </div> }
           </div>
         }
         <div class="section-heading">
@@ -114,8 +114,8 @@ import { describeAnswer, describeExpected, hasResponse } from '../answers';
         }
         @if (a.focus) {
           <p class="alert">
-            This session targets {{ a.focus }}. It may be shorter than the usual blueprint and does
-            not count toward exam readiness.
+            This session targets {{ a.focus }}. It may be shorter than the usual session.
+            @if (a.goal === 'readiness') { It does not count toward exam readiness. }
           </p>
         }
         <div class="exam-layout">

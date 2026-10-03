@@ -15,7 +15,7 @@ public static class CatalogEndpoints
                 foreach (var releaseId in await releases.LatestIds(db))
                 {
                     var p = (await releases.Get(releaseId)).Pack;
-                    courses.Add(new(p.Id, p.Title, p.Description, p.Version, p.Lessons.Length, p.Questions.Length, p.Objectives.Length));
+                    courses.Add(new(p.Id, p.Title, p.Description, p.Version, p.Lessons.Length, p.Questions.Length, p.Objectives.Length, p.Profile, p.Features));
                 }
                 return courses.ToArray();
             });
@@ -24,8 +24,7 @@ public static class CatalogEndpoints
                 var release = await releases.Latest(db, id);
                 if (release is null) return TypedResults.NotFound();
                 var p = release.Pack;
-                return TypedResults.Ok(new CourseCatalogDto(p.Id, p.Title, p.Description, p.Version, p.License, p.Objectives,
-                    p.Lessons, p.Blueprints, p.Sources, p.Readiness ?? new(), p.Goal, p.Questions.Length));
+                return TypedResults.Ok(CourseCatalogDto.From(p));
             });
         }
     }

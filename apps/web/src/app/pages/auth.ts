@@ -2,11 +2,12 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Api, message } from '../api';
+import { Site } from '../site-settings';
 @Component({
   imports: [FormsModule, RouterLink],
   template: ` <div class="auth-layout">
     <section>
-      <p class="eyebrow">WELCOME TO LEARNFORGE</p>
+      <p class="eyebrow">WELCOME TO {{ site.settings().name }}</p>
       <h1>Make room for<br /><em>what comes next.</em></h1>
       <p class="lead">
         A home for your learning. Explore a subject, practise with purpose and see how far you have
@@ -63,7 +64,7 @@ import { Api, message } from '../api';
         {{ busy() ? 'Please wait…' : register() ? 'Create account' : 'Sign in' }}
       </button>
       <p class="muted small">
-        {{ register() ? 'Already have an account?' : 'New to LearnForge?' }}
+        {{ register() ? 'Already have an account?' : 'New to ' + site.settings().name + '?' }}
         <button
           type="button"
           class="text-button"
@@ -76,6 +77,7 @@ import { Api, message } from '../api';
   </div>`,
 })
 export class AuthPage {
+  readonly site = inject(Site);
   private readonly api = inject(Api);
   private readonly router = inject(Router);
   readonly register = signal(false);

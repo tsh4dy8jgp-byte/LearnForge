@@ -52,6 +52,8 @@ Compose is configured for **local development**, bound to loopback. Its sample p
 | Reliability | Server deadlines, automatic expiry, immutable snapshots, revisions, idempotent writes, resume |
 | Learner area | Dashboard, history, results review, objective analysis, lesson suggestions, readiness |
 | Content workflow | Typed JSON templates, compiler, watch mode, deterministic artifacts, question diffs, Content Studio |
+| Product profiles | Course, exam, and hybrid pack capabilities; runtime branding and date/number locales; saved publisher drafts and learner preview |
+| Appearance | Three responsive layouts, five colour schemes including dark mode, browser preferences and deployment defaults |
 | Publishing | Publisher role, immutable versions, audit events, preserved historical attempts |
 | Accounts | Identity password hashing, secure production cookies, CSRF, ownership checks, lockout, rate limits |
 | Privacy | Password changes, history export, password-confirmed account deletion |
@@ -61,6 +63,8 @@ Compose is configured for **local development**, bound to loopback. Its sample p
 The code follows one public type per file with domain, contract, persistence and service folders. Wire-compatible string values are backed by strongly typed enums, and API dashboards/attempts use named DTOs instead of untyped object responses.
 
 Drag/drop has click and keyboard alternatives. Text is rendered as text; content templates cannot execute code or inject HTML. Code blocks display examples; student code execution is future work.
+
+Use **Appearance** in the top bar to try Workspace, Campus, or Focus with Site brand, Ocean, Plum, Terracotta, or Midnight. See the [appearance guide](docs/appearance.md) for deployment defaults and extending the presets.
 
 ## Exam readiness
 
@@ -82,6 +86,16 @@ dotnet run --project tools/cli -- build packs/my-subject.json --out build/my-sub
 ```
 
 Edit the generated pack's identity, lessons, objectives, questions and exam blueprints. Validation checks contracts, references, prerequisite cycles, teaching/practice coverage, keys and exam feasibility.
+
+The CLI also creates profile-specific starters:
+
+```sh
+dotnet run --project tools/cli -- init packs/my-course.json --profile course
+dotnet run --project tools/cli -- init packs/my-exam.json --profile exam
+dotnet run --project tools/cli -- init packs/my-hybrid.json --profile hybrid
+```
+
+Course packs can be lesson-only and use a completion or mastery goal. Exam packs can be question-first and use assessment/readiness policies. The pack profile and capabilities control which learner surfaces and session modes are available.
 
 New files under `packs/` are validated and seeded after rebuilding and restarting the API. Existing releases are never overwritten: increment `version`. To publish without restarting, register an account, grant it Publisher, sign out/in, then use **Content Studio**:
 
@@ -152,6 +166,7 @@ See [testing](docs/testing.md) for PostgreSQL tests and container verification. 
 | [Setup](docs/setup.md) | Install, configure, run and troubleshoot |
 | [Learner guide](docs/user-guide.md) | Study, practise, resume and review |
 | [Authoring](docs/authoring.md) | Create packs, templates and questions |
+| [Learning platform prompt](docs/prompts/learning-platform-builder.md) | Interview a learner, design a program, and build a personalized learning experience |
 | [Content engine](docs/content-engine.md) | Validation, artifacts and cross-validation limits |
 | [Assessment](docs/assessment.md) | Scoring, composition, timing and readiness |
 | [Architecture](docs/architecture.md) | Modules, data contracts and extension points |

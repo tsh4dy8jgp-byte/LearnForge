@@ -51,6 +51,9 @@ public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache re
             if (active.Status == AttemptStatus.InProgress) throw new DomainError(409, $"Resume or finish your existing session: {active.Id}");
         }
         var pack = release.Pack;
+        if ((request.Mode == AssessmentMode.Mock && !pack.Features.Assessments) ||
+            (request.Mode == AssessmentMode.Learn && !pack.Features.Practice))
+            throw new DomainError(400, "This pack does not support the requested session mode.");
         var blueprint = pack.Blueprints.FirstOrDefault(b => b.Id == request.BlueprintId) ?? throw new DomainError(400, "Unknown blueprint.");
         // The ledger holds every question of every finished attempt, so it is also the exposure history.
         var history = await db.Evidence.AsNoTracking().Where(e => e.UserId == user && e.PackId == request.PackId)
@@ -60,7 +63,7 @@ public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache re
             ? Focused(pack, blueprint, request, focus, history, seen)
             : ExamComposer.Compose(pack, blueprint, seen, request.RequestId);
         chosen = chosen.OrderBy(q => q.ScenarioId is null ? 0 : 1).ThenBy(q => q.ScenarioId).Select(Shuffle).ToArray();
-        var snapshot = new AttemptSnapshot(pack.Title, pack.Version, pack.Objectives, pack.Scenarios, blueprint, chosen, pack.Readiness ?? new());
+        var snapshot = new AttemptSnapshot(pack.Title, pack.Version, pack.Objectives, pack.Scenarios, blueprint, chosen, pack.Readiness ?? new(), pack.Goal);
         var attempt = new Attempt
         {
             UserId = user, PackReleaseId = release.ReleaseId, PackId = pack.Id, StartKey = request.RequestId,
@@ -187,7 +190,7 @@ public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache re
         a.Status = AttemptStatus.Completed; a.ActiveKey = null; a.CompletedAt = completedAt; a.TimedOut = timedOut;
         a.Earned = grades.Sum(g => g.Earned); a.Possible = grades.Sum(g => g.Possible);
         a.CorrectPercent = grades.Count(g => g.FullyCorrect) * 100m / grades.Length;
-        a.Eligible = a.Mode == AssessmentMode.Mock && !timedOut && a.FreshPercent >= s.Readiness.MinimumFreshPercent;
+        a.Eligible = s.Goal == CourseGoal.Readiness && a.Mode == AssessmentMode.Mock && !timedOut && a.FreshPercent >= s.Readiness.MinimumFreshPercent;
         a.Revision++;
         db.Audit.Add(new() { ActorId = a.UserId, Action = timedOut ? "attempt.expired" : "attempt.submitted", ResourceId = a.Id });
         // Rows are saved with the transition, so the Revision concurrency token covers both.
@@ -214,6 +217,6 @@ public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache re
             a.StartedAt, a.Deadline, a.CompletedAt, a.SectionIndex, Sections(a),
             s.Blueprint.LockSections && a.Mode == AssessmentMode.Mock, a.TimedOut, a.Focus,
             s.Questions.Select(DeliveryQuestion.From).ToArray(), s.Scenarios, s.Objectives, answers,
-            Json.Read<Dictionary<string, Grade>>(a.FeedbackJson), Now, results, summary);
+            Json.Read<Dictionary<string, Grade>>(a.FeedbackJson), Now, results, summary, s.Goal);
     }
 }

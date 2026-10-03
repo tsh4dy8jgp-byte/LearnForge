@@ -1,0 +1,71 @@
+import { Component, computed, inject, signal } from '@angular/core';
+import { Appearance, colorSchemes, layouts } from '../appearance';
+import type { SiteColorScheme, SiteLayout } from '../models';
+
+@Component({
+  selector: 'app-appearance',
+  template: `
+    <div class="page-heading">
+      <div>
+        <p class="eyebrow">MAKE YOURSELF AT HOME</p>
+        <h1>A space that <em>feels like you.</em></h1>
+        <p class="lead">Choose your layout and colour palette. Changes appear instantly and stay with this browser.</p>
+      </div>
+    </div>
+    <div class="appearance-summary panel">
+      <div><span class="tiny-label">YOUR CURRENT LOOK</span><p>{{ currentLook() }}</p></div>
+      <button class="button secondary" (click)="reset()" [disabled]="!appearance.customized()">Use site defaults</button>
+    </div>
+    <p class="sr-only" role="status">{{ announcement() }}</p>
+    @if (appearance.storageNotice()) {
+      <p class="alert" role="status">{{ appearance.storageNotice() }}</p>
+    }
+    <fieldset class="appearance-section">
+      <legend><strong>01 / Layout</strong><span>Find your rhythm.</span></legend>
+      <div class="layout-options">
+        @for (layout of layouts; track layout.id) {
+          <label class="appearance-option" [class.is-selected]="appearance.layout() === layout.id">
+            <input type="radio" name="layout" [value]="layout.id" [checked]="appearance.layout() === layout.id"
+              (change)="chooseLayout(layout.id)" [attr.aria-label]="layout.name" [attr.aria-describedby]="'layout-description-' + layout.id" />
+            <span class="layout-preview" [attr.data-preview-layout]="layout.id" aria-hidden="true">
+              <span class="preview-nav"><i></i><i></i><i></i><i></i></span>
+              <span class="preview-content"><i class="preview-title"></i><span class="preview-stats"><i></i><i></i><i></i></span><span class="preview-panels"><i></i><i></i></span></span>
+            </span>
+            <span class="option-name">{{ layout.name }}<span class="selection-mark" aria-hidden="true">{{ appearance.layout() === layout.id ? '✓' : '○' }}</span></span>
+            <span class="option-description" [id]="'layout-description-' + layout.id">{{ layout.description }}</span>
+          </label>
+        }
+      </div>
+    </fieldset>
+    <fieldset class="appearance-section">
+      <legend><strong>02 / Colour scheme</strong><span>Set the mood for learning.</span></legend>
+      <div class="scheme-options">
+        @for (scheme of colorSchemes; track scheme.id) {
+          <label class="appearance-option" [class.is-selected]="appearance.colorScheme() === scheme.id">
+            <input type="radio" name="colorScheme" [value]="scheme.id" [checked]="appearance.colorScheme() === scheme.id"
+              (change)="chooseScheme(scheme.id)" [attr.aria-label]="scheme.name" [attr.aria-describedby]="'scheme-description-' + scheme.id" />
+            <span class="scheme-preview" [attr.data-color-scheme]="scheme.id" aria-hidden="true">
+              <span class="scheme-sample">Aa<span>Make room for a new idea.</span></span>
+              <span class="scheme-swatches"><i></i><i></i><i></i><i></i></span>
+            </span>
+            <span class="option-name">{{ scheme.name }}<span class="selection-mark" aria-hidden="true">{{ appearance.colorScheme() === scheme.id ? '✓' : '○' }}</span></span>
+            <span class="option-description" [id]="'scheme-description-' + scheme.id">{{ scheme.description }}</span>
+          </label>
+        }
+      </div>
+    </fieldset>
+    <p class="muted small">These preferences apply to your learning pages, practice sessions, and Content Studio. Use site defaults to follow the look chosen by your platform.</p>
+  `,
+})
+export class AppearancePage {
+  readonly appearance = inject(Appearance);
+  readonly layouts = layouts;
+  readonly colorSchemes = colorSchemes;
+  readonly announcement = signal('');
+  readonly currentLook = computed(() => `${layouts.find(item => item.id === this.appearance.layout())?.name} · ${colorSchemes.find(item => item.id === this.appearance.colorScheme())?.name}`);
+
+  chooseLayout(layout: SiteLayout) { this.appearance.setLayout(layout); this.announce(); }
+  chooseScheme(scheme: SiteColorScheme) { this.appearance.setColorScheme(scheme); this.announce(); }
+  reset() { this.appearance.reset(); this.announcement.set(`Site defaults restored. ${this.currentLook()}.`); }
+  private announce() { this.announcement.set(`${this.currentLook()} applied.`); }
+}

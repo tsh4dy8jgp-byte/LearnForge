@@ -45,6 +45,7 @@ export type AttemptSummaryDto = {
     focus: null | PracticeFocus;
     score: number;
     itemCount: number;
+    goal: CourseGoal;
 };
 
 export type AttemptView = {
@@ -78,6 +79,16 @@ export type AttemptView = {
         [key: string]: Grade;
     };
     summary: null | AttemptResultSummary;
+    goal: CourseGoal;
+};
+
+export type AuthoringPreviewDto = {
+    success: boolean;
+    hash: string;
+    diagnostics: Array<Diagnostic>;
+    catalog: null | CourseCatalogDto;
+    questions: Array<DeliveryQuestion>;
+    scenarios: Array<Scenario>;
 };
 
 export type Blueprint = {
@@ -99,6 +110,8 @@ export type CatalogSummaryDto = {
     lessonCount: number;
     questionCount: number;
     objectiveCount: number;
+    profile: ProductProfile;
+    capabilities: PackCapabilities;
 };
 
 export type ChangePasswordRequest = {
@@ -132,6 +145,8 @@ export type CourseCatalogDto = {
     readiness: ReadinessPolicy;
     goal: CourseGoal;
     questionCount: number;
+    profile: ProductProfile;
+    capabilities: PackCapabilities;
 };
 
 export type CourseGoal = 'readiness' | 'mastery' | 'completion';
@@ -158,6 +173,7 @@ export type CourseProgressDto = {
     nextSteps: Array<NextStepDto>;
     goal: CourseGoalStatusDto;
     lastActivityAt: null | string;
+    capabilities: PackCapabilities;
 };
 
 export type CsrfResponse = {
@@ -203,6 +219,27 @@ export type Diagnostic = {
     message: string;
 };
 
+export type DraftDto = {
+    id: string;
+    title: string;
+    source: string;
+    revision: number;
+    updatedAt: string;
+};
+
+export type DraftSaveRequest = {
+    title: string;
+    source: string;
+    revision: number;
+};
+
+export type DraftSummaryDto = {
+    id: string;
+    title: string;
+    revision: number;
+    updatedAt: string;
+};
+
 export type EnrollmentRequest = {
     status: EnrollmentStatus;
 };
@@ -220,6 +257,15 @@ export type Grade = {
     explanation: string;
 };
 
+export type Grading = {
+    policy: ScoringPolicy;
+    correct: Array<string>;
+    matches?: null | {
+        [key: string]: string;
+    };
+    tolerance?: null | number;
+};
+
 export type JsonElement = unknown;
 
 export type Lesson = {
@@ -233,6 +279,13 @@ export type Lesson = {
 export type LoginRequest = {
     email: string;
     password: string;
+};
+
+export type MasteryPolicy = {
+    window?: number;
+    minimumEvidence?: number;
+    proficientPercent?: number;
+    reviewAfterDays?: number;
 };
 
 export type MasteryState = 'notStarted' | 'emerging' | 'developing' | 'proficient';
@@ -249,7 +302,7 @@ export type NextStepDto = {
 
 export type NextStepKind = 'readLesson' | 'practise' | 'review' | 'takeMock';
 
-export type NextStepReason = 'startObjective' | 'continueReading' | 'needsEvidence' | 'belowProficient' | 'reviewDue' | 'readyForMock';
+export type NextStepReason = 'startObjective' | 'continueReading' | 'needsEvidence' | 'belowProficient' | 'reviewDue' | 'readyForMock' | 'assessmentAvailable';
 
 export type Objective = {
     id: string;
@@ -276,7 +329,52 @@ export type Option = {
     text: string;
 };
 
+export type Pack = {
+    schemaVersion: number;
+    id: string;
+    version: string;
+    title: string;
+    description: string;
+    license: string;
+    objectives: Array<Objective>;
+    lessons: Array<Lesson>;
+    questions: Array<Question>;
+    scenarios: Array<Scenario>;
+    blueprints: Array<Blueprint>;
+    sources: Array<SourceReference>;
+    readiness?: null | ReadinessPolicy;
+    goal?: CourseGoal;
+    mastery?: null | MasteryPolicy;
+    profile?: ProductProfile;
+    capabilities?: null | PackCapabilities;
+};
+
+export type PackCapabilities = {
+    lessons: boolean;
+    practice: boolean;
+    assessments: boolean;
+};
+
 export type PracticeFocus = 'mistakes' | 'weak' | 'objective';
+
+export type ProductProfile = 'course' | 'exam' | 'hybrid';
+
+export type Question = {
+    id: string;
+    familyId: string;
+    kind: QuestionKind;
+    prompt: string;
+    objectiveIds: Array<string>;
+    options: Array<Option>;
+    slots: Array<Slot>;
+    selectCount: number;
+    reuse: boolean;
+    grading: Grading;
+    explanation: string;
+    scenarioId?: null | string;
+    weight?: number;
+    code?: null | CodeSample;
+};
 
 export type QuestionKind = 'single' | 'multiple' | 'matching' | 'dropdown' | 'sequence' | 'numeric' | 'codeOutput';
 
@@ -324,6 +422,29 @@ export type Scenario = {
     background: string;
 };
 
+export type ScoringPolicy = 'exact' | 'partial';
+
+export type SiteColorScheme = 'brand' | 'ocean' | 'plum' | 'terracotta' | 'midnight';
+
+export type SiteLayout = 'sidebar' | 'header' | 'focus';
+
+export type SiteSettings = {
+    name?: string;
+    tagline?: string;
+    description?: string;
+    logoPath?: null | string;
+    primaryColor?: string;
+    layout?: SiteLayout;
+    colorScheme?: SiteColorScheme;
+    font?: string;
+    locale?: string;
+    homePage?: string;
+    overviewLabel?: string;
+    libraryLabel?: string;
+    historyLabel?: string;
+    studioLabel?: string;
+};
+
 export type Slot = {
     id: string;
     text: string;
@@ -369,6 +490,22 @@ export type GetHealthResponses = {
      */
     200: unknown;
 };
+
+export type GetApiSiteSettingsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/site-settings';
+};
+
+export type GetApiSiteSettingsResponses = {
+    /**
+     * OK
+     */
+    200: SiteSettings;
+};
+
+export type GetApiSiteSettingsResponse = GetApiSiteSettingsResponses[keyof GetApiSiteSettingsResponses];
 
 export type GetApiCatalogData = {
     body?: never;
@@ -697,6 +834,108 @@ export type PostApiMeAttemptsByIdSectionResponses = {
 };
 
 export type PostApiMeAttemptsByIdSectionResponse = PostApiMeAttemptsByIdSectionResponses[keyof PostApiMeAttemptsByIdSectionResponses];
+
+export type GetApiAuthoringStartersByProfileData = {
+    body?: never;
+    path: {
+        profile: string;
+    };
+    query?: never;
+    url: '/api/authoring/starters/{profile}';
+};
+
+export type GetApiAuthoringStartersByProfileResponses = {
+    /**
+     * OK
+     */
+    200: Pack;
+};
+
+export type GetApiAuthoringStartersByProfileResponse = GetApiAuthoringStartersByProfileResponses[keyof GetApiAuthoringStartersByProfileResponses];
+
+export type GetApiAuthoringDraftsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/authoring/drafts';
+};
+
+export type GetApiAuthoringDraftsResponses = {
+    /**
+     * OK
+     */
+    200: Array<DraftSummaryDto>;
+};
+
+export type GetApiAuthoringDraftsResponse = GetApiAuthoringDraftsResponses[keyof GetApiAuthoringDraftsResponses];
+
+export type PostApiAuthoringDraftsData = {
+    body: DraftSaveRequest;
+    path?: never;
+    query?: never;
+    url: '/api/authoring/drafts';
+};
+
+export type PostApiAuthoringDraftsResponses = {
+    /**
+     * OK
+     */
+    200: DraftDto;
+};
+
+export type PostApiAuthoringDraftsResponse = PostApiAuthoringDraftsResponses[keyof PostApiAuthoringDraftsResponses];
+
+export type GetApiAuthoringDraftsByIdData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/authoring/drafts/{id}';
+};
+
+export type GetApiAuthoringDraftsByIdResponses = {
+    /**
+     * OK
+     */
+    200: DraftDto;
+};
+
+export type GetApiAuthoringDraftsByIdResponse = GetApiAuthoringDraftsByIdResponses[keyof GetApiAuthoringDraftsByIdResponses];
+
+export type PutApiAuthoringDraftsByIdData = {
+    body: DraftSaveRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/authoring/drafts/{id}';
+};
+
+export type PutApiAuthoringDraftsByIdResponses = {
+    /**
+     * OK
+     */
+    200: DraftDto;
+};
+
+export type PutApiAuthoringDraftsByIdResponse = PutApiAuthoringDraftsByIdResponses[keyof PutApiAuthoringDraftsByIdResponses];
+
+export type PostApiAuthoringPreviewData = {
+    body: JsonElement;
+    path?: never;
+    query?: never;
+    url: '/api/authoring/preview';
+};
+
+export type PostApiAuthoringPreviewResponses = {
+    /**
+     * OK
+     */
+    200: AuthoringPreviewDto;
+};
+
+export type PostApiAuthoringPreviewResponse = PostApiAuthoringPreviewResponses[keyof PostApiAuthoringPreviewResponses];
 
 export type PostApiAuthoringValidateData = {
     body: JsonElement;

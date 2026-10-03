@@ -18,6 +18,8 @@ export function describeStep(step: NextStepDto): string {
       return `Review "${objective}": it has been a while since you practised it.`;
     case 'readyForMock':
       return 'Every objective is proficient. Take a timed mock to build readiness evidence.';
+    case 'assessmentAvailable':
+      return 'Take an assessment to demonstrate what you know and build objective evidence.';
   }
 }
 

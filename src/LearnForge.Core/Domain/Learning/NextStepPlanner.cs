@@ -37,14 +37,18 @@ public static class NextStepPlanner
             {
                 if (!steps.Any(s => s.LessonId == lesson.Id)) steps.Add(new(NextStepKind.ReadLesson, ReadingReason(objective.Id), objective.Id, lesson.Id));
             }
-            else steps.Add(new(NextStepKind.Practise, state == MasteryState.Developing ? NextStepReason.BelowProficient : NextStepReason.NeedsEvidence,
+            else if (pack.Features.Practice) steps.Add(new(NextStepKind.Practise, state == MasteryState.Developing ? NextStepReason.BelowProficient : NextStepReason.NeedsEvidence,
                 objective.Id, BlueprintId: SessionBlueprint(objective.Id)));
         }
-        steps.AddRange(pack.Objectives.Where(o => states.TryGetValue(o.Id, out var m) && m.ReviewDue)
+        if (pack.Features.Practice) steps.AddRange(pack.Objectives.Where(o => states.TryGetValue(o.Id, out var m) && m.ReviewDue)
             .Select(o => new NextStep(NextStepKind.Review, NextStepReason.ReviewDue, o.Id, BlueprintId: SessionBlueprint(o.Id))));
         var mock = pack.Blueprints.FirstOrDefault(b => b.Size == AssessmentSize.Short) ?? pack.Blueprints.FirstOrDefault();
-        if (pack.Goal == CourseGoal.Readiness && readiness is { Ready: false } && mock is not null && pack.Objectives.All(o => Proficient(o.Id)))
-            steps.Add(new(NextStepKind.TakeMock, NextStepReason.ReadyForMock, BlueprintId: mock.Id));
+        if (pack.Features.Assessments && mock is not null &&
+            ((!pack.Features.Practice && steps.Count == 0 && pack.Goal != CourseGoal.Completion &&
+              (pack.Objectives.Any(o => !Proficient(o.Id)) || (pack.Goal == CourseGoal.Readiness && readiness is { Ready: false }))) ||
+             (pack.Goal == CourseGoal.Readiness && readiness is { Ready: false } && pack.Objectives.All(o => Proficient(o.Id)))))
+            steps.Add(new(NextStepKind.TakeMock, pack.Objectives.All(o => Proficient(o.Id))
+                ? NextStepReason.ReadyForMock : NextStepReason.AssessmentAvailable, BlueprintId: mock.Id));
         return steps.Take(limit).ToArray();
     }
 }

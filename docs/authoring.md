@@ -43,6 +43,8 @@ Set lockSections true when mock learners must finish one scenario before moving 
 
 Run the CLI check and build commands in CI. Review the question diff between releases. Open delivery output as a learner and inspect the private grading output only in a restricted author environment. Have a subject expert check keys, explanations, source links, objective mapping and misleading distractors.
 
-Register a local account, grant Publisher and sign in again to use Content Studio. Studio accepts JSON, shows compiler diagnostics and publishes an immutable release. The server rejects duplicate pack/version pairs. Existing attempts retain their original release.
+Register a local account, grant Publisher and sign in again to use Content Studio. Studio creates course, exam, or hybrid starters, saves private revision-checked drafts, previews the safe learner projection, accepts JSON source, shows compiler diagnostics, and publishes an immutable release. The server rejects duplicate pack/version pairs. Existing attempts retain their original release.
+
+The profile is a starter preset; the source `capabilities` object controls whether lessons, practice, and assessments are available. A course can omit questions and blueprints. An exam pack can omit lessons. Keep `goal` separate: it describes completion, mastery, or exam readiness.
 
 Do not include credentials, personal data, proprietary answer keys or unreviewed external URLs. The demonstration packs are original CC0 material and do not represent official exams.

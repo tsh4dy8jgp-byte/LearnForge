@@ -24,4 +24,5 @@ public sealed record AttemptView(
     Dictionary<string, Grade> Feedback,
     DateTime ServerTime,
     Dictionary<string, Grade>? Results,
-    AttemptResultSummary? Summary);
+    AttemptResultSummary? Summary,
+    CourseGoal Goal);

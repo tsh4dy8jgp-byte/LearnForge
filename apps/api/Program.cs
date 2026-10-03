@@ -61,6 +61,9 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<AttemptService>();
 builder.Services.AddSingleton<ReleaseCache>();
 builder.Services.AddScoped<LearningRecordService>();
+builder.Services.AddOptions<SiteSettings>().Bind(builder.Configuration.GetSection("Site"))
+    .Validate(settings => settings.IsValid(), "Invalid Site settings. Check layout, color scheme, text lengths, locale, home page, font, local logo path and primary-color contrast (4.5:1).")
+    .ValidateOnStart();
 builder.Services.AddHostedService<ExpiryWorker>();
 builder.Services.AddOpenApi();
 // .NET 10 minimal API validation: DataAnnotations on request records are enforced before handlers run.
@@ -108,6 +111,7 @@ app.Use(async (context, next) =>
 });
 if (app.Environment.IsDevelopment()) app.MapOpenApi();
 app.MapGet("/health", async (AppDb db) => await db.Database.CanConnectAsync() ? Results.Ok(new HealthResponse("healthy")) : Results.StatusCode(503));
+app.MapGet("/api/site-settings", (Microsoft.Extensions.Options.IOptions<SiteSettings> settings) => settings.Value);
 app.MapAuth();
 app.MapCatalog();
 app.MapLearner();

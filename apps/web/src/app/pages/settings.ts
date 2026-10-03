@@ -1,9 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Api, message } from '../api';
 @Component({
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   template: ` <div class="page-heading">
       <div>
         <p class="eyebrow">YOUR ACCOUNT, YOUR CHOICES</p>
@@ -41,6 +41,11 @@ import { Api, message } from '../api';
         <p class="muted small">Other sessions are invalidated within one minute.</p>
       </form>
       <div>
+        <section class="panel">
+          <h2>Make it your space</h2>
+          <p>Choose a layout and colour scheme for this browser.</p>
+          <a routerLink="/appearance" class="button secondary">Change appearance</a>
+        </section>
         <section class="panel">
           <h2>Take your progress with you</h2>
           <p>Download your attempts, released results and objective analysis as JSON.</p>

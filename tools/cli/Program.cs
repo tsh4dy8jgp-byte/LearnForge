@@ -4,7 +4,7 @@ using LearnForge.Core;
 
 if (args.Length == 0 || args[0] is "help" or "--help")
 {
-    Console.WriteLine("LearnForge content compiler\n  check <source.json> [--watch] [--json]\n  build <source.json> --out <directory>\n  diff <before.json> <after.json>\n  init <source.json>\nTemplates use $use + values; see docs/authoring.md.");
+    Console.WriteLine("LearnForge content compiler\n  check <source.json> [--watch] [--json]\n  build <source.json> --out <directory>\n  diff <before.json> <after.json>\n  init <source.json> [--profile course|exam|hybrid]\nTemplates use $use + values; see docs/authoring.md.");
     return 0;
 }
 try
@@ -14,12 +14,12 @@ try
     if (command == "init")
     {
         if (File.Exists(path)) throw new ArgumentException("Destination already exists.");
-        var q = new Question("starter-q", "starter-family", QuestionKind.Single, "Which value is even?", ["parity"],
-            [new("a", "2"), new("b", "3")], [], 1, false, new(ScoringPolicy.Exact, ["a"]), "An even integer is divisible by two.");
-        var pack = new Pack(1, "my-course", "1.0.0", "My first course", "Replace this sample with your subject.", "Private",
-            [new("parity", "Recognize even integers", [])],
-            [new("introduction", "Even integers", "A short introduction.", ["parity"], [new(ContentBlockKind.Text, "An integer is even when it is divisible by two.")])],
-            [q], [], [new("short", "Quick check", 1, 5, AssessmentSize.Short, ["parity"], [QuestionKind.Single])], [], Readiness: new());
+        var profileIndex = Array.IndexOf(args, "--profile");
+        var profile = ProductProfile.Hybrid;
+        if (profileIndex >= 0 && (profileIndex + 1 >= args.Length ||
+            !Enum.TryParse(args[profileIndex + 1], true, out profile) || !Enum.IsDefined(profile)))
+            throw new ArgumentException("Use --profile course, exam or hybrid.");
+        var pack = PackStarter.Create(profile);
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         await File.WriteAllTextAsync(path, Json.Write(pack));
         Console.WriteLine($"Created {path}"); return 0;
@@ -66,7 +66,7 @@ try
     var artifacts = new Dictionary<string, string>
     {
         ["delivery.json"] = Json.Write(new { p.SchemaVersion, p.Id, p.Version, p.Title, p.Description, p.License, p.Objectives, p.Lessons,
-            p.Scenarios, p.Blueprints, p.Sources, Questions = p.Questions.Select(DeliveryQuestion.From) }),
+            p.Scenarios, p.Blueprints, p.Sources, p.Profile, Capabilities = p.Features, p.Goal, Questions = p.Questions.Select(DeliveryQuestion.From) }),
         ["grading.private.json"] = Json.Write(p.Questions.ToDictionary(q => q.Id, q => new { q.Grading, q.Explanation })),
         ["pack.private.json"] = Json.Write(p),
         ["validation-report.json"] = Json.Write(new { compilation.Success, compilation.Diagnostics }),

@@ -17,6 +17,25 @@
         }
       }
     },
+    "/api/site-settings": {
+      "get": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteSettings"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/catalog": {
       "get": {
         "tags": [
@@ -526,6 +545,179 @@
         }
       }
     },
+    "/api/authoring/starters/{profile}": {
+      "get": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "profile",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pack"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/authoring/drafts": {
+      "get": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DraftSummaryDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DraftSaveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/authoring/drafts/{id}": {
+      "get": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DraftSaveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/authoring/preview": {
+      "post": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JsonElement"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthoringPreviewDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/authoring/validate": {
       "post": {
         "tags": [
@@ -679,7 +871,8 @@
           "freshPercent",
           "focus",
           "score",
-          "itemCount"
+          "itemCount",
+          "goal"
         ],
         "type": "object",
         "properties": {
@@ -750,6 +943,9 @@
           "itemCount": {
             "type": "integer",
             "format": "int32"
+          },
+          "goal": {
+            "$ref": "#/components/schemas/CourseGoal"
           }
         }
       },
@@ -778,7 +974,8 @@
           "feedback",
           "serverTime",
           "results",
-          "summary"
+          "summary",
+          "goal"
         ],
         "type": "object",
         "properties": {
@@ -900,6 +1097,56 @@
                 "$ref": "#/components/schemas/AttemptResultSummary"
               }
             ]
+          },
+          "goal": {
+            "$ref": "#/components/schemas/CourseGoal"
+          }
+        }
+      },
+      "AuthoringPreviewDto": {
+        "required": [
+          "success",
+          "hash",
+          "diagnostics",
+          "catalog",
+          "questions",
+          "scenarios"
+        ],
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "hash": {
+            "type": "string"
+          },
+          "diagnostics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Diagnostic"
+            }
+          },
+          "catalog": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CourseCatalogDto"
+              }
+            ]
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeliveryQuestion"
+            }
+          },
+          "scenarios": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Scenario"
+            }
           }
         }
       },
@@ -958,7 +1205,9 @@
           "version",
           "lessonCount",
           "questionCount",
-          "objectiveCount"
+          "objectiveCount",
+          "profile",
+          "capabilities"
         ],
         "type": "object",
         "properties": {
@@ -985,6 +1234,12 @@
           "objectiveCount": {
             "type": "integer",
             "format": "int32"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/ProductProfile"
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/PackCapabilities"
           }
         }
       },
@@ -1062,7 +1317,9 @@
           "sources",
           "readiness",
           "goal",
-          "questionCount"
+          "questionCount",
+          "profile",
+          "capabilities"
         ],
         "type": "object",
         "properties": {
@@ -1114,6 +1371,12 @@
           "questionCount": {
             "type": "integer",
             "format": "int32"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/ProductProfile"
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/PackCapabilities"
           }
         }
       },
@@ -1182,7 +1445,8 @@
           "objectives",
           "nextSteps",
           "goal",
-          "lastActivityAt"
+          "lastActivityAt",
+          "capabilities"
         ],
         "type": "object",
         "properties": {
@@ -1242,6 +1506,9 @@
               "string"
             ],
             "format": "date-time"
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/PackCapabilities"
           }
         }
       },
@@ -1417,6 +1684,80 @@
           }
         }
       },
+      "DraftDto": {
+        "required": [
+          "id",
+          "title",
+          "source",
+          "revision",
+          "updatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "DraftSaveRequest": {
+        "required": [
+          "title",
+          "source",
+          "revision"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "DraftSummaryDto": {
+        "required": [
+          "id",
+          "title",
+          "revision",
+          "updatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "EnrollmentRequest": {
         "required": [
           "status"
@@ -1477,6 +1818,40 @@
           }
         }
       },
+      "Grading": {
+        "required": [
+          "policy",
+          "correct"
+        ],
+        "type": "object",
+        "properties": {
+          "policy": {
+            "$ref": "#/components/schemas/ScoringPolicy"
+          },
+          "correct": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "matches": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "tolerance": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          }
+        }
+      },
       "JsonElement": { },
       "Lesson": {
         "required": [
@@ -1525,6 +1900,31 @@
           "password": {
             "maxLength": 128,
             "type": "string"
+          }
+        }
+      },
+      "MasteryPolicy": {
+        "type": "object",
+        "properties": {
+          "window": {
+            "type": "integer",
+            "format": "int32",
+            "default": 5
+          },
+          "minimumEvidence": {
+            "type": "integer",
+            "format": "int32",
+            "default": 3
+          },
+          "proficientPercent": {
+            "type": "number",
+            "format": "double",
+            "default": 80
+          },
+          "reviewAfterDays": {
+            "type": "integer",
+            "format": "int32",
+            "default": 60
           }
         }
       },
@@ -1601,7 +2001,8 @@
           "needsEvidence",
           "belowProficient",
           "reviewDue",
-          "readyForMock"
+          "readyForMock",
+          "assessmentAvailable"
         ]
       },
       "Objective": {
@@ -1705,6 +2106,135 @@
           }
         }
       },
+      "Pack": {
+        "required": [
+          "schemaVersion",
+          "id",
+          "version",
+          "title",
+          "description",
+          "license",
+          "objectives",
+          "lessons",
+          "questions",
+          "scenarios",
+          "blueprints",
+          "sources"
+        ],
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "id": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "license": {
+            "type": "string"
+          },
+          "objectives": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Objective"
+            }
+          },
+          "lessons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Lesson"
+            }
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Question"
+            }
+          },
+          "scenarios": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Scenario"
+            }
+          },
+          "blueprints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Blueprint"
+            }
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SourceReference"
+            }
+          },
+          "readiness": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ReadinessPolicy"
+              }
+            ]
+          },
+          "goal": {
+            "$ref": "#/components/schemas/CourseGoal"
+          },
+          "mastery": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/MasteryPolicy"
+              }
+            ]
+          },
+          "profile": {
+            "$ref": "#/components/schemas/ProductProfile"
+          },
+          "capabilities": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/PackCapabilities"
+              }
+            ]
+          }
+        }
+      },
+      "PackCapabilities": {
+        "required": [
+          "lessons",
+          "practice",
+          "assessments"
+        ],
+        "type": "object",
+        "properties": {
+          "lessons": {
+            "type": "boolean"
+          },
+          "practice": {
+            "type": "boolean"
+          },
+          "assessments": {
+            "type": "boolean"
+          }
+        }
+      },
       "PracticeFocus": {
         "enum": [
           "mistakes",
@@ -1712,6 +2242,95 @@
           "objective",
           null
         ]
+      },
+      "ProductProfile": {
+        "enum": [
+          "course",
+          "exam",
+          "hybrid"
+        ]
+      },
+      "Question": {
+        "required": [
+          "id",
+          "familyId",
+          "kind",
+          "prompt",
+          "objectiveIds",
+          "options",
+          "slots",
+          "selectCount",
+          "reuse",
+          "grading",
+          "explanation"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "familyId": {
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/QuestionKind"
+          },
+          "prompt": {
+            "type": "string"
+          },
+          "objectiveIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Option"
+            }
+          },
+          "slots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Slot"
+            }
+          },
+          "selectCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reuse": {
+            "type": "boolean"
+          },
+          "grading": {
+            "$ref": "#/components/schemas/Grading"
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "scenarioId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "weight": {
+            "type": "number",
+            "format": "double",
+            "default": 1
+          },
+          "code": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CodeSample"
+              }
+            ]
+          }
+        }
       },
       "QuestionKind": {
         "enum": [
@@ -1883,6 +2502,78 @@
             "type": "string"
           },
           "background": {
+            "type": "string"
+          }
+        }
+      },
+      "ScoringPolicy": {
+        "enum": [
+          "exact",
+          "partial"
+        ]
+      },
+      "SiteColorScheme": {
+        "enum": [
+          "brand",
+          "ocean",
+          "plum",
+          "terracotta",
+          "midnight"
+        ]
+      },
+      "SiteLayout": {
+        "enum": [
+          "sidebar",
+          "header",
+          "focus"
+        ]
+      },
+      "SiteSettings": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "tagline": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "logoPath": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "primaryColor": {
+            "type": "string"
+          },
+          "layout": {
+            "$ref": "#/components/schemas/SiteLayout"
+          },
+          "colorScheme": {
+            "$ref": "#/components/schemas/SiteColorScheme"
+          },
+          "font": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "homePage": {
+            "type": "string"
+          },
+          "overviewLabel": {
+            "type": "string"
+          },
+          "libraryLabel": {
+            "type": "string"
+          },
+          "historyLabel": {
+            "type": "string"
+          },
+          "studioLabel": {
             "type": "string"
           }
         }

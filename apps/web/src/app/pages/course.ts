@@ -7,6 +7,8 @@ import { Api, message } from '../api';
 import { CourseCatalogDto, CourseProgressDto, EnrollmentStatus } from '../models';
 import { MasteryBadge } from '../mastery-badge';
 import { NextSteps } from '../next-steps';
+import { LessonContent } from '../lesson-content';
+import { Site } from '../site-settings';
 
 interface PracticeSetup {
   blueprintId: string;
@@ -16,7 +18,7 @@ interface PracticeSetup {
 }
 
 @Component({
-  imports: [RouterLink, FormField, Tabs, TabList, Tab, TabPanel, TabContent, MasteryBadge, NextSteps],
+  imports: [RouterLink, FormField, Tabs, TabList, Tab, TabPanel, TabContent, MasteryBadge, NextSteps, LessonContent],
   template: ` @if (catalog.error(); as e) {
       <p class="alert error" role="alert">{{ errorText(e) }}</p>
     }
@@ -25,15 +27,16 @@ interface PracticeSetup {
       <a routerLink="/attempts" class="text-link">Find your active session →</a>
     }
     @if (course(); as c) {
-      <a routerLink="/courses" class="breadcrumb">← Learning library</a>
+      <a routerLink="/courses" class="breadcrumb">← {{ site.settings().libraryLabel }}</a>
       <div class="page-heading">
         <div>
-          <p class="eyebrow">YOUR LEARNING PATH</p>
+          <p class="eyebrow">{{ c.profile === 'exam' ? 'YOUR EXAM PLAN' : c.profile === 'course' ? 'YOUR COURSE' : 'YOUR LEARNING PATH' }}</p>
           <h1>{{ c.title }}</h1>
           <p class="lead">{{ c.description }}</p>
         </div>
         <div class="row">
-          <span class="pill">{{ c.lessons.length }} lessons</span>
+          @if (c.capabilities.lessons) { <span class="pill">{{ c.lessons.length }} lessons</span> }
+          @if (c.capabilities.practice || c.capabilities.assessments) { <span class="pill">{{ c.questionCount }} questions</span> }
           @if (progress.hasValue()) {
             @switch (progress.value().enrollment) {
               @case ('active') {
@@ -63,10 +66,11 @@ interface PracticeSetup {
       }
       <div ngTabs>
         <div ngTabList class="tabs" selectionMode="follow" [(selectedTab)]="selectedTab" aria-label="Course views">
-          @for (t of tabs; track t.id) {
+          @for (t of tabs(); track t.id) {
             <button type="button" ngTab [value]="t.id">{{ t.title }}</button>
           }
         </div>
+        @if (c.capabilities.lessons) {
         <div ngTabPanel value="learn" class="tab-panel">
           <ng-template ngTabContent>
             <div class="lesson-layout">
@@ -86,22 +90,11 @@ interface PracticeSetup {
               @if (current(); as l) {
                 <article class="panel reading">
                   <p class="eyebrow">BUILD YOUR UNDERSTANDING</p>
-                  <h2>{{ l.title }}</h2>
-                  <p class="lead">{{ l.summary }}</p>
-                  @for (block of l.blocks; track $index) {
-                    <section [class]="'content-block ' + block.kind">
-                      @if (block.title) {
-                        <h3>{{ block.title }}</h3>
-                      }
-                      @if (block.kind === 'code') {
-                        <pre><code>{{ block.text }}</code></pre>
-                      } @else {
-                        <p>{{ block.text }}</p>
-                      }
-                    </section>
-                  }
+                  <lf-lesson-content [lesson]="l" />
                   <div class="row">
-                    <span class="muted small">Reading completion is separate from assessment performance.</span>
+                    @if (c.capabilities.practice || c.capabilities.assessments) {
+                      <span class="muted small">Reading completion is separate from assessment performance.</span>
+                    }
                     @if (api.user()) {
                       @if (revised().has(l.id)) {
                         <button class="button" [disabled]="busy()" (click)="complete(l.id)">Mark as re-read</button>
@@ -119,12 +112,13 @@ interface PracticeSetup {
             </div>
           </ng-template>
         </div>
+        }
         <div ngTabPanel value="map" class="tab-panel">
           <ng-template ngTabContent>
             <div class="section-heading">
               <div>
                 <h2>How the ideas connect</h2>
-                <p class="muted">Follow the prerequisites, then practise the objective.</p>
+                <p class="muted">Explore the objectives and their prerequisites.</p>
               </div>
             </div>
             <div class="map-grid">
@@ -132,7 +126,7 @@ interface PracticeSetup {
                 <article class="panel objective-card">
                   <span class="eyebrow">OBJECTIVE {{ i + 1 }}</span>
                   <h3>{{ o.title }}</h3>
-                  @if (mastery().get(o.id); as m) {
+                  @if ((c.capabilities.practice || c.capabilities.assessments) && mastery().get(o.id); as m) {
                     <lf-mastery-badge [state]="m.state" [correct]="m.correct" [considered]="m.considered" [reviewDue]="m.reviewDue" />
                   }
                   <p class="muted small">
@@ -143,7 +137,7 @@ interface PracticeSetup {
                       <button class="text-button" (click)="openLesson(l.id)">Study: {{ l.title }} →</button>
                     }
                   }
-                  @if (api.user() && mastery().get(o.id)?.standalonePractice !== false) {
+                  @if (c.capabilities.practice && api.user() && mastery().get(o.id)?.standalonePractice) {
                     <button class="text-button" (click)="practise(o.id)">Practise this objective →</button>
                   }
                 </article>
@@ -151,6 +145,7 @@ interface PracticeSetup {
             </div>
           </ng-template>
         </div>
+        @if (c.capabilities.practice || c.capabilities.assessments) {
         <div ngTabPanel value="practice" class="tab-panel">
           <ng-template ngTabContent>
             <div class="practice-layout">
@@ -161,15 +156,15 @@ interface PracticeSetup {
                   >Session length<select [formField]="setupForm.blueprintId">
                     @for (b of c.blueprints; track b.id) {
                       <option [value]="b.id" [selected]="b.id === setup().blueprintId">
-                        {{ b.title }} · {{ b.count }} questions · {{ b.minutes }} minutes
+                        {{ b.title }} · {{ b.count }} questions{{ setup().mode === 'mock' ? ' · ' + b.minutes + ' minutes' : '' }}
                       </option>
                     }
                   </select></label
                 >
                 <label
                   >Feedback mode<select [formField]="setupForm.mode">
-                    <option value="learn">Learn — check answers as you go</option>
-                    <option value="mock">Mock exam — results after submission</option>
+                    @if (c.capabilities.practice) { <option value="learn">Learn — check answers as you go</option> }
+                    @if (c.capabilities.assessments) { <option value="mock">Mock exam — results after submission</option> }
                   </select></label
                 >
                 @if (setup().mode === 'learn') {
@@ -196,7 +191,9 @@ interface PracticeSetup {
                   {{
                     setup().mode === 'mock'
                       ? 'The timer starts when you begin. Your responses save automatically; a refresh will not reset the deadline.'
-                      : 'Take your time. Check each answer and learn from the explanation. Learning sessions build mastery evidence but do not count toward exam readiness.'
+                      : c.goal === 'readiness'
+                        ? 'Take your time. Check each answer and learn from the explanation. Learning sessions build mastery evidence but do not count toward exam readiness.'
+                        : 'Take your time. Check each answer and learn from the explanation. Your first answers build mastery evidence.'
                   }}
                 </p>
                 @if (api.user()) {
@@ -224,6 +221,7 @@ interface PracticeSetup {
             </div>
           </ng-template>
         </div>
+        }
         <div ngTabPanel value="sources" class="tab-panel">
           <ng-template ngTabContent>
             <div class="panel">
@@ -246,6 +244,7 @@ interface PracticeSetup {
 })
 export class CoursePage {
   readonly api = inject(Api);
+  readonly site = inject(Site);
   private readonly router = inject(Router);
   // Route and query parameters, bound through withComponentInputBinding().
   readonly id = input.required<string>();
@@ -261,14 +260,23 @@ export class CoursePage {
   );
   readonly error = signal('');
   readonly busy = signal(false);
-  readonly tabs = [
-    { id: 'learn', title: 'Lessons' },
-    { id: 'map', title: 'Content map' },
-    { id: 'practice', title: 'Practice & exams' },
-    { id: 'sources', title: 'References' },
-  ];
+  readonly tabs = computed(() => {
+    const features = this.course()?.capabilities;
+    return [
+      ...(features?.lessons ? [{ id: 'learn', title: 'Lessons' }] : []),
+      { id: 'map', title: 'Content map' },
+      ...(features?.practice || features?.assessments ? [{ id: 'practice', title:
+        features.practice && features.assessments ? 'Practice & exams' : features.practice ? 'Practice' : 'Exams' }] : []),
+      { id: 'sources', title: 'References' },
+    ];
+  });
   // string | undefined matches the ngTabList selectedTab model for two-way binding.
-  readonly selectedTab = linkedSignal<string | undefined>(() => this.tab() || 'learn');
+  readonly selectedTab = linkedSignal<string | undefined>(() => {
+    const requested = this.tab();
+    return requested && this.tabs().some(t => t.id === requested) ? requested
+      : this.course()?.capabilities.lessons ? 'learn'
+      : this.tabs().some(t => t.id === 'practice') ? 'practice' : 'map';
+  });
   readonly lessonId = linkedSignal(() => this.lesson() ?? '');
   readonly course = computed(() => (this.catalog.hasValue() ? this.catalog.value() : undefined));
   readonly current = computed(() => {
@@ -282,8 +290,8 @@ export class CoursePage {
   );
   // Deep links from next steps preselect the session; the learner can still change every field.
   readonly setup = linkedSignal<PracticeSetup>(() => ({
-    blueprintId: this.blueprint() || this.course()?.blueprints[0]?.id || '',
-    mode: this.mode() === 'mock' ? 'mock' : 'learn',
+    blueprintId: this.course()?.blueprints.find(b => b.id === this.blueprint())?.id || this.course()?.blueprints[0]?.id || '',
+    mode: this.course()?.capabilities.assessments && (this.mode() === 'mock' || !this.course()?.capabilities.practice) ? 'mock' : 'learn',
     focus: this.objective() ? 'objective' : '',
     objectiveId: this.objective() ?? '',
   }));

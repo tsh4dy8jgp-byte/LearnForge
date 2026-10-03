@@ -14,6 +14,7 @@ const sample: DashboardDto = {
       version: '1.0.0',
       enrollment: 'active',
       lessonCount: 3,
+      capabilities: { lessons: true, practice: true, assessments: true },
       completedLessons: ['sets-intro'],
       revisedLessons: [],
       objectives: [

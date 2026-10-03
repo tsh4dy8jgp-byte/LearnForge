@@ -31,6 +31,7 @@ public sealed class LearningRecordService(AppDb db, ReleaseCache releases, TimeP
     public async Task CompleteLesson(string user, string packId, string lessonId)
     {
         var release = await Release(packId);
+        if (!release.Pack.Features.Lessons) throw new DomainError(400, "This pack does not offer lessons.");
         if (!release.LessonHashes.TryGetValue(lessonId, out var hash)) throw new DomainError(404, "Lesson not found.");
         var progress = await db.LessonProgress.FindAsync(user, packId, lessonId);
         if (progress is null) db.LessonProgress.Add(new() { UserId = user, PackId = packId, LessonId = lessonId, CompletedAt = Now, ContentHash = hash });
@@ -99,11 +100,11 @@ public sealed class LearningRecordService(AppDb db, ReleaseCache releases, TimeP
             mastery.Select(m => new ObjectiveMasteryDto(m.ObjectiveId, objectives[m.ObjectiveId].Title, objectives[m.ObjectiveId].Prerequisites,
                 m.State, m.Correct, m.Considered, m.Independent, m.LastEvidenceAt, m.ReviewDue,
                 pack.Lessons.Where(l => l.ObjectiveIds.Contains(m.ObjectiveId)).Select(l => l.Id).ToArray(),
-                pack.Questions.Any(q => q.ScenarioId is null && q.ObjectiveIds.Contains(m.ObjectiveId)))).ToArray(),
+                pack.Features.Practice && pack.Questions.Any(q => q.ScenarioId is null && q.ObjectiveIds.Contains(m.ObjectiveId)))).ToArray(),
             NextStepPlanner.Plan(pack, mastery, completed, readiness).Select(s => new NextStepDto(s.Kind, s.Reason,
                 s.ObjectiveId, s.ObjectiveId is null ? null : objectives[s.ObjectiveId].Title,
                 s.LessonId, s.LessonId is null ? null : lessons[s.LessonId].Title, s.BlueprintId)).ToArray(),
             new CourseGoalStatusDto(pack.Goal, met, proficient, pack.Objectives.Length, completed.Count, pack.Lessons.Length, readiness),
-            enrollment?.LastActivityAt);
+            enrollment?.LastActivityAt, pack.Features);
     }
 }
