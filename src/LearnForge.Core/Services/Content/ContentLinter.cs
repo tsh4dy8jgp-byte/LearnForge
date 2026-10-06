@@ -153,8 +153,13 @@ public static partial class ContentLinter
         var rest = ids.Select(id => id[prefix.Length..]).ToArray();
         if (rest.All(r => r.Length == 1 && char.IsAsciiLetterLower(r[0])))
             return rest.Zip(rest.Skip(1)).All(p => string.CompareOrdinal(p.First, p.Second) < 0);
+        // IDs may hold up to 100 digits, so compare numerically by length, then ordinally, instead of parsing.
         if (rest.All(r => r.Length > 0 && r.All(char.IsAsciiDigit)))
-            return rest.Select(r => long.Parse(r)).Zip(rest.Skip(1).Select(r => long.Parse(r))).All(p => p.First < p.Second);
+        {
+            var numbers = rest.Select(r => r.TrimStart('0')).ToArray();
+            return numbers.Zip(numbers.Skip(1)).All(p => p.First.Length < p.Second.Length
+                || (p.First.Length == p.Second.Length && string.CompareOrdinal(p.First, p.Second) < 0));
+        }
         return false;
     }
 

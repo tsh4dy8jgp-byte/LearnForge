@@ -118,6 +118,11 @@ public class ContentLinterTests
             new(ScoringPolicy.Partial, ["s1", "s2", "s3"]), "Name resolution comes first, then the connection, then the request itself.");
         Assert.Contains("LF210", Codes(steps));
         Assert.DoesNotContain("LF210", Codes(steps with { Grading = new(ScoringPolicy.Partial, ["s2", "s1", "s3"]) }));
+        // Numeric suffixes longer than any integer type still compare correctly instead of overflowing.
+        var huge = steps with { Options = steps.Options.Select((o, i) => o with { Id = "s" + new string('9', 40) + i }).ToArray(),
+            Grading = new(ScoringPolicy.Partial, Enumerable.Range(0, 3).Select(i => "s" + new string('9', 40) + i).ToArray()) };
+        Assert.Contains("LF210", Codes(huge));
+        Assert.Contains("LF210", Codes(steps with { Options = [new("s9", "Resolve"), new("s10", "Connect"), new("s11", "Send")], Grading = new(ScoringPolicy.Partial, ["s9", "s10", "s11"]) }));
         Assert.Contains(ContentLinter.Lint(CoreTests.Demo()), d => d.Code == "LF210" && d.Path == "questions");
     }
 

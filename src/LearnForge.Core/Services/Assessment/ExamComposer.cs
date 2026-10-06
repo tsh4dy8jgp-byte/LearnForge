@@ -94,6 +94,11 @@ public static class ExamComposer
         }
         bool FitsQuotas(int g, int remainingAfter)
         {
+            if (primaries[g].Length == 1)
+            {
+                var p = primaries[g][0];
+                return primaryCount[p] < high[p] && deficit - (primaryCount[p] < low[p] ? 1 : 0) <= remainingAfter;
+            }
             var added = new Dictionary<int, int>();
             foreach (var p in primaries[g]) added[p] = added.GetValueOrDefault(p) + 1;
             var relief = 0;
