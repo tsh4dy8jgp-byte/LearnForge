@@ -51,7 +51,7 @@ Compose is configured for **local development**, bound to loopback. Its sample p
 | Case studies | Shared backgrounds, atomic selection, optional forward-only mock sections |
 | Reliability | Server deadlines, automatic expiry, immutable snapshots, revisions, idempotent writes, resume |
 | Learner area | Dashboard, history, results review, objective analysis, lesson suggestions, readiness |
-| Content workflow | Typed JSON templates, compiler, watch mode, deterministic artifacts, question diffs, Content Studio |
+| Content workflow | Typed JSON templates, compact exam/1 sources, giveaway lint, compiler, watch mode, hot-reload pack folders, deterministic artifacts, question diffs, Content Studio |
 | Product profiles | Course, exam, and hybrid pack capabilities; runtime branding and date/number locales; saved publisher drafts and learner preview |
 | Appearance | Three responsive layouts, five colour schemes including dark mode, browser preferences and deployment defaults |
 | Publishing | Publisher role, immutable versions, audit events, preserved historical attempts |
@@ -78,6 +78,15 @@ This is a transparent practice recommendation, not a calibrated probability of p
 
 ## Create a subject
 
+For exam preparation, the fastest route is one compact JSON file. Use the [exam question generator prompt](docs/prompts/exam-question-generator.md) with any capable AI assistant: it interviews you about your exam, confirms a blueprint, then writes a 100–150-question bank in the `exam/1` format. You can also copy the [sample exam](docs/examples/exam-sample.json). Save the file in `packs/` while `make dev` runs, or import it in Content Studio. LearnForge derives option IDs, scoring and weighted mock exams, and `lint` flags likely answer giveaways:
+
+```sh
+dotnet run --project tools/cli -- check packs/my-exam.json
+dotnet run --project tools/cli -- lint packs/my-exam.json
+```
+
+For courses with lessons, or full control over the pack format:
+
 ```sh
 dotnet run --project tools/cli -- init packs/my-subject.json
 dotnet run --project tools/cli -- check packs/my-subject.json
@@ -97,7 +106,7 @@ dotnet run --project tools/cli -- init packs/my-hybrid.json --profile hybrid
 
 Course packs can be lesson-only and use a completion or mastery goal. Exam packs can be question-first and use assessment/readiness policies. The pack profile and capabilities control which learner surfaces and session modes are available.
 
-New files under `packs/` are validated and seeded after rebuilding and restarting the API. Existing releases are never overwritten: increment `version`. To publish without restarting, register an account, grant it Publisher, sign out/in, then use **Content Studio**:
+New files under `packs/` are validated and seeded when the API starts. With `make dev`, the API also watches `packs/` and publishes a new file or version within about ten seconds. Other deployments can watch a folder too (see [operations](docs/operations.md#drop-folder-hot-reload)). Existing releases are never overwritten: increment `version`. To publish from the browser, register an account, grant it Publisher, sign out/in, then use **Content Studio**:
 
 ```sh
 dotnet run --project apps/api -- --grant-publisher you@example.com
@@ -119,6 +128,7 @@ Read the [authoring guide](docs/authoring.md) for templates and question contrac
 | --- | --- |
 | [Reasoning foundations](packs/reasoning-foundations.json) | 3 objectives, 3 lessons, 40 template-generated questions across all five formats |
 | [Evidence lab](packs/evidence-lab.json) | A different subject: 2 shared cases, 10 questions and section-locking blueprints |
+| [Web foundations sample](docs/examples/exam-sample.json) | The compact exam/1 format: 3 weighted domains, all seven question kinds and a case study (not seeded; copy it into `packs/` to try it) |
 
 These original demonstration materials use CC0-1.0. They are not official certification questions or validated exams. Small banks and superficial variants cannot substantiate real readiness; production authors must create enough independent families.
 
@@ -167,6 +177,7 @@ See [testing](docs/testing.md) for PostgreSQL tests and container verification. 
 | [Learner guide](docs/user-guide.md) | Study, practise, resume and review |
 | [Authoring](docs/authoring.md) | Create packs, templates and questions |
 | [Learning platform prompt](docs/prompts/learning-platform-builder.md) | Interview a learner, design a program, and build a personalized learning experience |
+| [Exam question generator prompt](docs/prompts/exam-question-generator.md) | Interview a candidate, then write a 100–150-question exam/1 bank that avoids answer giveaways |
 | [Content engine](docs/content-engine.md) | Validation, artifacts and cross-validation limits |
 | [Assessment](docs/assessment.md) | Scoring, composition, timing and readiness |
 | [Architecture](docs/architecture.md) | Modules, data contracts and extension points |

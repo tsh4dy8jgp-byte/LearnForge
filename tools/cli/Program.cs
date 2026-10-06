@@ -4,7 +4,7 @@ using LearnForge.Core;
 
 if (args.Length == 0 || args[0] is "help" or "--help")
 {
-    Console.WriteLine("LearnForge content compiler\n  check <source.json> [--watch] [--json]\n  build <source.json> --out <directory>\n  diff <before.json> <after.json>\n  init <source.json> [--profile course|exam|hybrid]\nTemplates use $use + values; see docs/authoring.md.");
+    Console.WriteLine("LearnForge content compiler\n  check <source.json> [--watch] [--json]\n  lint <source.json> [--json] [--strict]\n  build <source.json> --out <directory>\n  diff <before.json> <after.json>\n  init <source.json> [--profile course|exam|hybrid]\nSources are packs, {templates, pack} wrappers or compact \"format\": \"exam/1\" exams; see docs/authoring.md.");
     return 0;
 }
 try
@@ -42,6 +42,20 @@ try
             if (hash != last) { Report(ContentEngine.Compile(source)); last = hash; }
             await Task.Delay(400);
         }
+    }
+    if (command == "lint")
+    {
+        // Quality warnings flag likely giveaways; they never fail a compile, so only --strict turns them into a failing exit code.
+        var linted = Compile(path);
+        var warnings = linted.Success ? ContentLinter.Lint(linted.Pack!) : [];
+        if (args.Contains("--json")) Console.WriteLine(Json.Write(new { linted.Success, linted.Hash, linted.Diagnostics, Warnings = warnings }));
+        else
+        {
+            Report(linted);
+            foreach (var w in warnings) Console.WriteLine($"{w.Code} {w.Path}: {w.Message}");
+            if (linted.Success) Console.WriteLine(warnings.Length == 1 ? "1 quality warning." : $"{warnings.Length} quality warnings.");
+        }
+        return !linted.Success || (args.Contains("--strict") && warnings.Length > 0) ? 1 : 0;
     }
     var compilation = Compile(path); Report(compilation);
     if (!compilation.Success) return 1;

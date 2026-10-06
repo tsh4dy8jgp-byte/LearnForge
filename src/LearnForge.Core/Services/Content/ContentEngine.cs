@@ -19,6 +19,16 @@ public static partial class ContentEngine
                 ?? throw new InvalidOperationException("A pack must be a JSON object.");
             var templates = root["templates"] as JsonObject ?? new JsonObject();
             var node = Expand(root["pack"] ?? root, templates, new JsonObject(), 0, new ExpansionBudget());
+            // A direct pack has no "format" property (unknown properties are rejected), so its presence selects a compact source.
+            if (node is JsonObject compact && compact.ContainsKey("format"))
+            {
+                var format = compact["format"] is JsonValue value && value.TryGetValue<string>(out var name) ? name : null;
+                if (format != ExamSourceAdapter.Format) throw new InvalidOperationException($"Unknown source format '{format}'. Supported: {ExamSourceAdapter.Format}.");
+                var exam = compact.Deserialize<ExamSource>(Json.Options) ?? throw new JsonException("Missing exam source.");
+                var conversion = new List<Diagnostic>();
+                var converted = ExamSourceAdapter.ToPack(exam, conversion);
+                return converted is null ? new(null, conversion.ToArray(), hash) : new(converted, Validate(converted), hash);
+            }
             var pack = node!.Deserialize<Pack>(Json.Options) ?? throw new JsonException("Missing pack.");
             if (pack.Profile == ProductProfile.Course && node is JsonObject body && !body.ContainsKey("goal"))
                 pack = pack with { Goal = CourseGoal.Completion };
@@ -200,6 +210,8 @@ public static partial class ContentEngine
         {
             References(b.Id, b.ObjectiveIds);
             if (b.Size is not (AssessmentSize.Short or AssessmentSize.Full) || b.Count < 1 || b.Count > 100 || b.Minutes is < 1 or > 600) Error(b.Id, "Invalid size/count/duration.");
+            if (b.ObjectiveWeights is { } weights && (!weights.Keys.ToHashSet().SetEquals(b.ObjectiveIds) || weights.Values.Any(w => w is <= 0 or > 1000)))
+                Error(b.Id, "objectiveWeights needs one positive weight (at most 1000) for each blueprint objective.");
             if (errors.Count == 0)
                 try { ExamComposer.Compose(p, b, [], "validation"); }
                 catch (InvalidOperationException ex) { Error(b.Id, ex.Message); }

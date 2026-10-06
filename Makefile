@@ -12,6 +12,8 @@ build:
 check-content:
 	dotnet run --project tools/cli -- check packs/reasoning-foundations.json
 	dotnet run --project tools/cli -- check packs/evidence-lab.json
+	dotnet run --project tools/cli -- check docs/examples/exam-sample.json
+	dotnet run --project tools/cli -- lint docs/examples/exam-sample.json --strict
 browser-test:
 	cd apps/web && npx playwright test
 api-types:

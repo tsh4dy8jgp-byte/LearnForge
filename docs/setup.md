@@ -66,7 +66,9 @@ The process grants the role and exits without starting another listening server.
 docker compose exec api dotnet LearnForge.Api.dll --grant-publisher author@example.com
 ```
 
-Sign out/in. Content Studio appears. Upload or paste a source pack, validate, inspect diagnostics, then publish a new immutable version.
+Sign out/in. Content Studio appears. Upload or paste a source pack (a full pack or a compact exam/1 file), validate, inspect diagnostics and quality warnings, then publish a new immutable version.
+
+Without Studio, `make dev` also watches the repository's `packs/` folder: save a valid pack there and it is published within about ten seconds. The [operations guide](operations.md#drop-folder-hot-reload) covers watched folders for other setups.
 
 ## Ports and origins
 

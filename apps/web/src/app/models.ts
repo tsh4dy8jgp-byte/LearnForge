@@ -19,6 +19,7 @@ export type {
   CourseProgressDto,
   CurrentUserResponse as User,
   DashboardDto,
+  Diagnostic,
   DeliveryQuestion as Question,
   EnrollmentStatus,
   Grade,

@@ -22,11 +22,11 @@ A pack contains Objective, Lesson, Question, Scenario, Blueprint, ReadinessPolic
 
 The implementation uses enums for question kinds, block kinds, scoring policies, assessment mode/size, attempt status and practice focus. API request and response contracts are named records; dashboard, attempt and result endpoints do not expose untyped object return values or anonymous public response shapes.
 
-The compiler rejects unknown JSON properties, invalid IDs, missing references, prerequisite cycles, unsupported kinds, malformed answer keys, unsafe source URLs and infeasible blueprints.
+The compiler rejects unknown JSON properties, invalid IDs, missing references, prerequisite cycles, unsupported kinds, malformed answer keys, unsafe source URLs and infeasible blueprints. It also accepts the compact `exam/1` source (`ExamSource` records), which `ExamSourceAdapter` expands into an ordinary pack before the same validation; option IDs are derived from question, bank and text so they never reveal the key. `ContentLinter` adds non-blocking quality warnings for likely answer giveaways. Blueprints may carry `objectiveWeights`, which `ExamComposer` honours within one question per objective.
 
 ## API modules
 
-Program.cs configures Identity cookies, CSRF, security headers, rate limits, authorization and built-in request validation, then maps the endpoint modules in `Endpoints/*` (C# 14 extension members). `Startup/DatabaseInitializer` migrates, backfills the evidence ledger, seeds packs and grants the Publisher role.
+Program.cs configures Identity cookies, CSRF, security headers, rate limits, authorization and built-in request validation, then maps the endpoint modules in `Endpoints/*` (C# 14 extension members). `Startup/DatabaseInitializer` migrates, backfills the evidence ledger, seeds packs through `PackSeeder` (strictly: one invalid file stops startup) and grants the Publisher role. When `Content:WatchSeconds` is positive, `PackWatcher` rescans the pack directories and publishes settled new files leniently, logging invalid ones.
 
 AttemptService is the state machine. It validates ownership, creates deterministic selections, shuffles delivery copies, saves idempotently, enforces revisions and locks, finalizes deadlines and produces sanitized views. DeliveryQuestion deliberately omits keys and explanations while an attempt is active.
 
@@ -48,9 +48,10 @@ Add a question kind in this order:
 2. Add server Grader validation and scoring.
 3. Add composer feasibility rules.
 4. Add the sanitized delivery projection.
-5. Make sure evidence rows are written for the new kind (Grader.Score results flow into the ledger).
-6. Add Angular interaction and a keyboard alternative.
-7. Add Core, API and Playwright coverage.
-8. Update the authoring and learner guides.
+5. Map it in the exam/1 adapter (`ExamSourceAdapter`) and add any kind-specific lint rules.
+6. Make sure evidence rows are written for the new kind (Grader.Score results flow into the ledger).
+7. Add Angular interaction and a keyboard alternative.
+8. Add Core, API and Playwright coverage.
+9. Update the authoring and learner guides, and the exam question generator prompt.
 
 Keep answer IDs stable across releases when you want meaningful family analytics. Change family ID when the competency or prompt pattern changes. Importers should map external material into the pack contract and run the compiler; they should not bypass validation or write directly to release tables.

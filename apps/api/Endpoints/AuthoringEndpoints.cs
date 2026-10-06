@@ -50,12 +50,14 @@ public static class AuthoringEndpoints
                 var pack = result.Success ? result.Pack : null;
                 return new AuthoringPreviewDto(result.Success, result.Hash, result.Diagnostics,
                     pack is null ? null : CourseCatalogDto.From(pack),
-                    pack?.Questions.Select(DeliveryQuestion.From).ToArray() ?? [], pack?.Scenarios ?? []);
+                    pack?.Questions.Select(DeliveryQuestion.From).ToArray() ?? [], pack?.Scenarios ?? [],
+                    pack is null ? [] : ContentLinter.Lint(pack));
             });
             authoring.MapPost("/validate", (JsonElement source) =>
             {
                 var result = ContentEngine.Compile(source.GetRawText());
-                return new ValidationResponseDto(result.Success, result.Hash, result.Diagnostics, result.Pack?.Questions.Length, result.Pack?.Lessons.Length);
+                return new ValidationResponseDto(result.Success, result.Hash, result.Diagnostics, result.Pack?.Questions.Length, result.Pack?.Lessons.Length,
+                    result.Success ? ContentLinter.Lint(result.Pack!) : []);
             });
             authoring.MapPost("/publish", async (JsonElement source, AppDb db, ClaimsPrincipal user) =>
             {

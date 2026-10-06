@@ -1,0 +1,181 @@
+{
+  "format": "exam/1",
+  "id": "web-foundations-sample",
+  "version": "1.0.0",
+  "title": "Web foundations (exam/1 sample)",
+  "description": "A format sample for the compact exam/1 source: original, unofficial practice questions about HTTP, web security and performance. Copy it as a starting point; it is not a complete course.",
+  "license": "CC0-1.0",
+  "domains": [
+    { "id": "http", "title": "Explain how HTTP requests and responses work", "weight": 40 },
+    { "id": "security", "title": "Protect users and their data", "weight": 35 },
+    { "id": "performance", "title": "Make pages load quickly", "weight": 25 }
+  ],
+  "mocks": {
+    "short": { "count": 6, "minutes": 10 },
+    "full": { "count": 10, "minutes": 20 },
+    "lockCaseStudies": true
+  },
+  "readiness": { "shortAttempts": 2, "fullAttempts": 1, "minimumFreshPercent": 50 },
+  "caseStudies": [
+    {
+      "id": "harbor-shop",
+      "title": "Harbor Supplies online shop",
+      "background": "Harbor Supplies sells boating gear through a small online shop hosted on a single server in Frankfurt. Most customers live in Australia, and they report that product pages take more than four seconds to appear. Staff upload product photos straight from a camera, so each image is about 6 MB. Checkout already uses HTTPS, but the sign-in page still posts passwords over plain HTTP. The team has one week and a small budget, and wants the changes that matter most."
+    }
+  ],
+  "sources": [
+    { "title": "MDN Web Docs: HTTP", "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP" },
+    { "title": "OWASP Password Storage Cheat Sheet", "url": "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html" }
+  ],
+  "questions": [
+    {
+      "id": "http-redirect-status",
+      "kind": "single",
+      "domain": "http",
+      "prompt": "A page's address has changed for good, and search engines should update their links. Which status code should the server send?",
+      "answer": "301 Moved Permanently",
+      "distractors": ["302 Found", "304 Not Modified", "307 Temporary Redirect"],
+      "explanation": "301 tells clients and crawlers that the new address replaces the old one. 302 and 307 describe temporary moves, so links keep pointing at the old address, and 304 only confirms that a cached copy is still fresh."
+    },
+    {
+      "id": "http-first-visit-order",
+      "kind": "sequence",
+      "domain": "http",
+      "prompt": "Arrange what a browser does to load an HTTPS page from a server it has never contacted.",
+      "steps": [
+        "Resolve the domain name to an IP address",
+        "Open a TCP connection to the server",
+        "Complete the TLS handshake",
+        "Send the HTTP request for the page"
+      ],
+      "explanation": "The browser needs an IP address before it can connect, a TCP connection before TLS can negotiate keys, and an encrypted channel before it sends the request itself."
+    },
+    {
+      "id": "http-header-purpose",
+      "kind": "matching",
+      "domain": "http",
+      "prompt": "Match each response header to its purpose.",
+      "pairs": [
+        { "item": "Cache-Control", "match": "Sets how long a response may be reused" },
+        { "item": "Location", "match": "Points to the target of a redirect" },
+        { "item": "Content-Type", "match": "Declares the media format of the body" }
+      ],
+      "extraMatches": ["Lists the cookies the client is sending"],
+      "explanation": "Cache-Control governs reuse, Location names the redirect target and Content-Type declares the body's media type. Listing the client's cookies is the job of the Cookie request header, which a response never carries."
+    },
+    {
+      "id": "http-idempotent-writes",
+      "kind": "multiple",
+      "domain": "http",
+      "prompt": "Which TWO methods are idempotent while still changing server state?",
+      "answers": ["PUT", "DELETE"],
+      "distractors": ["GET", "POST", "PATCH"],
+      "explanation": "Repeating a PUT or DELETE leaves the resource in the same final state, yet both modify it. GET is idempotent but safe because it changes nothing, POST usually creates something new each time, and PATCH is not guaranteed to be idempotent."
+    },
+    {
+      "id": "security-session-cookie",
+      "kind": "multiple",
+      "domain": "security",
+      "prompt": "A session cookie must stay out of reach of page scripts and travel only over encrypted connections. Which TWO attributes should it carry?",
+      "answers": ["HttpOnly", "Secure"],
+      "distractors": ["SameSite=None", "Domain", "Max-Age"],
+      "explanation": "HttpOnly hides the cookie from JavaScript and Secure restricts it to HTTPS. SameSite=None loosens cross-site sending, while Domain and Max-Age only control scope and lifetime."
+    },
+    {
+      "id": "security-password-storage",
+      "kind": "dropdown",
+      "domain": "security",
+      "prompt": "Complete the password storage policy.",
+      "blanks": [
+        {
+          "text": "Process each password with",
+          "answer": "a salted, slow hash like Argon2",
+          "distractors": ["a fast, unsalted hash like MD5", "reversible encryption like AES"]
+        },
+        {
+          "text": "Store each salt",
+          "answer": "next to its password hash",
+          "distractors": ["in a shared config file", "in the user's browser"]
+        }
+      ],
+      "explanation": "A slow, salted hash makes stolen hashes expensive to crack, whereas fast hashes and reversible encryption expose passwords quickly. Salts are not secret; each one is stored with its hash so the server can verify the next sign-in."
+    },
+    {
+      "id": "security-stored-xss",
+      "kind": "single",
+      "domain": "security",
+      "prompt": "A comment form displays user input on a public page. Which measure most directly prevents stored cross-site scripting?",
+      "answer": "Encode output for the HTML context it lands in",
+      "distractors": [
+        "Serve the page that shows comments over HTTPS",
+        "Hash each comment before it is saved",
+        "Cap each comment at five hundred characters"
+      ],
+      "explanation": "Context-aware output encoding makes the browser treat a comment as text instead of markup. HTTPS protects data in transit, hashing would make comments unreadable, and a short script still fits within a length cap."
+    },
+    {
+      "id": "performance-transfer-time",
+      "kind": "numeric",
+      "domain": "performance",
+      "prompt": "A 15 MB file is downloaded over a steady 40 Mbit/s connection. Taking 1 MB as 8 Mbit and ignoring protocol overhead, how many seconds does the download take?",
+      "answer": 3,
+      "tolerance": 0.05,
+      "explanation": "15 MB is 120 Mbit, and 120 Mbit divided by 40 Mbit/s is 3 seconds. Forgetting to convert bytes to bits gives 0.375 seconds instead."
+    },
+    {
+      "id": "performance-cache-trace",
+      "kind": "codeOutput",
+      "domain": "performance",
+      "prompt": "What does this program print?",
+      "code": {
+        "language": "javascript",
+        "source": "const cache = new Map();\nfunction lookup(key) {\n  if (cache.has(key)) return \"hit\";\n  cache.set(key, true);\n  return \"miss\";\n}\nconsole.log(lookup(\"a\"), lookup(\"b\"), lookup(\"a\"));"
+      },
+      "answer": "miss miss hit",
+      "explanation": "The first two lookups find empty entries and store them, so they print miss. The third lookup repeats key a, which is now cached, so it prints hit; console.log separates its arguments with spaces."
+    },
+    {
+      "id": "harbor-first-fix",
+      "kind": "single",
+      "domain": "security",
+      "caseStudy": "harbor-shop",
+      "prompt": "Which change should the team make first to protect customer accounts?",
+      "answer": "Serve the sign-in page over HTTPS",
+      "distractors": [
+        "Add a CAPTCHA to the sign-in form",
+        "Expire passwords after 30 days",
+        "Hide the sign-in link from crawlers"
+      ],
+      "explanation": "Passwords sent over plain HTTP can be read by anyone on the network path, so encrypting the sign-in page closes the most direct exposure. A CAPTCHA slows bots, forced expiry adds friction, and hiding the link changes nothing about how passwords travel."
+    },
+    {
+      "id": "harbor-load-time",
+      "kind": "multiple",
+      "domain": "performance",
+      "caseStudy": "harbor-shop",
+      "prompt": "Which TWO changes would most reduce load times for the shop's main audience?",
+      "answers": ["Put a CDN with edges in Sydney in front of the site", "Resize and recompress the camera photos"],
+      "distractors": [
+        "Double the memory on the Frankfurt server",
+        "Switch checkout from HTTPS back to HTTP",
+        "Add more product categories to the menu"
+      ],
+      "explanation": "A nearby CDN edge removes most of the round-trip delay to Frankfurt, and smaller images cut the bytes per page. Extra memory does not shorten the distance, dropping HTTPS sacrifices security for little gain, and more categories add weight."
+    },
+    {
+      "id": "harbor-image-plan",
+      "kind": "dropdown",
+      "domain": "performance",
+      "caseStudy": "harbor-shop",
+      "prompt": "Complete the team's plan for product images.",
+      "blanks": [
+        {
+          "text": "Before upload, scale each photo to",
+          "answer": "the largest size the page shows",
+          "distractors": ["its original camera resolution", "a fixed 64-pixel thumbnail"]
+        }
+      ],
+      "explanation": "Scaling to the largest displayed size keeps photos sharp without shipping pixels nobody sees. The camera original is what makes pages slow today, and a 64-pixel thumbnail is too small for a product page."
+    }
+  ]
+}

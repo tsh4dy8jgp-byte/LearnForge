@@ -71,11 +71,20 @@ import { Site } from '../site-settings';
               <button class="button" [disabled]="busy() || saving() || !report()?.success" (click)="publish()">Publish new release</button>
             </div>
             @if (report(); as report) {
-              <div role="status"><p>{{ report.success ? 'Validation passed. Review the preview before publishing.' : 'Content needs attention before it can be published.' }}</p></div>
+              <div role="status"><p>{{ reportStatus() }}</p></div>
               @if (report.diagnostics.length) {
                 <ul aria-label="Content diagnostics">
                   @for (diagnostic of report.diagnostics; track $index) {
                     <li><a href="#pack-source" (click)="focusSource($event)">{{ diagnostic.code }} · {{ diagnostic.path }}</a>: {{ diagnostic.message }}</li>
+                  }
+                </ul>
+              }
+              @if (report.warnings.length) {
+                <h2 id="quality-warnings">Quality warnings ({{ report.warnings.length }})</h2>
+                <p class="muted small">These flag likely answer giveaways and gaps in the bank. They never block publishing.</p>
+                <ul aria-labelledby="quality-warnings">
+                  @for (warning of report.warnings; track $index) {
+                    <li><a [attr.href]="questionFor(warning.path) ? '#preview-question' : '#pack-source'" (click)="inspect($event, warning.path)">{{ warning.code }} · {{ warning.path }}</a>: {{ warning.message }}</li>
                   }
                 </ul>
               }
@@ -97,7 +106,7 @@ import { Site } from '../site-settings';
               }
               @if (catalog.capabilities.practice || catalog.capabilities.assessments) {
                 <label>Preview question
-                  <select [ngModel]="questionId()" (ngModelChange)="questionId.set($event)">
+                  <select id="preview-question" [ngModel]="questionId()" (ngModelChange)="questionId.set($event)">
                     @for (question of report()?.questions ?? []; track question.id; let i = $index) {
                       <option [value]="question.id">{{ i + 1 }} · {{ question.id }}</option>
                     }
@@ -141,6 +150,14 @@ export class StudioPage {
   readonly dirty = computed(() => this.activeDraft()
     ? this.title() !== this.activeDraft()!.title || this.source() !== this.activeDraft()!.source
     : !!(this.source() || this.title()));
+  readonly reportStatus = computed(() => {
+    const report = this.report();
+    if (!report?.success) return 'Content needs attention before it can be published.';
+    const count = report.warnings.length;
+    return count
+      ? `Validation passed with ${count} quality warning${count === 1 ? '' : 's'}. Review them and the preview before publishing.`
+      : 'Validation passed. Review the preview before publishing.';
+  });
   readonly lessonId = linkedSignal(() => this.report()?.catalog?.lessons[0]?.id ?? '');
   readonly questionId = linkedSignal(() => this.report()?.questions[0]?.id ?? '');
   readonly previewLesson = computed(() => this.report()?.catalog?.lessons.find(l => l.id === this.lessonId()));
@@ -256,6 +273,19 @@ export class StudioPage {
   focusSource(event: Event) {
     event.preventDefault();
     document.getElementById('pack-source')?.focus();
+  }
+  // Warning paths are a question ID, or a question ID followed by ".slot"; bank-level paths name no question.
+  questionFor(path: string) {
+    return (this.report()?.questions ?? [])
+      .filter((q) => path === q.id || path.startsWith(q.id + '.'))
+      .sort((a, b) => b.id.length - a.id.length)[0]?.id;
+  }
+  inspect(event: Event, path: string) {
+    const id = this.questionFor(path);
+    if (!id) return this.focusSource(event);
+    event.preventDefault();
+    this.questionId.set(id);
+    document.getElementById('preview-question')?.focus();
   }
   download() {
     const url = URL.createObjectURL(new Blob([this.source()], { type: 'application/json' }));

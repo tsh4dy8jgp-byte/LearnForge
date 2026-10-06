@@ -65,6 +65,7 @@ builder.Services.AddOptions<SiteSettings>().Bind(builder.Configuration.GetSectio
     .Validate(settings => settings.IsValid(), "Invalid Site settings. Check layout, color scheme, text lengths, locale, home page, font, local logo path and primary-color contrast (4.5:1).")
     .ValidateOnStart();
 builder.Services.AddHostedService<ExpiryWorker>();
+builder.Services.AddHostedService<PackWatcher>();
 builder.Services.AddOpenApi();
 // .NET 10 minimal API validation: DataAnnotations on request records are enforced before handlers run.
 builder.Services.AddValidation();
