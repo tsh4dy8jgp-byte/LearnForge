@@ -85,7 +85,7 @@ Authors never write option IDs. Each option ID is `o` plus eight hex digits of a
 | LF204 | A prompt word of five or more letters repeated in the key but in no distractor |
 | LF205 | The key's wording appears in the stem (or blank text) while no distractor's does |
 | LF206 | A stem ending in "a" or "an" that only some options fit |
-| LF207 | "All/none of the above", "both A and B" or references to option letters; options are shuffled and unlabeled |
+| LF207 | "All/none of the above", "both A and B" or references to option letters; options are shuffled for every attempt, so positions and letters change |
 | LF208 | Options that read the same once case and punctuation are ignored |
 | LF209 | Too few options: single under 4, multiple under 2 distractors, dropdown blank under 3, matching without an extra match, sequence outside 3–8 steps |
 | LF210 | Predictable option IDs: names such as `correct` or `wrong`, sequence IDs ascending in key order, or one key ID in half the single-choice questions |

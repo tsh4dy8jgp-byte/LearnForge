@@ -311,7 +311,7 @@ Stems
 Options
 5. Keep the key within about 15% of the distractors' length and level of detail. Across the bank, the key should be the longest option no more often than chance (about one item in four) and not habitually the shortest. (LF201, LF202)
 6. Do not put absolutes (always, never, only, all, guaranteed) only in distractors, or hedges (usually, may, typically) only in the key. Use precise, conditional wording in every option. (LF203)
-7. Never use "all of the above", "none of the above", "both A and B" or references to option letters; options are shuffled and unlabeled. (LF207)
+7. Never use "all of the above", "none of the above", "both A and B" or references to option letters; options are shuffled for every attempt, so positions and letters change. (LF207)
 8. Make options homogeneous: the same category, grammar, specificity and tone. Every distractor is plausible to a partly prepared candidate, reflects a real misconception or common mistake, and is wrong for a reason you could state. No joke or absurd options.
 9. Keep options distinct: no duplicates, near-duplicates, or options that imply or contain each other. (LF208)
 10. Offer enough options: single, 4 (one key and three distractors); multiple, at least 2 distractors; dropdown, 3–4 choices per blank; matching, at least one extra match; sequence, 4–6 steps. (LF209)

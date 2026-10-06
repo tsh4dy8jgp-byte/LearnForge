@@ -58,7 +58,7 @@ public static partial class ContentLinter
         var banks = new[] { q.Options }.Concat(q.Slots.Select(s => s.Options)).Where(b => b.Length > 0).ToArray();
         var texts = banks.SelectMany(b => b).Select(o => o.Text).Append(q.Prompt).Append(q.Explanation);
         if (banks.SelectMany(b => b).Any(o => CatchAll().IsMatch(o.Text) || PairedLetters().IsMatch(o.Text)) || texts.Any(t => LetterReference().IsMatch(t)))
-            warn("LF207", q.Id, "Avoid “all/none of the above”, “both A and B” and references to option letters: options are shuffled and unlabeled.");
+            warn("LF207", q.Id, "Avoid “all/none of the above”, “both A and B” and references to option letters: options are shuffled for every attempt, so positions and letters change.");
         if (banks.Any(b => b.Select(o => Normalize(o.Text)).Distinct().Count() != b.Length))
             warn("LF208", q.Id, "Two options read the same once case and punctuation are ignored.");
 
