@@ -7,4 +7,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.12" />
     <ProjectReference Include="../../apps/api/LearnForge.Api.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="../../docs/examples/*.json" Link="examples/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../docs/prompts/exam-question-generator.md" Link="prompts/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>
