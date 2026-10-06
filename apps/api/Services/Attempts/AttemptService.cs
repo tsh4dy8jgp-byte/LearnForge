@@ -61,7 +61,7 @@ public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache re
         var seen = history.Select(e => e.FamilyId).ToHashSet();
         var chosen = request.Focus is { } focus
             ? Focused(pack, blueprint, request, focus, history, seen)
-            : ExamComposer.Compose(pack, blueprint, seen, request.RequestId);
+            : Compose(pack, blueprint, seen, request.RequestId);
         chosen = chosen.OrderBy(q => q.ScenarioId is null ? 0 : 1).ThenBy(q => q.ScenarioId).Select(Shuffle).ToArray();
         var snapshot = new AttemptSnapshot(pack.Title, pack.Version, pack.Objectives, pack.Scenarios, blueprint, chosen, pack.Readiness ?? new(), pack.Goal);
         var attempt = new Attempt
@@ -76,6 +76,14 @@ public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache re
         await learning.Touch(user, pack.Id);
         await db.SaveChangesAsync();
         return attempt;
+    }
+
+    // Validation proves every blueprint can be composed, and the constraints do not depend on the seed, but the bounded
+    // search can still run out of steps for an unlucky seed. A new request ID is a new seed, so ask the learner to retry.
+    private static Question[] Compose(Pack pack, Blueprint blueprint, HashSet<string> seen, string seed)
+    {
+        try { return ExamComposer.Compose(pack, blueprint, seen, seed); }
+        catch (InvalidOperationException) { throw new DomainError(409, "This session could not be assembled. Start again; if it keeps failing, contact the course publisher."); }
     }
 
     private sealed record EvidenceRow(long Id, string QuestionId, string FamilyId, string[] ObjectiveIds,

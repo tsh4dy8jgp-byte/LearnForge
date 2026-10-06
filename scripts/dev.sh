@@ -9,7 +9,9 @@ Promise.all([5080,4300].map(port => new Promise((resolve,reject) => {
   server.listen(port,'127.0.0.1',()=>server.close(resolve));
 }))).catch(error => { console.error(error.message); process.exitCode=1; });
 JS
-ASPNETCORE_ENVIRONMENT=Development dotnet run --project apps/api --no-launch-profile -- --urls http://127.0.0.1:5080 &
+# Watch the repository's packs/ folder too, so a pack file saved there is published within seconds, without a restart.
+ASPNETCORE_ENVIRONMENT=Development Content__PackDirectories__0="$PWD/packs" Content__WatchSeconds=5 \
+  dotnet run --project apps/api --no-launch-profile -- --urls http://127.0.0.1:5080 &
 api_pid=$!
 npm start --prefix apps/web &
 web_pid=$!
