@@ -1110,7 +1110,8 @@
           "diagnostics",
           "catalog",
           "questions",
-          "scenarios"
+          "scenarios",
+          "warnings"
         ],
         "type": "object",
         "properties": {
@@ -1146,6 +1147,12 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Scenario"
+            }
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Diagnostic"
             }
           }
         }
@@ -1194,6 +1201,16 @@
           "lockSections": {
             "type": "boolean",
             "default": false
+          },
+          "objectiveWeights": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "number",
+              "format": "double"
+            }
           }
         }
       },
@@ -2676,7 +2693,8 @@
           "hash",
           "diagnostics",
           "questionCount",
-          "lessonCount"
+          "lessonCount",
+          "warnings"
         ],
         "type": "object",
         "properties": {
@@ -2705,6 +2723,12 @@
               "integer"
             ],
             "format": "int32"
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Diagnostic"
+            }
           }
         }
       }

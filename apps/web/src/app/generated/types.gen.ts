@@ -89,6 +89,7 @@ export type AuthoringPreviewDto = {
     catalog: null | CourseCatalogDto;
     questions: Array<DeliveryQuestion>;
     scenarios: Array<Scenario>;
+    warnings: Array<Diagnostic>;
 };
 
 export type Blueprint = {
@@ -100,6 +101,9 @@ export type Blueprint = {
     objectiveIds: Array<string>;
     requiredKinds: Array<QuestionKind>;
     lockSections?: boolean;
+    objectiveWeights?: null | {
+        [key: string]: number;
+    };
 };
 
 export type CatalogSummaryDto = {
@@ -475,6 +479,7 @@ export type ValidationResponseDto = {
     diagnostics: Array<Diagnostic>;
     questionCount: null | number;
     lessonCount: null | number;
+    warnings: Array<Diagnostic>;
 };
 
 export type GetHealthData = {
