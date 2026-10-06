@@ -14,6 +14,8 @@ FullyCorrect is independent from earned points. A partly correct response can ea
 
 A Blueprint defines count, duration, size, objective IDs and required formats. The composer groups scenario questions atomically, avoids duplicate families where possible, uses a stable SHA-256 seed and has a bounded backtracking budget. Impossible contracts fail with a diagnostic.
 
+A weighted blueprint (`objectiveWeights`) also distributes its count across objectives. Each objective's share is computed by largest remainder; a paper may land one question either side of it, and every objective gets at least one. Each question counts once, under its first objective that the blueprint includes. Case studies still move as a whole, so one is skipped when it would push an objective past its range. These constraints do not depend on the seed: validation proves a paper exists. The search budget can still run out for an unusual seed; starting a session then returns 409, and a new request (a new seed) usually succeeds.
+
 Focused learning sessions use completed evidence to select mistakes or weak objectives. They can be shorter and do not qualify for readiness. A mock has a server deadline; every read and write checks expiry. Completed attempts cannot be edited.
 
 Each response has a client UUID and expected revision. Replaying the same request and payload is safe. Reusing an ID with a different payload is rejected. A stale revision returns conflict. Only one active attempt per user and pack is allowed.

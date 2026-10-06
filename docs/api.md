@@ -18,7 +18,7 @@ All require authorization and ownership:
 
 - GET /api/me/dashboard
 - GET /api/me/attempts
-- POST /api/me/attempts with packId, blueprintId, mode, UUID requestId and optional focus
+- POST /api/me/attempts with packId, blueprintId, mode, UUID requestId and optional focus (409 when the session cannot be assembled; retry with a new request ID)
 - GET /api/me/attempts/{id}
 - PUT /api/me/attempts/{id}/responses
 - POST /api/me/attempts/{id}/section
@@ -34,6 +34,6 @@ Active response projections omit keys. Completed attempts include released grade
 
 ## Authoring
 
-Publisher role required: POST /api/authoring/validate accepts source JSON and returns diagnostics/hash; POST /api/authoring/publish compiles and creates an immutable release. The same pack ID and version cannot be published twice. Use the CLI for CI and deterministic artifacts.
+Publisher role required: POST /api/authoring/validate accepts source JSON (a pack, a template wrapper or a compact exam/1 source) and returns diagnostics, hash, counts and `warnings`; POST /api/authoring/preview also returns the safe learner projection and the same `warnings`; POST /api/authoring/publish compiles and creates an immutable release. Warnings are quality lint (LF2xx codes) and never block publishing. The same pack ID and version cannot be published twice. Use the CLI for CI and deterministic artifacts.
 
 Invalid request bodies return 400 problem details with an `errors` object keyed by field. Validation errors return 400, unauthenticated 401, forbidden 403, missing owned resources 404, conflicts 409 and rate limits 429. Unexpected errors are generic problem responses with a trace log. Clients should reload on 409 and never infer a successful write from a dropped connection.
