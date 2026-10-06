@@ -200,6 +200,8 @@ public static partial class ContentEngine
         {
             References(b.Id, b.ObjectiveIds);
             if (b.Size is not (AssessmentSize.Short or AssessmentSize.Full) || b.Count < 1 || b.Count > 100 || b.Minutes is < 1 or > 600) Error(b.Id, "Invalid size/count/duration.");
+            if (b.ObjectiveWeights is { } weights && (!weights.Keys.ToHashSet().SetEquals(b.ObjectiveIds) || weights.Values.Any(w => w is <= 0 or > 1000)))
+                Error(b.Id, "objectiveWeights needs one positive weight (at most 1000) for each blueprint objective.");
             if (errors.Count == 0)
                 try { ExamComposer.Compose(p, b, [], "validation"); }
                 catch (InvalidOperationException ex) { Error(b.Id, ex.Message); }
