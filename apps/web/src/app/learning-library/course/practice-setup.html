@@ -1,0 +1,81 @@
+<div class="practice-layout">
+  <form class="panel" (submit)="beginSession($event)">
+    <p class="eyebrow">PUT YOUR KNOWLEDGE TO WORK</p>
+    <h2>Shape your session</h2>
+    <label
+      >Session length<select [formField]="setupForm.blueprintId">
+        @for (b of course().blueprints; track b.id) {
+          <option [value]="b.id" [selected]="b.id === setup().blueprintId">
+            {{ b.title }} · {{ b.count }} questions{{
+              setup().mode === 'mock' ? ' · ' + b.minutes + ' minutes' : ''
+            }}
+          </option>
+        }
+      </select></label
+    >
+    <label
+      >Feedback mode<select [formField]="setupForm.mode">
+        @if (course().capabilities.practice) {
+          <option value="learn">Learn — check answers as you go</option>
+        }
+        @if (course().capabilities.assessments) {
+          <option value="mock">Mock exam — results after submission</option>
+        }
+      </select></label
+    >
+    @if (setup().mode === 'learn') {
+      <label
+        >Practice focus<select [formField]="setupForm.focus">
+          <option value="">Balanced practice</option>
+          <option value="weak">Weakest objectives</option>
+          <option value="mistakes">Previous mistakes</option>
+          <option value="objective">One objective</option>
+        </select></label
+      >
+      @if (setup().focus === 'objective') {
+        <label
+          >Objective<select [formField]="setupForm.objectiveId">
+            <option value="">Choose an objective…</option>
+            @for (o of course().objectives; track o.id) {
+              <option [value]="o.id" [selected]="o.id === setup().objectiveId">
+                {{ o.title }}
+              </option>
+            }
+          </select></label
+        >
+      }
+    }
+    <p class="muted">
+      {{
+        setup().mode === 'mock'
+          ? 'The timer starts when you begin. Your responses save automatically; a refresh will not reset the deadline.'
+          : course().goal === 'readiness'
+            ? 'Take your time. Check each answer and learn from the explanation. Learning sessions build mastery evidence but do not count toward exam readiness.'
+            : 'Take your time. Check each answer and learn from the explanation. Your first answers build mastery evidence.'
+      }}
+    </p>
+    @if (signedIn()) {
+      <button class="button" [disabled]="busy()">
+        {{ busy() ? 'Preparing…' : 'Begin session →' }}
+      </button>
+    } @else {
+      <a routerLink="/sign-in" class="button">Sign in to practise</a>
+    }
+  </form>
+  <aside class="recommendation">
+    <p class="eyebrow">PRACTICE WITH PURPOSE</p>
+    <h2>Understanding comes<br />from doing.</h2>
+    <p>
+      Every session draws from this course's question bank. You will see different ways to
+      demonstrate the same ideas.
+    </p>
+    <div class="feature-list">
+      <p>Single and multiple choice</p>
+      <p>Matching and dropdown blanks</p>
+      <p>Sequences and case studies</p>
+    </div>
+    <p class="small">
+      Focused practice may be shorter when your history contains fewer relevant questions.
+    </p>
+  </aside>
+</div>

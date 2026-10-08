@@ -1,0 +1,134 @@
+@if (catalog.error(); as e) {
+  <p class="alert error" role="alert">{{ errorText(e) }}</p>
+}
+@if (error()) {
+  <p class="alert error" role="alert">{{ error() }}</p>
+  <a routerLink="/attempts" class="text-link">Find your active session →</a>
+}
+@if (course(); as c) {
+  <a routerLink="/courses" class="breadcrumb">← {{ site.settings().libraryLabel }}</a>
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">
+        {{
+          c.profile === 'exam'
+            ? 'YOUR EXAM PLAN'
+            : c.profile === 'course'
+              ? 'YOUR COURSE'
+              : 'YOUR LEARNING PATH'
+        }}
+      </p>
+      <h1>{{ c.title }}</h1>
+      <p class="lead">{{ c.description }}</p>
+    </div>
+    <div class="row">
+      @if (c.capabilities.lessons) {
+        <span class="pill">{{ c.lessons.length }} lessons</span>
+      }
+      @if (c.capabilities.practice || c.capabilities.assessments) {
+        <span class="pill">{{ c.questionCount }} questions</span>
+      }
+      @if (progress.hasValue()) {
+        @switch (progress.value().enrollment) {
+          @case ('active') {
+            <button
+              class="button secondary"
+              [disabled]="busy()"
+              (click)="setEnrollment('archived')"
+            >
+              Archive course
+            </button>
+          }
+          @case ('archived') {
+            <button class="button" [disabled]="busy()" (click)="setEnrollment('active')">
+              Restore to my courses
+            </button>
+          }
+          @default {
+            <button class="button" [disabled]="busy()" (click)="setEnrollment('active')">
+              Add to my courses
+            </button>
+          }
+        }
+      }
+    </div>
+  </div>
+  @if (progress.hasValue() && progress.value().nextSteps.length) {
+    <section class="panel">
+      <p class="eyebrow">A GOOD NEXT STEP</p>
+      <lf-next-steps [packId]="c.id" [steps]="progress.value().nextSteps" />
+    </section>
+  }
+  <div ngTabs>
+    <div
+      ngTabList
+      class="tabs"
+      selectionMode="follow"
+      [(selectedTab)]="selectedTab"
+      aria-label="Course views"
+    >
+      @for (t of tabs(); track t.id) {
+        <button type="button" ngTab [value]="t.id">{{ t.title }}</button>
+      }
+    </div>
+    @if (c.capabilities.lessons) {
+      <div ngTabPanel value="learn" class="tab-panel">
+        <ng-template ngTabContent>
+          <lf-course-lessons
+            [course]="c"
+            [lessonId]="lessonId()"
+            [completed]="completed()"
+            [revised]="revised()"
+            [signedIn]="!!session.user()"
+            [busy]="busy()"
+            (selectLesson)="lessonId.set($event)"
+            (completeLesson)="complete($event)"
+          />
+        </ng-template>
+      </div>
+    }
+    <div ngTabPanel value="map" class="tab-panel">
+      <ng-template ngTabContent>
+        <lf-objective-map
+          [course]="c"
+          [mastery]="mastery()"
+          [signedIn]="!!session.user()"
+          (openLesson)="openLesson($event)"
+          (practise)="practise($event)"
+        />
+      </ng-template>
+    </div>
+    @if (c.capabilities.practice || c.capabilities.assessments) {
+      <div ngTabPanel value="practice" class="tab-panel">
+        <ng-template ngTabContent>
+          <lf-practice-setup
+            [course]="c"
+            [(setup)]="setup"
+            [signedIn]="!!session.user()"
+            [busy]="busy()"
+            [startSession]="startSession"
+          />
+        </ng-template>
+      </div>
+    }
+    <div ngTabPanel value="sources" class="tab-panel">
+      <ng-template ngTabContent>
+        <div class="panel">
+          <h2>Sources & attribution</h2>
+          <p>Content license: {{ c.license }} · Release {{ c.version }}</p>
+          @for (s of c.sources; track s.url) {
+            <p>
+              <a [href]="s.url" target="_blank" rel="noopener noreferrer" class="text-link"
+                >{{ s.title }} ↗</a
+              >
+            </p>
+          } @empty {
+            <p class="muted">This course contains original demonstration material.</p>
+          }
+        </div>
+      </ng-template>
+    </div>
+  </div>
+} @else if (catalog.isLoading()) {
+  <p class="empty">Loading the course…</p>
+}

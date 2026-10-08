@@ -1,0 +1,96 @@
+<section class="panel">
+  <label
+    >Draft title
+    <input
+      maxlength="120"
+      [ngModel]="editor.title()"
+      (ngModelChange)="editor.title.set($event)"
+      [disabled]="editor.busy()"
+    />
+  </label>
+  <label for="pack-source">Pack source</label>
+  <textarea
+    id="pack-source"
+    rows="24"
+    spellcheck="false"
+    [ngModel]="editor.source()"
+    (ngModelChange)="sourceChanged.emit($event)"
+    [disabled]="editor.busy()"
+    aria-describedby="source-help"
+  ></textarea>
+  <p id="source-help" class="muted small">
+    Drafts can contain unfinished JSON. Validation is required before publishing. Source files may
+    contain private answer keys.
+  </p>
+  <p role="status" aria-live="polite">
+    {{ editor.saving() ? 'Saving draft…' : editor.dirty() ? 'Unsaved changes' : 'Draft saved' }}
+  </p>
+  @if (editor.saveError()) {
+    <p class="alert error" role="alert">
+      {{ editor.saveError() }} Your changes are still in the editor. Retry saving, download your
+      source, or save a copy.
+    </p>
+  }
+  <div class="row">
+    <button
+      class="button secondary"
+      [disabled]="editor.busy() || editor.saving() || !editor.title().trim()"
+      (click)="editor.save()"
+    >
+      Save draft
+    </button>
+    <button
+      class="button secondary"
+      [disabled]="editor.busy() || editor.saving() || !editor.title().trim()"
+      (click)="editor.save(true)"
+    >
+      Save as copy
+    </button>
+    <button class="button secondary" (click)="download.emit()">Download source</button>
+  </div>
+  <div class="row">
+    <button class="button" [disabled]="editor.busy() || editor.saving()" (click)="validate.emit()">
+      Validate & preview
+    </button>
+    <button
+      class="button"
+      [disabled]="editor.busy() || editor.saving() || !report()?.success"
+      (click)="publish.emit()"
+    >
+      Publish new release
+    </button>
+  </div>
+  @if (report(); as report) {
+    <div role="status">
+      <p>{{ reportStatus() }}</p>
+    </div>
+    @if (report.diagnostics.length) {
+      <ul aria-label="Content diagnostics">
+        @for (diagnostic of report.diagnostics; track $index) {
+          <li>
+            <a href="#pack-source" (click)="focusSource($event)"
+              >{{ diagnostic.code }} · {{ diagnostic.path }}</a
+            >: {{ diagnostic.message }}
+          </li>
+        }
+      </ul>
+    }
+    @if (report.warnings.length) {
+      <h2 id="quality-warnings">Quality warnings ({{ report.warnings.length }})</h2>
+      <p class="muted small">
+        These flag likely answer giveaways and gaps in the bank. They never block publishing.
+      </p>
+      <ul aria-labelledby="quality-warnings">
+        @for (warning of report.warnings; track $index) {
+          <li>
+            <a
+              [attr.href]="questionFor(warning.path) ? '#preview-question' : '#pack-source'"
+              (click)="inspectWarning($event, warning.path)"
+              >{{ warning.code }} · {{ warning.path }}</a
+            >: {{ warning.message }}
+          </li>
+        }
+      </ul>
+    }
+  }
+</section>

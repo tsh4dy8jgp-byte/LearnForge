@@ -35,9 +35,9 @@ npx playwright install chromium
 npx playwright test
 ~~~
 
-The browser journey registers a learner, completes a lesson, checks the map, uses all five formats, reloads/resumes, submits, reviews and confirms the course appears under My courses with mastery and next steps. A second journey adds, archives and restores a course and switches course tabs with the keyboard. The mobile test checks layout and that keys are absent from catalog JSON.
+The browser journey registers a learner, completes a lesson, checks the map, uses the five selection formats, reloads/resumes, submits, reviews and confirms the course appears under My courses with mastery and next steps. A second journey adds, archives and restores a course and switches course tabs with the keyboard. The mobile test checks layout and that keys are absent from catalog JSON. Numeric and program-output interactions also have component tests.
 
-The Vitest suite includes Content Studio's quality-warning list.
+Vitest specs live beside their feature code. They cover reusable learning components, question interactions, appearance, dashboard rendering, course capabilities and deep-link setup, session/CSRF boundaries, Content Studio diagnostics and ungraded preview, attempt response recovery/results, and page-scoped clock/autosave cleanup. The browser suite also verifies actual route query binding, page titles and navigation focus.
 
 Content and image builds (`make check-content` also checks the exam/1 sample and lints it with `--strict`):
 

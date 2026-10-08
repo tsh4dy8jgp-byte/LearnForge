@@ -1,0 +1,96 @@
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">BUILD SOMETHING WORTH LEARNING</p>
+    <h1>{{ site.settings().studioLabel }}<span class="accent">.</span></h1>
+    <p class="lead">
+      Save a private draft, preview the learner experience, then publish a new release.
+    </p>
+  </div>
+</div>
+@if (!session.user()?.publisher) {
+  <p class="alert">
+    Publisher access is required. Ask your administrator to grant it to your account.
+  </p>
+} @else {
+  <section class="panel">
+    <div class="filter-row">
+      <label
+        >Starter profile
+        <select
+          [ngModel]="editor.profile()"
+          (ngModelChange)="editor.profile.set($event)"
+          [disabled]="editor.busy() || editor.saving()"
+        >
+          <option value="course">Course — lessons and completion</option>
+          <option value="exam">Exam — practice and mock exams</option>
+          <option value="hybrid">Hybrid — lessons, practice and exams</option>
+        </select>
+      </label>
+      <button
+        class="button secondary"
+        [disabled]="editor.busy() || editor.saving()"
+        (click)="createStarter()"
+      >
+        Create starter
+      </button>
+      <label
+        >Saved drafts
+        <select
+          [ngModel]="editor.selectedDraft()"
+          (ngModelChange)="editor.selectedDraft.set($event)"
+          [disabled]="editor.busy() || editor.saving()"
+        >
+          <option value="">Choose a draft…</option>
+          @for (draft of editor.drafts.value() ?? []; track draft.id) {
+            <option [value]="draft.id">{{ draft.title }} · revision {{ draft.revision }}</option>
+          }
+        </select>
+      </label>
+      <button
+        class="button secondary"
+        [disabled]="!editor.selectedDraft() || editor.busy() || editor.saving()"
+        (click)="openDraft()"
+      >
+        Open draft
+      </button>
+    </div>
+    @if (editor.drafts.error(); as draftError) {
+      <p class="alert error" role="alert">{{ errorText(draftError) }}</p>
+    }
+    <label
+      >Import a JSON source file
+      <input
+        type="file"
+        accept="application/json,.json"
+        [disabled]="editor.busy() || editor.saving()"
+        (change)="loadFile($event)"
+      />
+    </label>
+  </section>
+  @if (editor.source() || editor.activeDraft()) {
+    <div class="practice-layout studio-layout">
+      <lf-source-editor
+        [report]="report()"
+        (sourceChanged)="editSource($event)"
+        (validate)="validate()"
+        (publish)="publish()"
+        (download)="download()"
+        (inspect)="inspect($event)"
+      />
+      <lf-learner-preview [report]="report()" [(questionId)]="questionId" />
+    </div>
+  } @else {
+    <p class="empty">
+      Create a starter or import a source file to begin. Only you can access your saved drafts.
+    </p>
+  }
+}
+@if (error()) {
+  <p class="alert error" role="alert">{{ error() }}</p>
+}
+@if (published()) {
+  <p class="alert success" role="status">
+    Release published. <a routerLink="/courses">Open {{ site.settings().libraryLabel }} →</a> Change
+    the source version before publishing another release.
+  </p>
+}

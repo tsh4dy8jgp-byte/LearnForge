@@ -1,10 +1,28 @@
 import { test, expect } from '@playwright/test';
 
+test('course deep links bind query parameters and keep page titles and navigation focus', async ({
+  page,
+}) => {
+  await page.goto('/courses/reasoning-foundations?tab=practice&mode=mock&blueprint=full');
+  await expect(page.getByRole('tab', { name: 'Practice & exams' })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
+  await expect(page.getByLabel('Session length')).toHaveValue('full');
+  await expect(page.getByLabel('Feedback mode')).toHaveValue('mock');
+  await expect(page).toHaveTitle('Learning path · LearnForge');
+  await page.getByRole('link', { name: 'Appearance', exact: true }).click();
+  await expect(page).toHaveTitle('Appearance · LearnForge');
+  await expect(page.locator('#main')).toBeFocused();
+});
+
 async function register(page: import('@playwright/test').Page, name: string) {
   await page.goto('/sign-in');
   await page.getByRole('button', { name: 'Create an account', exact: true }).click();
   await page.getByLabel('Display name').fill(name);
-  await page.getByLabel('Email', { exact: true }).fill(`browser-${Date.now()}-${Math.random().toString(36).slice(2)}@example.test`);
+  await page
+    .getByLabel('Email', { exact: true })
+    .fill(`browser-${Date.now()}-${Math.random().toString(36).slice(2)}@example.test`);
   await page.getByLabel('Password', { exact: true }).fill('BrowserTesting123');
   await page.getByRole('button', { name: 'Create account', exact: true }).click();
   await expect(page.getByRole('heading', { name: `Welcome back, ${name}.` })).toBeVisible();
@@ -84,7 +102,9 @@ test('a learner registers, reads, uses every question format, resumes and review
   const course = page.locator('.path-panel').filter({ hasText: 'Reasoning foundations' });
   await expect(course).toBeVisible();
   await expect(course.locator('.next-steps li').first()).toBeVisible();
-  await expect(course.locator('lf-mastery-badge').filter({ hasNotText: 'Not started' }).first()).toBeVisible();
+  await expect(
+    course.locator('lf-mastery-badge').filter({ hasNotText: 'Not started' }).first(),
+  ).toBeVisible();
   expect(errors).toEqual([]);
 });
 
@@ -103,7 +123,9 @@ test('public course views fit a narrow screen and never include answer keys', as
   await page.screenshot({ path: 'test-results/course-mobile.png', fullPage: true });
 });
 
-test('learners add, archive and restore courses and switch tabs with the keyboard', async ({ page }) => {
+test('learners add, archive and restore courses and switch tabs with the keyboard', async ({
+  page,
+}) => {
   await register(page, 'Kai');
   await expect(page.getByRole('heading', { name: 'No courses yet.' })).toBeVisible();
   await page.goto('/courses/evidence-lab');
@@ -121,6 +143,9 @@ test('learners add, archive and restore courses and switch tabs with the keyboar
   await page.goto('/courses/evidence-lab');
   await page.getByRole('tab', { name: 'Lessons' }).focus();
   await page.keyboard.press('ArrowRight');
-  await expect(page.getByRole('tab', { name: 'Content map' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('tab', { name: 'Content map' })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
   await expect(page.getByRole('heading', { name: 'How the ideas connect' })).toBeVisible();
 });

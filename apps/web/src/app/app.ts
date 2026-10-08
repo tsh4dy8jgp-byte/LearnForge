@@ -1,30 +1,33 @@
+import { Session } from './authentication/session';
 import { Component, inject, signal } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { Api, message } from './api';
-import { Site } from './site-settings';
+import { ApiClient } from './http/api-client';
+import { message } from './http/api-error';
+import { SiteSettingsStore } from './site/site-settings-store';
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './app.html',
 })
 export class App {
-  readonly api = inject(Api);
-  readonly site = inject(Site);
+  protected readonly session = inject(Session);
+  private readonly api = inject(ApiClient);
+  protected readonly site = inject(SiteSettingsStore);
   private readonly router = inject(Router);
   private readonly document = inject(DOCUMENT);
-  readonly error = signal('');
+  protected readonly error = signal('');
   constructor() {
     this.router.events.pipe(takeUntilDestroyed()).subscribe((event) => {
       if (event instanceof NavigationEnd) this.document.getElementById('main')?.focus();
     });
   }
-  async logout() {
+  protected async logout() {
     try {
       await this.api.post('/auth/logout');
-      this.api.user.set(null);
-      await this.api.refreshCsrf();
+      this.session.user.set(null);
+      await this.session.refreshCsrf();
       await this.router.navigateByUrl('/sign-in');
     } catch (e) {
       this.error.set(message(e));

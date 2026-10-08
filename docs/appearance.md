@@ -38,8 +38,8 @@ Explicit choices are saved under `learnforge.appearance.v1` in localStorage for 
 
 - `apps/web/src/_themes.scss`: surface, text, accent, focus, border and feedback tokens; scoped palette previews use the same tokens as real pages.
 - `apps/web/src/_layouts.scss`: responsive shell variants. Navigation and the router outlet are shared.
-- `apps/web/src/app/appearance.ts`: typed preset descriptions and preference persistence.
-- `apps/web/src/app/pages/appearance.ts` and `apps/web/src/_appearance.scss`: accessible live picker and CSS previews.
+- `apps/web/src/app/appearance/appearance-preferences.ts`: typed preset descriptions and preference persistence.
+- `apps/web/src/app/appearance/appearance-page.ts` and `apps/web/src/_appearance.scss`: accessible live picker and CSS previews.
 
 To add a preset, extend the corresponding API enum, run `make api-types`, then add its frontend metadata and styles. Avoid literal colours in page components; use the shared tokens. Keep success, warning and error meanings consistent across palettes.
 

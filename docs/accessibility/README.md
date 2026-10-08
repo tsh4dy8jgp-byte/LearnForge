@@ -1,6 +1,6 @@
 # Accessibility design baseline
 
-Date: 2026-09-25. Applies to LearnForge (the `eduframe` repository).
+Applies to the current LearnForge framework and all packs.
 
 **Target: WCAG 2.2 Level AA from the first supported release of every feature.** These documents define required design and acceptance behavior. They do not certify the current application; implementation and verification remain outstanding unless release evidence explicitly records otherwise.
 
@@ -15,7 +15,7 @@ Date: 2026-09-25. Applies to LearnForge (the `eduframe` repository).
 | [Verification and release](verification.md) | Test procedures, supported environments, evidence, defects and release gates |
 | [Feature design template](feature-template.md) | Accessibility section to complete before building a feature |
 
-Read this baseline with the [architecture](../architecture.md), [assessment rules](../assessment.md) and [learner roadmap](../superpowers/specs/2026-09-25-learner-roadmap.md). Accessibility acceptance belongs in each feature, content contract and pull request.
+Read this baseline with the [architecture](../architecture.md), [assessment rules](../assessment.md) and [roadmap](../roadmap.md). Accessibility acceptance belongs in each feature, content contract and pull request.
 
 ## Standard and interpretation
 
@@ -77,25 +77,25 @@ No unresolved A/AA failure in the release scope is waived by severity, a deadlin
 
 ## Implementation order
 
-Source inspection on 2026-09-25 establishes the following starting points, **not a runtime accessibility audit**:
+Current source inspection establishes these starting points, **not a runtime accessibility audit**:
 
 | Starting point | Required follow-through |
 | --- | --- |
-| `app.html` has a skip link and main landmark; `app.routes.ts` has no per-route titles | Verify skip behavior; implement route titles and focus policy |
-| `course.ts` uses Angular ARIA tabs; component and browser tests exist | Verify panel relationships, focus and complete course journeys with assistive technology |
-| `question-input.ts` uses native choices, click placement and move buttons | Add contextual target/clear names, stable focus and announcements; replace repeated bank/target IDs before multiple instances render |
-| `attempt.ts` enforces a displayed server deadline; setup has no duration adjustment | Implement the timing contract before releasing a conforming timed-mock journey |
-| `attempt.ts` and `settings.ts` use browser confirmation in some flows | Verify current behavior; adopt the consistent confirmation pattern without assuming browser confirmation inherently fails WCAG |
+| `app.html` has a skip link and main landmark; `app.routes.ts` provides route titles and navigation focuses the main landmark | Verify skip behavior, route titles and focus policy with assistive technology |
+| the course feature uses Angular ARIA tabs; component and browser tests exist | Verify panel relationships, focus and complete course journeys with assistive technology |
+| the shared question input uses native choices, click placement and move buttons | Add contextual target/clear names, stable focus and announcements; replace repeated bank/target IDs before multiple instances render |
+| the attempt feature enforces a displayed server deadline; setup has no duration adjustment | Implement the timing contract before releasing a conforming timed-mock journey |
+| the attempt feature and the account feature use browser confirmation in some flows | Verify current behavior; adopt the consistent confirmation pattern without assuming browser confirmation inherently fails WCAG |
 | Auth fields use autocomplete; errors are generally page-level | Verify password managers, field error associations and authentication recovery |
-| `studio.ts` renders compiler diagnostics and publication results | Add result announcements, diagnostic navigation and a content accessibility gate |
+| the authoring feature renders compiler diagnostics and publication results | Add result announcements, diagnostic navigation and a content accessibility gate |
 | Playwright configuration runs Chromium; no axe dependency is declared | Add automated accessibility checks and the manual environment matrix; existing tests do not establish conformance |
 
 Sequence delivery as follows:
 
 1. **Shared foundation, before the next feature ships:** route/focus behavior, measured colors, form and status patterns, keyboard question fixes, timing controls, evidence inventory and accessibility test harness.
-2. **SP1 learning record:** apply these contracts to enrollment, mastery, progress and next steps now. Do not defer accessibility to SP5.
-3. **SP2/SP3 content and questions:** require accessible content schemas, media alternatives and equivalent interaction before exposing a new block or question kind.
-4. **SP4–SP7:** review tools, preferences/offline reading, identity and AI each inherit the baseline at design time. Personalization improves a default experience that already meets AA.
+2. **Learning record:** apply these contracts to enrollment, mastery, progress and next steps now. Apply it to the default experience.
+3. **Content and questions:** require accessible content schemas, media alternatives and equivalent interaction before exposing a new block or question kind.
+4. **Future learner tools and deployment:** review tools, preferences/offline reading, identity and AI each inherit the baseline at design time. Personalization improves a default experience that already meets AA.
 
 ## References and maintenance
 

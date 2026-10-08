@@ -1,0 +1,45 @@
+<div class="section-heading">
+  <div>
+    <h2>How the ideas connect</h2>
+    <p class="muted">Explore the objectives and their prerequisites.</p>
+  </div>
+</div>
+<div class="map-grid">
+  @for (o of course().objectives; track o.id; let i = $index) {
+    <article class="panel objective-card">
+      <span class="eyebrow">OBJECTIVE {{ i + 1 }}</span>
+      <h3>{{ o.title }}</h3>
+      @if (
+        (course().capabilities.practice || course().capabilities.assessments) &&
+          mastery().get(o.id);
+        as m
+      ) {
+        <lf-mastery-badge
+          [state]="m.state"
+          [correct]="m.correct"
+          [considered]="m.considered"
+          [reviewDue]="m.reviewDue"
+        />
+      }
+      <p class="muted small">
+        {{
+          o.prerequisites.length
+            ? 'Builds on: ' + prerequisiteNames(o.prerequisites)
+            : 'A starting point — no prerequisites'
+        }}
+      </p>
+      @for (l of course().lessons; track l.id) {
+        @if (l.objectiveIds.includes(o.id)) {
+          <button class="text-button" (click)="openLesson.emit(l.id)">
+            Study: {{ l.title }} →
+          </button>
+        }
+      }
+      @if (
+        course().capabilities.practice && signedIn() && mastery().get(o.id)?.standalonePractice
+      ) {
+        <button class="text-button" (click)="practise.emit(o.id)">Practise this objective →</button>
+      }
+    </article>
+  }
+</div>

@@ -1,0 +1,68 @@
+@if (attempt(); as a) {
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">A MOMENT TO REFLECT</p>
+      <h1>Your results<span class="accent">.</span></h1>
+      <p class="lead">
+        {{ a.size }} {{ a.mode === 'mock' ? 'mock exam' : 'learning session' }} ·
+        {{ a.completedAt | date: 'medium' }}
+      </p>
+    </div>
+    <a routerLink="/dashboard" class="button secondary">Back to overview →</a>
+  </div>
+  @if (a.summary; as s) {
+    <div class="stat-grid">
+      <div class="stat">
+        <span>FULLY CORRECT</span><strong>{{ s.correctPercent | number: '1.0-1' }}<em>%</em></strong
+        ><small>{{
+          a.goal === 'readiness' ? 'Used for exam readiness' : 'Independent correct answers'
+        }}</small>
+      </div>
+      <div class="stat">
+        <span>POINTS SCORE</span><strong>{{ s.score | number: '1.0-1' }}<em>%</em></strong
+        ><small
+          >{{ s.earned | number: '1.0-2' }} / {{ s.possible }} points, including partial
+          credit</small
+        >
+      </div>
+      @if (a.goal === 'readiness') {
+        <div class="stat">
+          <span>FRESH QUESTIONS</span
+          ><strong>{{ s.freshPercent | number: '1.0-0' }}<em>%</em></strong
+          ><small>{{
+            s.eligible
+              ? 'Eligible readiness evidence'
+              : a.timedOut
+                ? 'Time expired'
+                : a.mode === 'learn'
+                  ? 'Learning evidence'
+                  : 'Repeated question families'
+          }}</small>
+        </div>
+      }
+    </div>
+  }
+  <div class="section-heading">
+    <h2>Review & understand</h2>
+    <span class="muted small">Question revisions are preserved with this attempt.</span>
+  </div>
+  @for (q of a.questions; track q.id; let i = $index) {
+    @if (a.results?.[q.id]; as g) {
+      <details class="panel review-item">
+        <summary>
+          <span class="review-number">{{ i + 1 }}</span
+          ><span>{{ q.prompt }}</span
+          ><span class="pill" [class.success]="g.fullyCorrect"
+            >{{ g.earned | number: '1.0-2' }} / {{ g.possible }}</span
+          >
+        </summary>
+        <div class="review-body">
+          <p><strong>Your answer:</strong> {{ describe(q, a.answers[q.id]) }}</p>
+          <p><strong>Expected:</strong> {{ expected(q, g) }}</p>
+          <p class="explanation">{{ g.explanation }}</p>
+          <a [routerLink]="['/courses', a.packId]" class="text-link">Revisit the lesson →</a>
+        </div>
+      </details>
+    }
+  }
+}

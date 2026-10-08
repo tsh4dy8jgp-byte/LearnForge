@@ -1,0 +1,152 @@
+@if (state.attempt(); as a) {
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">
+        {{ a.mode === 'mock' ? 'INDEPENDENT PRACTICE' : 'LEARN BY DOING' }}
+      </p>
+      <h1>
+        {{ a.focus ? 'Focused practice' : a.size === 'full' ? 'Full session' : 'Short session' }}
+      </h1>
+      <p class="muted">
+        {{ state.answered() }} of {{ a.questions.length }} questions started ·
+        {{
+          a.mode === 'mock'
+            ? 'Answers released after submission'
+            : 'Check answers for immediate feedback'
+        }}
+      </p>
+    </div>
+    <div class="timer">
+      <span>{{ a.mode === 'mock' ? 'TIME REMAINING' : 'UNTIMED LEARNING' }}</span
+      ><strong>{{ a.mode === 'mock' ? state.timeLeft() : 'Take your time' }}</strong
+      ><small aria-live="polite">{{
+        state.busy() ? 'Saving…' : state.unsaved() ? 'Not yet saved' : 'All responses saved'
+      }}</small>
+    </div>
+  </div>
+  @if (state.unsaved() && !state.busy()) {
+    <div class="alert">
+      An unsaved answer is stored on this device.
+      <button class="text-button" [disabled]="state.busy()" (click)="state.retry()">
+        Retry saving</button
+      ><button class="text-button" (click)="state.discard()">Use server answer</button>
+    </div>
+  }
+  @if (a.focus) {
+    <p class="alert">
+      This session targets {{ a.focus }}. It may be shorter than the usual session.
+      @if (a.goal === 'readiness') {
+        It does not count toward exam readiness.
+      }
+    </p>
+  }
+  <div class="exam-layout">
+    <section>
+      @if (state.current(); as q) {
+        @if (state.scenario(); as s) {
+          <aside class="scenario panel">
+            <p class="eyebrow">CASE STUDY</p>
+            <h2>{{ s.title }}</h2>
+            <p>{{ s.background }}</p>
+          </aside>
+        }
+        <article class="panel question-card">
+          <div class="row">
+            <span class="eyebrow">QUESTION {{ state.index() + 1 }} / {{ a.questions.length }}</span
+            ><span class="pill subtle">{{ kindLabel(q.kind) }}</span>
+          </div>
+          <h2>{{ q.prompt }}</h2>
+          <lf-question-input
+            [question]="q"
+            [answer]="state.currentAnswer()"
+            [disabled]="state.busy() || !!a.feedback[q.id] || !!state.unsaved()"
+            (changed)="state.save($event)"
+          />
+          @if (a.feedback[q.id]; as g) {
+            <div class="feedback" [class.correct]="g.fullyCorrect">
+              <strong
+                >{{ g.fullyCorrect ? 'Correct' : 'Keep building' }} ·
+                {{ g.earned | number: '1.0-2' }} / {{ g.possible }}</strong
+              >
+              <p>{{ g.explanation }}</p>
+              <p class="small">Expected: {{ expected(q, g) }}</p>
+            </div>
+          }
+          <div class="question-actions">
+            @if (a.mode === 'learn' && !a.feedback[q.id]) {
+              <button
+                class="button"
+                [disabled]="state.busy() || !!state.unsaved()"
+                (click)="state.save(a.answers[q.id] || state.empty, true)"
+              >
+                Check answer
+              </button>
+            }
+            <div class="row">
+              <button
+                class="button secondary"
+                [disabled]="state.busy() || !!state.unsaved() || !state.canGo(state.index() - 1)"
+                (click)="state.go(state.index() - 1)"
+              >
+                ← Previous</button
+              ><button
+                class="button secondary"
+                [disabled]="state.busy() || !!state.unsaved() || !state.canGo(state.index() + 1)"
+                (click)="state.go(state.index() + 1)"
+              >
+                Next →
+              </button>
+            </div>
+          </div>
+        </article>
+      }
+    </section>
+    <aside class="panel exam-nav">
+      <p class="eyebrow">YOUR SESSION</p>
+      <div class="question-grid">
+        @for (q of a.questions; track q.id; let i = $index) {
+          <button
+            [class.current]="state.index() === i"
+            [class.answered]="state.isAnswered(q.id)"
+            [disabled]="state.busy() || !!state.unsaved() || !state.canGo(i)"
+            [attr.aria-label]="'Question ' + (i + 1) + (state.isAnswered(q.id) ? ', answered' : '')"
+            [attr.aria-current]="state.index() === i ? 'step' : null"
+            (click)="state.go(i)"
+          >
+            {{ i + 1 }}
+          </button>
+        }
+      </div>
+      <p class="muted small">
+        Filled numbers have a saved response. You can leave and resume from your attempt history.
+      </p>
+      @if (a.lockSections && a.sectionIndex < a.sections.length - 1) {
+        <button
+          class="button secondary wide"
+          [disabled]="state.busy() || !!state.unsaved()"
+          (click)="state.nextSection()"
+        >
+          Finish this section →
+        </button>
+        <p class="muted small">Completed sections cannot be reopened during this attempt.</p>
+      }
+      <button
+        class="button wide"
+        [disabled]="state.busy() || !!state.unsaved()"
+        (click)="state.confirmSubmit.set(true)"
+      >
+        Submit session
+      </button>
+      @if (state.confirmSubmit()) {
+        <div class="confirm-box" role="alert">
+          <p>Submit all saved responses? Unanswered questions receive zero points.</p>
+          <button class="button wide" [disabled]="state.busy()" (click)="state.submit()">
+            Confirm submission</button
+          ><button class="text-button" (click)="state.confirmSubmit.set(false)">
+            Keep working
+          </button>
+        </div>
+      }
+    </aside>
+  </div>
+}
