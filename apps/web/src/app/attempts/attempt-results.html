@@ -11,6 +11,16 @@
     <a routerLink="/dashboard" class="button secondary">Back to overview →</a>
   </div>
   @if (a.summary; as s) {
+    @if (s.passed != null) {
+      <div class="panel" role="status">
+        <h2>{{ s.passed ? 'Mock pass' : 'Mock fail' }}</h2>
+        <p>{{ s.earned }} / {{ s.possible }} points · Pass threshold: {{ s.passPoints }} points.</p>
+        <p>This simulated result is separate from your exam readiness recommendation.</p>
+        @if (a.timedOut) {
+          <p>Time expired; your saved answers were submitted automatically.</p>
+        }
+      </div>
+    }
     <div class="stat-grid">
       <div class="stat">
         <span>FULLY CORRECT</span><strong>{{ s.correctPercent | number: '1.0-1' }}<em>%</em></strong
@@ -51,7 +61,7 @@
       <details class="panel review-item">
         <summary>
           <span class="review-number">{{ i + 1 }}</span
-          ><span>{{ q.prompt }}</span
+          ><span class="prompt-text">{{ q.prompt }}</span
           ><span class="pill" [class.success]="g.fullyCorrect"
             >{{ g.earned | number: '1.0-2' }} / {{ g.possible }}</span
           >

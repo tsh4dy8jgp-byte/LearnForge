@@ -11,6 +11,29 @@ public static class ExamComposer
     // question once under its primary objective: the first of its objectives that the blueprint includes.
     public static Question[] Compose(Pack pack, Blueprint blueprint, HashSet<string> seenFamilies, string seed)
     {
+        if (blueprint.QuestionIds is { } ids)
+        {
+            if (blueprint.ObjectiveWeights is not null)
+                throw new InvalidOperationException("Fixed papers cannot also specify objectiveWeights.");
+            if (ids.Length != blueprint.Count || ids.Distinct().Count() != ids.Length)
+                throw new InvalidOperationException("Fixed papers need exactly count distinct questionIds.");
+            var bank = pack.Questions.ToDictionary(q => q.Id);
+            if (ids.Any(id => !bank.ContainsKey(id)))
+                throw new InvalidOperationException("Fixed paper references an unknown question.");
+            var paper = ids.Select(id => bank[id]).ToArray();
+            if (paper.Select(q => q.FamilyId).Distinct().Count() != paper.Length)
+                throw new InvalidOperationException("Fixed papers cannot repeat a question family.");
+            if (paper.Any(q => !q.ObjectiveIds.Any(blueprint.ObjectiveIds.Contains))
+                || blueprint.ObjectiveIds.Any(id => !paper.Any(q => q.ObjectiveIds.Contains(id))))
+                throw new InvalidOperationException("Fixed paper does not satisfy its objective filter and coverage.");
+            if (blueprint.RequiredKinds.Any(kind => !paper.Any(q => q.Kind == kind)))
+                throw new InvalidOperationException("Fixed paper is missing a required question kind.");
+            var selected = ids.ToHashSet();
+            var scenarios = paper.Where(q => q.ScenarioId is not null).Select(q => q.ScenarioId).ToHashSet();
+            if (pack.Questions.Any(q => q.ScenarioId is not null && scenarios.Contains(q.ScenarioId) && !selected.Contains(q.Id)))
+                throw new InvalidOperationException("Fixed papers must include complete scenario groups.");
+            return paper;
+        }
         var groups = pack.Questions.GroupBy(q => q.ScenarioId is { } id ? "case:" + id : "item:" + q.Id)
             .Select(g => g.ToArray()).Where(g => g.All(q => q.ObjectiveIds.Any(blueprint.ObjectiveIds.Contains)))
             .Where(g => g.Select(q => q.FamilyId).Distinct().Count() == g.Length)

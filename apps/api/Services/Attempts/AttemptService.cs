@@ -64,11 +64,12 @@ public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache re
             : Compose(pack, blueprint, seen, request.RequestId);
         chosen = chosen.OrderBy(q => q.ScenarioId is null ? 0 : 1).ThenBy(q => q.ScenarioId).Select(Shuffle).ToArray();
         var snapshot = new AttemptSnapshot(pack.Title, pack.Version, pack.Objectives, pack.Scenarios, blueprint, chosen, pack.Readiness ?? new(), pack.Goal);
+        var startedAt = Now;
         var attempt = new Attempt
         {
             UserId = user, PackReleaseId = release.ReleaseId, PackId = pack.Id, StartKey = request.RequestId,
             ActiveKey = user + ":" + pack.Id, Mode = request.Mode, Size = blueprint.Size, Focus = request.Focus,
-            FocusObjectiveId = request.ObjectiveId, StartedAt = Now, Deadline = Now.AddMinutes(blueprint.Minutes),
+            FocusObjectiveId = request.ObjectiveId, StartedAt = startedAt, Deadline = startedAt.AddMinutes(blueprint.Minutes),
             SnapshotJson = Json.Write(snapshot), FreshPercent = chosen.Count(q => !seen.Contains(q.FamilyId)) * 100m / chosen.Length
         };
         db.Attempts.Add(attempt);
@@ -220,9 +221,13 @@ public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache re
         var complete = a.Status == AttemptStatus.Completed;
         var results = complete ? s.Questions.ToDictionary(q => q.Id, q => Grader.Score(q, answers.GetValueOrDefault(q.Id))) : null;
         var summary = complete ? new AttemptResultSummary(a.Earned, a.Possible,
-            a.Possible == 0 ? 0 : a.Earned * 100 / a.Possible, a.CorrectPercent, a.Eligible, a.FreshPercent) : null;
+            a.Possible == 0 ? 0 : a.Earned * 100 / a.Possible, a.CorrectPercent, a.Eligible, a.FreshPercent,
+            a.Mode == AssessmentMode.Mock ? s.Blueprint.PassPoints : null,
+            a.Mode == AssessmentMode.Mock && s.Blueprint.PassPoints is { } pass ? a.Earned >= pass : null) : null;
         return new AttemptView(a.Id, a.PackId, s.Title, s.Version, a.Mode, a.Size, a.Status, a.Revision,
-            a.StartedAt, a.Deadline, a.CompletedAt, a.SectionIndex, Sections(a),
+            // SQLite materializes UTC timestamps as Unspecified; the wire value must retain UTC on reload.
+            DateTime.SpecifyKind(a.StartedAt, DateTimeKind.Utc), DateTime.SpecifyKind(a.Deadline, DateTimeKind.Utc),
+            a.CompletedAt is { } completedAt ? DateTime.SpecifyKind(completedAt, DateTimeKind.Utc) : null, a.SectionIndex, Sections(a),
             s.Blueprint.LockSections && a.Mode == AssessmentMode.Mock, a.TimedOut, a.Focus,
             s.Questions.Select(DeliveryQuestion.From).ToArray(), s.Scenarios, s.Objectives, answers,
             Json.Read<Dictionary<string, Grade>>(a.FeedbackJson), Now, results, summary, s.Goal);

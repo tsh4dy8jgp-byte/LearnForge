@@ -41,13 +41,13 @@ export class AttemptState {
   readonly answered = computed(
     () => Object.values(this.attempt()?.answers || {}).filter(hasResponse).length,
   );
-  private offset = 0;
+  private readonly offset = signal(0);
   private refreshExpired = false;
   readonly timeLeft = computed(() => {
     const a = this.attempt();
     const seconds = Math.max(
       0,
-      Math.ceil((Date.parse(a?.deadline || '') - this.now() - this.offset) / 1000) || 0,
+      Math.ceil((Date.parse(a?.deadline || '') - this.now() - this.offset()) / 1000) || 0,
     );
     return (
       Math.floor(seconds / 60)
@@ -82,8 +82,10 @@ export class AttemptState {
     return draftKey(this.session.user()?.id, this.id);
   }
   private accept(a: Attempt) {
+    const clientTime = Date.now();
+    this.offset.set(Date.parse(a.serverTime) - clientTime);
+    this.now.set(clientTime);
     this.attempt.set(a);
-    this.offset = Date.parse(a.serverTime) - Date.now();
     if (!this.canGo(this.index()))
       this.index.set(
         a.questions.findIndex(

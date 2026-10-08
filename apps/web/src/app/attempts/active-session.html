@@ -54,7 +54,7 @@
             <span class="eyebrow">QUESTION {{ state.index() + 1 }} / {{ a.questions.length }}</span
             ><span class="pill subtle">{{ kindLabels[q.kind] }}</span>
           </div>
-          <h2>{{ q.prompt }}</h2>
+          <h2 class="prompt-text">{{ q.prompt }}</h2>
           <lf-question-input
             [question]="q"
             [answer]="state.currentAnswer()"
