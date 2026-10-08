@@ -83,6 +83,15 @@ Pack `istqb-ctfl-4@1.0.1` adds section/page references to all 22 section lessons
 
 Reference-update validation on 2026-10-08: the content CLI passed for version 1.0.1 with 24 lessons, 160 questions and 70 objectives (64 syllabus objectives plus six chapters). Question K levels were compared with those extracted from the downloaded syllabus. No application test suites were rerun for this update.
 
+## Next certifications
+
+Foundation is the entry requirement for two specialist packs that use the same lesson and paper format:
+
+- [AI Testing 2.0 (`istqb-ct-ai-2`)](istqb-ct-ai.md) covers testing AI-based and machine learning systems. It has four 44-point papers with a pass mark of 29.
+- [Testing with Generative AI 1.1 (`istqb-ct-genai-1`)](istqb-ct-genai.md) covers using generative AI in test activities. It has four 46-point papers with a pass mark of 30.
+
+Both specialist exams weight K3 questions at two points. Their reference libraries live next to this one in `references/istqb/`.
+
 ## Official references and attribution
 
 - [CTFL certification and exam format](https://istqb.org/certifications/certified-tester-foundation-level-ctfl-v4-0/)

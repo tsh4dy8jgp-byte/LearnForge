@@ -44,6 +44,43 @@ public class IstqbApiTests(ApiFactory factory) : IClassFixture<ApiFactory>
         Assert.Equal(0, repeatedResult.GetProperty("summary").GetProperty("freshPercent").GetDecimal());
     }
 
+    [Theory]
+    [InlineData("istqb-ct-ai-2", false)]
+    [InlineData("istqb-ct-ai-2", true)]
+    [InlineData("istqb-ct-genai-1", false)]
+    [InlineData("istqb-ct-genai-1", true)]
+    public async Task Specialist_mocks_score_weighted_points_against_the_official_pass_mark(string packId, bool passed)
+    {
+        var spec = IstqbExamSpec.For(packId);
+        var client = await TestApi.Account(factory);
+        var pack = TestApi.LoadPack(packId);
+        var a = await TestApi.Start(client, packId: pack.Id, blueprintId: "paper-a");
+        Assert.All(a.GetProperty("questions").EnumerateArray(), q => Assert.False(q.TryGetProperty("grading", out _)));
+        Assert.Equal(TimeSpan.FromMinutes(60), a.GetProperty("deadline").GetDateTime() - a.GetProperty("startedAt").GetDateTime());
+        // K3 questions are worth two points, so answer until the earned points sit exactly on or just below the pass mark.
+        var target = spec.PassPoints - (passed ? 0 : 1);
+        decimal earned = 0;
+        var revision = 0;
+        foreach (var id in TestApi.QuestionIds(a))
+        {
+            var weight = pack.Questions.Single(q => q.Id == id).Weight;
+            if (earned + weight > target) continue;
+            revision = await TestApi.Save(client, a, revision, id, TestApi.Correct(pack, id));
+            earned += weight;
+        }
+        Assert.Equal(target, earned);
+        var result = await client.PostAsJsonAsync($"/api/me/attempts/{TestApi.Id(a)}/submit", new { revision });
+        result.EnsureSuccessStatusCode();
+        var summary = (await result.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("summary");
+        Assert.Equal(target, summary.GetProperty("earned").GetDecimal());
+        Assert.Equal(spec.TotalPoints, summary.GetProperty("possible").GetDecimal());
+        Assert.Equal(spec.PassPoints, summary.GetProperty("passPoints").GetDecimal());
+        Assert.Equal(passed, summary.GetProperty("passed").GetBoolean());
+        var repeat = await TestApi.Start(client, packId: pack.Id, blueprintId: "paper-a-extended");
+        Assert.Equal(TestApi.QuestionIds(a), TestApi.QuestionIds(repeat));
+        Assert.Equal(TimeSpan.FromMinutes(75), repeat.GetProperty("deadline").GetDateTime() - repeat.GetProperty("startedAt").GetDateTime());
+    }
+
     [Fact]
     public async Task Expiry_scores_saved_answers_and_learning_does_not_show_exam_pass_fail()
     {

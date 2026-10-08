@@ -14,6 +14,10 @@ check-content:
 	dotnet run --project tools/cli -- check packs/evidence-lab.json
 	dotnet run --project tools/cli -- check packs/istqb-ctfl-4.json
 	dotnet run --project tools/cli -- lint packs/istqb-ctfl-4.json
+	dotnet run --project tools/cli -- check packs/istqb-ct-ai-2.json
+	dotnet run --project tools/cli -- lint packs/istqb-ct-ai-2.json
+	dotnet run --project tools/cli -- check packs/istqb-ct-genai-1.json
+	dotnet run --project tools/cli -- lint packs/istqb-ct-genai-1.json
 	dotnet run --project tools/cli -- check docs/examples/exam-sample.json
 	dotnet run --project tools/cli -- lint docs/examples/exam-sample.json --strict
 browser-test:
