@@ -22,6 +22,10 @@ export class Session {
   async refreshCsrf() {
     this.csrf.value = (await this.api.get<{ token: string }>('/auth/csrf')).token;
   }
+  async clear() {
+    this.user.set(null);
+    await this.refreshCsrf();
+  }
   async refreshSession() {
     this.user.set(await this.api.get<User>('/auth/me'));
     await this.refreshCsrf();

@@ -27,8 +27,7 @@
   @if (state.unsaved() && !state.busy()) {
     <div class="alert">
       An unsaved answer is stored on this device.
-      <button class="text-button" [disabled]="state.busy()" (click)="state.retry()">
-        Retry saving</button
+      <button class="text-button" (click)="state.retry()">Retry saving</button
       ><button class="text-button" (click)="state.discard()">Use server answer</button>
     </div>
   }
@@ -53,7 +52,7 @@
         <article class="panel question-card">
           <div class="row">
             <span class="eyebrow">QUESTION {{ state.index() + 1 }} / {{ a.questions.length }}</span
-            ><span class="pill subtle">{{ kindLabel(q.kind) }}</span>
+            ><span class="pill subtle">{{ kindLabels[q.kind] }}</span>
           </div>
           <h2>{{ q.prompt }}</h2>
           <lf-question-input

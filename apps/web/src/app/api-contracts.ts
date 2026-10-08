@@ -31,4 +31,5 @@ export type {
   Objective,
   ObjectiveMasteryDto,
   Option,
+  QuestionKind,
 } from './generated/types.gen';

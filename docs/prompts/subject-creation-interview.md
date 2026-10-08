@@ -114,7 +114,7 @@ When working in LearnForge:
 - Read repository instructions, README.md, docs/authoring.md, docs/content-engine.md, and docs/assessment.md before authoring a pack.
 - Inspect current CLI starters, contracts, and examples; use actual supported fields rather than inventing a schema.
 - Create a course, exam, or hybrid starter with the CLI according to the requested deliverables. Use compact exam/1 only for a compatible exam-only bank; use the full pack format for lesson content or hybrid subjects.
-- Save the subject brief under docs/subjects/<subject-slug>.md and the versioned content source under packs/<subject-slug>.json.
+- Save the subject brief under docs/subjects/<subject-slug>.md. Draft the versioned content source outside packs/, for example as output/<subject-slug>.json (git ignores output/), and copy it to packs/<subject-slug>.json only after CLI check passes: a running API publishes the first version it compiles in packs/ as an immutable release, and an invalid file there stops the API from starting.
 - Configure supported capabilities and an appropriate completion, mastery, or readiness goal. Supply enough independent evidence for the chosen policy.
 - Keep stable IDs, preserve existing learner records, and increase the version for published content changes.
 - Reuse the platform's existing content features. Application feature development and hosting are outside this subject-authoring task unless I request them.
@@ -131,7 +131,7 @@ Review the complete output before handing it over:
 - Usability: language, workload, examples, and accessibility match the brief.
 - Assessment feasibility: counts and weights agree with the blueprint; mocks can be composed from the available bank.
 
-For a LearnForge pack, run CLI check, lint when questions are present, and build into a fresh private output directory. Repair failures caused by the new content and review remaining lint warnings. Report unavailable checks and unresolved issues accurately. Do not claim expert or empirical validation from an automated compiler check alone.
+For a LearnForge pack, run CLI check, lint when questions are present, and build into a fresh private output directory against the draft, then copy it into packs/. Repair failures caused by the new content and review remaining lint warnings. Report unavailable checks and unresolved issues accurately. Do not claim expert or empirical validation from an automated compiler check alone.
 
 Finish with a short handoff naming the subject, created deliverables, file locations, recommended starting resource or exam, checks performed, and material limitations. If work must span batches, track remaining objectives and quantities and continue until the agreed scope is complete; do not call a partial bank finished.
 
@@ -142,7 +142,7 @@ Read my request. If an interview is needed, reflect the goal briefly, ask one fo
 ## Quick invocation in this repository
 
 ```text
-Use prompts/subject-creation-interview.md as the workflow.
+Use docs/prompts/subject-creation-interview.md as the workflow.
 My subject idea: [topic, learning outcome, or exam].
 Interview me one question at a time, then create [learning resources / exams / both] for LearnForge.
 ```

@@ -349,11 +349,11 @@ Fix anything the audit reveals before moving on. Keep a running count per domain
 
 Assemble the complete file: header fields, domains, mocks, readiness, caseStudies, sources and every question. Never truncate it or replace questions with "…". If it cannot fit in one message, deliver it in clearly labelled consecutive parts that concatenate into valid JSON.
 
-If you can run commands in a LearnForge checkout, save the file as packs/<pack-id>.json and run:
-- dotnet run --project tools/cli -- check packs/<pack-id>.json
-- dotnet run --project tools/cli -- lint packs/<pack-id>.json --json
+If you can run commands in a LearnForge checkout, save the file outside packs/ first, for example as output/<pack-id>.json (git ignores output/), and run:
+- dotnet run --project tools/cli -- check output/<pack-id>.json
+- dotnet run --project tools/cli -- lint output/<pack-id>.json --json
 
-Fix every error. Fix every warning, or justify it in the handoff.
+Fix every error. Fix every warning, or justify it in the handoff. Copy the file to packs/<pack-id>.json only after check passes: a running API publishes the first version it compiles there as an immutable release, and an invalid file in packs/ stops the API from starting.
 
 Finish with a short handoff:
 - Question counts per domain and per format, and the case-study list.

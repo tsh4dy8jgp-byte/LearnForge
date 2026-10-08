@@ -184,4 +184,23 @@ describe('AttemptPage answer saving', () => {
     expect(element.textContent).not.toContain('Retry saving');
     http.verify();
   });
+
+  it('drops a stored draft whose question is no longer reachable', async () => {
+    localStorage.setItem(
+      draftKey,
+      JSON.stringify({
+        questionId: 'removed-question',
+        answer,
+        check: false,
+        revision: 0,
+        requestId: 'request-1',
+      }),
+    );
+    const { fixture, http, element } = await render();
+    expect(fixture.debugElement.injector.get(AttemptState).index()).toBe(0);
+    expect(element.textContent).toContain('QUESTION 1 / 1');
+    expect(element.textContent).not.toContain('Retry saving');
+    expect(localStorage.getItem(draftKey)).toBeNull();
+    http.verify();
+  });
 });

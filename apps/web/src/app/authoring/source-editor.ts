@@ -28,9 +28,13 @@ export class SourceEditor {
       ? `Validation passed with ${count} quality warning${count === 1 ? '' : 's'}. Review them and the preview before publishing.`
       : 'Validation passed. Review the preview before publishing.';
   });
-  protected questionFor(path: string) {
-    return questionFor(this.report(), path);
-  }
+  // Warning paths that point into a previewable question, resolved once per report.
+  protected readonly warningTargets = computed(() => {
+    const report = this.report();
+    return new Set(
+      (report?.warnings ?? []).map((w) => w.path).filter((path) => questionFor(report, path)),
+    );
+  });
   protected focusSource(event: Event) {
     event.preventDefault();
     this.document.getElementById('pack-source')?.focus();

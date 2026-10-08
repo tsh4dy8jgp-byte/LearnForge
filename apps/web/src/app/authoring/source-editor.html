@@ -84,7 +84,9 @@
         @for (warning of report.warnings; track $index) {
           <li>
             <a
-              [attr.href]="questionFor(warning.path) ? '#preview-question' : '#pack-source'"
+              [attr.href]="
+                warningTargets().has(warning.path) ? '#preview-question' : '#pack-source'
+              "
               (click)="inspectWarning($event, warning.path)"
               >{{ warning.code }} · {{ warning.path }}</a
             >: {{ warning.message }}

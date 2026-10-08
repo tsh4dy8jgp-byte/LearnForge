@@ -5,12 +5,13 @@ import { message } from '../http/api-error';
 import { Answer, Attempt } from '../api-contracts';
 import { hasResponse } from '../assessment/answer-description';
 import { Session } from '../authentication/session';
+import { draftKey } from './attempt-drafts';
 
 @Injectable()
 export class AttemptState {
   private readonly session = inject(Session);
   private readonly api = inject(ApiClient);
-  private readonly route = inject(ActivatedRoute);
+  private readonly id = inject(ActivatedRoute).snapshot.paramMap.get('id');
   private readonly destroy = inject(DestroyRef);
   readonly attempt = signal<Attempt | null>(null);
   readonly index = signal(0);
@@ -78,9 +79,7 @@ export class AttemptState {
     this.destroy.onDestroy(() => clearInterval(timer));
   }
   private key() {
-    return (
-      'learnforge.draft.' + this.session.user()?.id + '.' + this.route.snapshot.paramMap.get('id')
-    );
+    return draftKey(this.session.user()?.id, this.id);
   }
   private accept(a: Attempt) {
     this.attempt.set(a);
@@ -95,15 +94,15 @@ export class AttemptState {
   async load() {
     this.error.set('');
     try {
-      const a = await this.api.get<Attempt>(
-        '/me/attempts/' + this.route.snapshot.paramMap.get('id'),
-      );
+      const a = await this.api.get<Attempt>('/me/attempts/' + this.id);
       this.accept(a);
       const raw = localStorage.getItem(this.key());
-      if (raw && a.status === 'inProgress') {
-        const draft = JSON.parse(raw);
+      const draft = raw && a.status === 'inProgress' ? JSON.parse(raw) : null;
+      const i = draft ? a.questions.findIndex((q) => q.id === draft.questionId) : -1;
+      // A draft for a missing or locked question cannot be saved, so it is dropped.
+      if (this.canGo(i)) {
         this.unsaved.set(draft);
-        this.index.set(a.questions.findIndex((q) => q.id === draft.questionId));
+        this.index.set(i);
       } else {
         this.unsaved.set(null);
         localStorage.removeItem(this.key());

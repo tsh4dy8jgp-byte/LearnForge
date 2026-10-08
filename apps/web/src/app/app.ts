@@ -26,8 +26,7 @@ export class App {
   protected async logout() {
     try {
       await this.api.post('/auth/logout');
-      this.session.user.set(null);
-      await this.session.refreshCsrf();
+      await this.session.clear();
       await this.router.navigateByUrl('/sign-in');
     } catch (e) {
       this.error.set(message(e));

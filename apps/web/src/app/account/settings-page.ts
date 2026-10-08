@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ApiClient } from '../http/api-client';
 import { message } from '../http/api-error';
+import { removeDrafts } from '../attempts/attempt-drafts';
 @Component({
   imports: [FormsModule, RouterLink],
   templateUrl: './settings-page.html',
@@ -41,11 +42,8 @@ export class SettingsPage {
     this.busy.set(true);
     try {
       await this.api.delete('/me/account', { password: this.deletePassword });
-      const prefix = 'learnforge.draft.' + this.session.user()?.id + '.';
-      for (const key of Object.keys(localStorage))
-        if (key.startsWith(prefix)) localStorage.removeItem(key);
-      this.session.user.set(null);
-      await this.session.refreshCsrf();
+      removeDrafts(this.session.user()?.id);
+      await this.session.clear();
       await this.router.navigateByUrl('/sign-in');
     } catch (e) {
       this.error.set(message(e));

@@ -178,6 +178,7 @@ See [testing](docs/testing.md) for PostgreSQL tests and container verification. 
 | [Authoring](docs/authoring.md) | Create packs, templates and questions |
 | [Learning platform prompt](docs/prompts/learning-platform-builder.md) | Interview a learner, design a program, and build a personalized learning experience |
 | [Exam question generator prompt](docs/prompts/exam-question-generator.md) | Interview a candidate, then write a 100–150-question exam/1 bank that avoids answer giveaways |
+| [Subject creation interview prompt](docs/prompts/subject-creation-interview.md) | Scope a new subject through an interview, then create lessons, practice exams or both as a LearnForge pack |
 | [Content engine](docs/content-engine.md) | Validation, artifacts and cross-validation limits |
 | [Assessment](docs/assessment.md) | Scoring, composition, timing and readiness |
 | [Architecture](docs/architecture.md) | Modules, data contracts and extension points |
