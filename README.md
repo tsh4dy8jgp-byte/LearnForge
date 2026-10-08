@@ -4,7 +4,7 @@
 
 LearnForge connects teaching materials, curriculum objectives, mixed-format practice, saved attempts and evidence-based review. Subjects live in versioned JSON packs, so changing from reasoning to university coursework or certification preparation does not require rebuilding the application.
 
-This repository contains a runnable implementation, two original example packs, a content compiler, automated tests and deployment scaffolding. It is a single-organization foundation. Institutional SSO, multi-tenancy and other future capabilities are listed in the [roadmap](docs/roadmap.md).
+This repository contains a runnable implementation, original example packs, an ISTQB preparation pack, a content compiler, automated tests and deployment scaffolding. It is a single-organization foundation. Institutional SSO, multi-tenancy and other future capabilities are listed in the [roadmap](docs/roadmap.md).
 
 ## Quick start
 
@@ -128,6 +128,7 @@ Read the [authoring guide](docs/authoring.md) for templates and question contrac
 | --- | --- |
 | [Reasoning foundations](packs/reasoning-foundations.json) | 3 objectives, 3 lessons, 40 template-generated questions across all five formats |
 | [Evidence lab](packs/evidence-lab.json) | A different subject: 2 shared cases, 10 questions and section-locking blueprints |
+| [ISTQB Foundation 4.0](packs/istqb-ctfl-4.json) | 24 English lessons, all 64 syllabus objectives, 160 original questions and four fixed full papers with standard and extended-time versions; see the [preparation guide](docs/istqb-preparation.md) |
 | [Web foundations sample](docs/examples/exam-sample.json) | The compact exam/1 format: 3 weighted domains, all seven question kinds and a case study (not seeded; copy it into `packs/` to try it) |
 
 These original demonstration materials use CC0-1.0. They are not official certification questions or validated exams. Small banks and superficial variants cannot substantiate real readiness; production authors must create enough independent families.

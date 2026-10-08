@@ -844,6 +844,19 @@
           "freshPercent": {
             "type": "number",
             "format": "double"
+          },
+          "passPoints": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "passed": {
+            "type": [
+              "null",
+              "boolean"
+            ]
           }
         }
       },
@@ -1211,6 +1224,22 @@
               "type": "number",
               "format": "double"
             }
+          },
+          "questionIds": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "passPoints": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
           }
         }
       },
@@ -1870,6 +1899,14 @@
         }
       },
       "JsonElement": { },
+      "KnowledgeLevel": {
+        "enum": [
+          "k1",
+          "k2",
+          "k3",
+          null
+        ]
+      },
       "Lesson": {
         "required": [
           "id",
@@ -2344,6 +2381,16 @@
               },
               {
                 "$ref": "#/components/schemas/CodeSample"
+              }
+            ]
+          },
+          "knowledgeLevel": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/KnowledgeLevel"
               }
             ]
           }

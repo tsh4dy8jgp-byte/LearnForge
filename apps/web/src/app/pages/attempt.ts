@@ -26,6 +26,14 @@ import { describeAnswer, describeExpected, hasResponse } from '../answers';
           <a routerLink="/dashboard" class="button secondary">Back to overview →</a>
         </div>
         @if (a.summary; as s) {
+          @if (s.passed != null) {
+            <div class="panel" role="status">
+              <h2>{{ s.passed ? 'Mock pass' : 'Mock fail' }}</h2>
+              <p>{{ s.earned }} / {{ s.possible }} points · Pass threshold: {{ s.passPoints }} points.</p>
+              <p>This simulated result is separate from your exam readiness recommendation.</p>
+              @if (a.timedOut) { <p>Time expired; your saved answers were submitted automatically.</p> }
+            </div>
+          }
           <div class="stat-grid">
             <div class="stat">
               <span>FULLY CORRECT</span
@@ -258,13 +266,13 @@ export class AttemptPage {
   readonly answered = computed(
     () => Object.values(this.attempt()?.answers || {}).filter(hasResponse).length,
   );
-  private offset = 0;
+  private readonly offset = signal(0);
   private refreshExpired = false;
   readonly timeLeft = computed(() => {
     const a = this.attempt();
     const seconds = Math.max(
       0,
-      Math.ceil((Date.parse(a?.deadline || '') - this.now() - this.offset) / 1000) || 0,
+      Math.ceil((Date.parse(a?.deadline || '') - this.now() - this.offset()) / 1000) || 0,
     );
     return (
       Math.floor(seconds / 60)
@@ -296,8 +304,10 @@ export class AttemptPage {
     return 'learnforge.draft.' + this.api.user()?.id + '.' + this.route.snapshot.paramMap.get('id');
   }
   private accept(a: Attempt) {
+    const clientTime = Date.now();
+    this.offset.set(Date.parse(a.serverTime) - clientTime);
+    this.now.set(clientTime);
     this.attempt.set(a);
-    this.offset = Date.parse(a.serverTime) - Date.now();
     if (!this.canGo(this.index()))
       this.index.set(
         a.questions.findIndex(

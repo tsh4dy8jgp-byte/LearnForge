@@ -23,6 +23,8 @@ export type AttemptResultSummary = {
     correctPercent: number;
     eligible: boolean;
     freshPercent: number;
+    passPoints?: null | number;
+    passed?: null | boolean;
 };
 
 export type AttemptStatus = 'inProgress' | 'completed';
@@ -104,6 +106,8 @@ export type Blueprint = {
     objectiveWeights?: null | {
         [key: string]: number;
     };
+    questionIds?: null | Array<string>;
+    passPoints?: null | number;
 };
 
 export type CatalogSummaryDto = {
@@ -272,6 +276,8 @@ export type Grading = {
 
 export type JsonElement = unknown;
 
+export type KnowledgeLevel = 'k1' | 'k2' | 'k3';
+
 export type Lesson = {
     id: string;
     title: string;
@@ -378,6 +384,7 @@ export type Question = {
     scenarioId?: null | string;
     weight?: number;
     code?: null | CodeSample;
+    knowledgeLevel?: null | KnowledgeLevel;
 };
 
 export type QuestionKind = 'single' | 'multiple' | 'matching' | 'dropdown' | 'sequence' | 'numeric' | 'codeOutput';

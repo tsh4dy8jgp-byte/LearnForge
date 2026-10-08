@@ -39,6 +39,10 @@ A blueprint names its count, duration, short/full size, objective IDs and requir
 
 Set lockSections true when mock learners must finish one scenario before moving forward. The UI asks for confirmation and the API enforces the lock. Learning mode remains navigable and gives immediate feedback.
 
+For a fixed paper, set optional `questionIds` to an ordered list containing exactly `count` distinct question IDs. The compiler checks references, unique families, objective coverage, required formats and complete scenario groups. The composer keeps this selection even when its families have been seen; answer options still shuffle. Do not combine `questionIds` with `objectiveWeights`. Focused learning sessions continue selecting from the bank rather than following the fixed list.
+
+Fixed blueprints may declare `passPoints`, a positive threshold no greater than their possible points (the sum of question weights). Completed mock summaries expose `passPoints` and `passed`, with passing defined as earned points greater than or equal to the threshold. Expired mocks score saved responses and retain their expiry status. Learning sessions and blueprints without a threshold have no pass/fail result. The threshold is preserved in each attempt's snapshot and is separate from readiness. A question can optionally declare `knowledgeLevel` as `k1`, `k2` or `k3` for authoring and distribution checks; it is not an answer key or a scoring modifier. These fields belong to the full pack format, not `exam/1`.
+
 ## Review and publish
 
 Run the CLI check and build commands in CI. Review the question diff between releases. Open delivery output as a learner and inspect the private grading output only in a restricted author environment. Have a subject expert check keys, explanations, source links, objective mapping and misleading distractors.
@@ -98,4 +102,3 @@ Authors never write option IDs. Each option ID is `o` plus eight hex digits of a
 | LF223 | A case study with fewer than two questions |
 
 The bundled demonstration packs predate the linter and show several of these cues. Their releases are immutable, so they are left as they are.
-
