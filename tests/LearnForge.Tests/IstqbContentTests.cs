@@ -34,8 +34,8 @@ public class IstqbContentTests
         var pack = Pack();
         Assert.Empty(ContentEngine.Validate(pack));
         Assert.Equal(24, pack.Lessons.Length);
-        Assert.Equal(160, pack.Questions.Length);
-        Assert.Equal(160, pack.Questions.Select(q => q.FamilyId).Distinct().Count());
+        Assert.Equal(224, pack.Questions.Length);
+        Assert.Equal(224, pack.Questions.Select(q => q.FamilyId).Distinct().Count());
         var officialObjectives = Groups.SelectMany(g => g.Objectives.Split(' ')).Select(id => "fl-" + id).Order().ToArray();
         Assert.Equal(64, officialObjectives.Length);
         Assert.Equal(officialObjectives, pack.Objectives.Where(o => o.Id.StartsWith("fl-")).Select(o => o.Id).Order());

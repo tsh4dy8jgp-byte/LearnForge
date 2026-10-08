@@ -128,7 +128,7 @@ Read the [authoring guide](docs/authoring.md) for templates and question contrac
 | --- | --- |
 | [Reasoning foundations](packs/reasoning-foundations.json) | 3 objectives, 3 lessons, 40 template-generated questions across all five formats |
 | [Evidence lab](packs/evidence-lab.json) | A different subject: 2 shared cases, 10 questions and section-locking blueprints |
-| [ISTQB Foundation 4.0](packs/istqb-ctfl-4.json) | 24 English lessons, all 64 syllabus objectives, 160 original questions and four fixed full papers with standard and extended-time versions; see the [preparation guide](docs/istqb-preparation.md) |
+| [ISTQB Foundation 4.0](packs/istqb-ctfl-4.json) | 24 expanded English lessons, all 64 syllabus objectives, 224 original questions and four fixed full papers with standard and extended-time versions; see the [preparation guide](docs/istqb-preparation.md) and [official reference library](references/istqb/ctfl-4/README.md) |
 | [Web foundations sample](docs/examples/exam-sample.json) | The compact exam/1 format: 3 weighted domains, all seven question kinds and a case study (not seeded; copy it into `packs/` to try it) |
 
 These original demonstration materials use CC0-1.0. They are not official certification questions or validated exams. Small banks and superficial variants cannot substantiate real readiness; production authors must create enough independent families.
@@ -143,6 +143,7 @@ apps/web/                Angular application and Playwright journeys
 src/LearnForge.Core/      Contracts, compiler, grader, composer, readiness
 tools/cli/               Content authoring CLI
 packs/                   Versioned subject sources
+references/istqb/ctfl-4/  Official syllabus and exam-rule PDFs, source mapping
 tests/LearnForge.Tests/   Domain and HTTP integration tests
 deploy/                  nginx configuration
 scripts/                 Development helper
