@@ -114,7 +114,7 @@ import { Site } from '../site-settings';
                 </label>
                 @if (previewQuestion(); as question) {
                   @if (previewScenario(); as scenario) { <h3>{{ scenario.title }}</h3><p>{{ scenario.background }}</p> }
-                  <h3>{{ question.prompt }}</h3>
+                  <h3 class="prompt-text">{{ question.prompt }}</h3>
                   <lf-question-input [question]="question" [answer]="previewAnswer()" (changed)="previewAnswer.set($event)" />
                   <p class="muted small">Try the interaction here. Preview responses are not graded or saved as learner evidence.</p>
                 }

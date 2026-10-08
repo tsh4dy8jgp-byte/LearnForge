@@ -71,7 +71,7 @@ import { describeAnswer, describeExpected, hasResponse } from '../answers';
             <details class="panel review-item">
               <summary>
                 <span class="review-number">{{ i + 1 }}</span
-                ><span>{{ q.prompt }}</span
+                ><span class="prompt-text">{{ q.prompt }}</span
                 ><span class="pill" [class.success]="g.fullyCorrect"
                   >{{ g.earned | number: '1.0-2' }} / {{ g.possible }}</span
                 >
@@ -141,7 +141,7 @@ import { describeAnswer, describeExpected, hasResponse } from '../answers';
                   <span class="eyebrow">QUESTION {{ index() + 1 }} / {{ a.questions.length }}</span
                   ><span class="pill subtle">{{ kindLabel(q.kind) }}</span>
                 </div>
-                <h2>{{ q.prompt }}</h2>
+                <h2 class="prompt-text">{{ q.prompt }}</h2>
                 <lf-question-input
                   [question]="q"
                   [answer]="a.answers[q.id] || empty"

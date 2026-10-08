@@ -79,10 +79,10 @@ public class IstqbApiTests(ApiFactory factory) : IClassFixture<ApiFactory>
         (await publisher.PostAsJsonAsync("/api/authoring/publish", original)).EnsureSuccessStatusCode();
         var client = await TestApi.Account(factory);
         var a = await TestApi.Start(client, packId: original.Id, blueprintId: "paper-c");
-        var changed = original with { Version = "1.1.0", Blueprints = original.Blueprints.Select(b => b.PassPoints is null ? b : b with { PassPoints = 40 }).ToArray() };
+        var changed = original with { Version = original.Version + ".1", Blueprints = original.Blueprints.Select(b => b.PassPoints is null ? b : b with { PassPoints = 40 }).ToArray() };
         (await publisher.PostAsJsonAsync("/api/authoring/publish", changed)).EnsureSuccessStatusCode();
         var result = await TestApi.Complete(client, a, original, correct: false);
-        Assert.Equal("1.0.0", result.GetProperty("version").GetString());
+        Assert.Equal(original.Version, result.GetProperty("version").GetString());
         Assert.Equal(26, result.GetProperty("summary").GetProperty("passPoints").GetDecimal());
     }
 }

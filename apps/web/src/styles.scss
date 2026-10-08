@@ -883,6 +883,11 @@ td {
   font-size: 1.4rem;
   margin: 28px 0;
 }
+/* Prompts are plain text; keep authored line breaks and indentation (tables, state models, pseudocode). */
+.prompt-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
 .choices {
   display: grid;
   gap: 11px;

@@ -6,6 +6,7 @@ namespace LearnForge.Tests;
 public class IstqbContentTests
 {
     private static Pack Pack() => TestApi.LoadPack("istqb-ctfl-4");
+    private static readonly string[] Papers = ["a", "b", "c", "d", "e", "f", "g"];
 
     // Independently transcribed groups from the CTFL table, not inferred from the authored bank.
     private static readonly (string Objectives, int Count, KnowledgeLevel Level)[] Groups =
@@ -34,8 +35,18 @@ public class IstqbContentTests
         var pack = Pack();
         Assert.Empty(ContentEngine.Validate(pack));
         Assert.Equal(24, pack.Lessons.Length);
-        Assert.Equal(224, pack.Questions.Length);
-        Assert.Equal(224, pack.Questions.Select(q => q.FamilyId).Distinct().Count());
+        Assert.Equal(366, pack.Questions.Length);
+        Assert.Equal(15, pack.Blueprints.Length);
+        // Practice variants share the family of the one paper question they paraphrase, so freshness is not overstated.
+        var paperIds = pack.Blueprints.Where(b => b.QuestionIds is not null).SelectMany(b => b.QuestionIds!).ToHashSet();
+        var shared = pack.Questions.GroupBy(q => q.FamilyId).Where(g => g.Count() > 1).ToArray();
+        Assert.Equal(46, shared.Sum(g => g.Count() - 1));
+        Assert.All(shared, g =>
+        {
+            Assert.Single(g, q => paperIds.Contains(q.Id));
+            Assert.Single(g.Select(q => string.Join(" ", q.ObjectiveIds)).Distinct());
+        });
+        var levels = Groups.SelectMany(g => g.Objectives.Split(' ').Select(id => (Id: "fl-" + id, g.Level))).ToDictionary(x => x.Id, x => x.Level);
         var officialObjectives = Groups.SelectMany(g => g.Objectives.Split(' ')).Select(id => "fl-" + id).Order().ToArray();
         Assert.Equal(64, officialObjectives.Length);
         Assert.Equal(officialObjectives, pack.Objectives.Where(o => o.Id.StartsWith("fl-")).Select(o => o.Id).Order());
@@ -50,7 +61,10 @@ public class IstqbContentTests
             Assert.Equal(ScoringPolicy.Exact, q.Grading.Policy);
             Assert.Equal(1, q.Weight);
             Assert.Equal(2, q.ObjectiveIds.Length);
-            Assert.NotNull(q.KnowledgeLevel);
+            Assert.Equal(levels[q.ObjectiveIds[1]], q.KnowledgeLevel);
+            // Exam format: four options for single choice, five for Select TWO.
+            Assert.Equal(q.Kind == QuestionKind.Multiple ? 5 : 4, q.Options.Length);
+            if (q.Kind == QuestionKind.Multiple) Assert.Equal(2, q.SelectCount);
             Assert.Equal(1, Grader.Score(q, new(q.Grading.Correct, [])).Earned);
             Assert.Equal(0, Grader.Score(q, null).Earned);
             if (q.Kind == QuestionKind.Multiple)
@@ -65,7 +79,7 @@ public class IstqbContentTests
     {
         var pack = Pack();
         var families = new HashSet<string>();
-        foreach (var form in new[] { "a", "b", "c", "d" })
+        foreach (var form in Papers)
         {
             var blueprint = pack.Blueprints.Single(b => b.Id == "paper-" + form);
             var paper = ExamComposer.Compose(pack, blueprint, [], "first");
