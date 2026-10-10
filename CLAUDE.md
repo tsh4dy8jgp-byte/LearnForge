@@ -15,7 +15,7 @@ dotnet test LearnForge.slnx     # all xUnit tests (Core + HTTP integration)
 dotnet test LearnForge.slnx --filter "FullyQualifiedName~CoreTests.Readiness"   # single test / class
 dotnet build LearnForge.slnx -c Release
 npm run build --prefix apps/web
-make check-content              # compile the bundled packs plus the exam/1 and flashcard samples (exam sample also linted --strict)
+make check-content              # compile the bundled packs plus the exam/1 and flashcard samples (French pack and exam sample also linted --strict)
 npm test --prefix apps/web      # Angular unit tests (Vitest via @angular/build:unit-test)
 cd apps/web && npx playwright test   # or npm run test:e2e; requires API and web dev servers already running
 make api-types                  # regenerate apps/web/openapi/learnforge.json and src/app/generated types

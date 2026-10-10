@@ -24,6 +24,8 @@ check-content:
 	dotnet run --project tools/cli -- check packs/reasoning-foundations.json
 	dotnet run --project tools/cli -- check packs/evidence-lab.json
 	dotnet run --project tools/cli -- check packs/recall-foundations.json
+	dotnet run --project tools/cli -- check packs/french-b2-grammar.json
+	dotnet run --project tools/cli -- lint packs/french-b2-grammar.json --strict
 	dotnet run --project tools/cli -- check docs/examples/exam-sample.json
 	dotnet run --project tools/cli -- check docs/examples/flashcards-sample.json
 	dotnet run --project tools/cli -- lint docs/examples/exam-sample.json --strict
