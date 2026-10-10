@@ -1013,6 +1013,25 @@ td {
 .code-sample {
   margin: 0 0 20px;
 }
+.character-palette {
+  margin: 4px 0 18px;
+}
+.character-palette summary {
+  cursor: pointer;
+  color: var(--green);
+  font-size: 0.85rem;
+}
+.character-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.character-buttons .icon-button {
+  min-width: 40px;
+  min-height: 40px;
+  font-size: 1rem;
+}
 .code-sample figcaption {
   margin-bottom: 6px;
 }

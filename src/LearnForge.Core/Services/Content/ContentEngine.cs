@@ -228,7 +228,7 @@ public static partial class ContentEngine
                 }
                 if (q.Kind == QuestionKind.Matching && !q.Reuse && q.Grading.Matches is { } keys && keys.Values.Distinct().Count() != keys.Count) Error(q.Id, "Matching key reuses a token while reuse is disabled.");
             }
-            else if (q.Kind is QuestionKind.Numeric or QuestionKind.CodeOutput)
+            else if (q.Kind is QuestionKind.Numeric or QuestionKind.CodeOutput or QuestionKind.ShortAnswer)
             {
                 if (q.Options.Length > 0 || q.Slots.Length > 0 || q.SelectCount != 0 || q.Grading.Matches is { Count: > 0 }) Error(q.Id, "Typed-response questions cannot contain options, slots, matches or a selection count.");
                 if (q.Grading.Policy != ScoringPolicy.Exact) Error(q.Id, "Typed-response questions use exact scoring.");
@@ -237,6 +237,13 @@ public static partial class ContentEngine
                 {
                     if (q.Grading.Correct.Any(key => !ResponseText.TryParseNumber(key, out _))) Error(q.Id, "Numeric keys must be invariant-culture numbers such as 4 or -2.5.");
                     if (q.Grading.Tolerance is < 0) Error(q.Id, "Numeric tolerance cannot be negative.");
+                }
+                else if (q.Kind == QuestionKind.ShortAnswer)
+                {
+                    var accepted = q.Grading.Correct.Select(key => ResponseText.NormalizeShortAnswer(key, q.Grading.IgnoreDiacritics == true)).ToArray();
+                    if (q.Grading.Correct.Any(key => key.Length > ResponseText.MaxLength) || accepted.Any(key => key.Length == 0))
+                        Error(q.Id, $"Accepted answers must be nonblank and at most {ResponseText.MaxLength} characters.");
+                    else if (accepted.Distinct().Count() != accepted.Length) Error(q.Id, "Two accepted answers are the same once case, spacing, apostrophes and closing punctuation are ignored.");
                 }
                 else
                 {
@@ -249,6 +256,7 @@ public static partial class ContentEngine
             if (q.Kind != QuestionKind.CodeOutput && q.Code is not null) Error(q.Id, "Only code-output questions carry a program.");
             if (q.Kind != QuestionKind.Numeric && q.Grading.Tolerance is not null) Error(q.Id, "Only numeric questions have a tolerance.");
             if (q.KnowledgeLevel is { } level && !Enum.IsDefined(level)) Error(q.Id, "Invalid knowledgeLevel.");
+            if (q.Kind != QuestionKind.ShortAnswer && q.Grading.IgnoreDiacritics is not null) Error(q.Id, "Only short-answer questions can ignore diacritics.");
         }
         foreach (var source in p.Sources)
             if (!Uri.TryCreate(source.Url, UriKind.Absolute, out var uri) || uri.Scheme != "https") Error("sources", "Reference URLs must use HTTPS.");

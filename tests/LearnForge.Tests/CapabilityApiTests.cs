@@ -135,7 +135,7 @@ public class CapabilityApiTests(ApiFactory factory) : IClassFixture<ApiFactory>
         foreach (var question in standalone)
         {
             var key = pack.Questions.Single(q => q.Id == question);
-            var answer = key.Kind is QuestionKind.Numeric or QuestionKind.CodeOutput ? new Answer([], [], key.Grading.Correct[0]) : TestApi.Correct(pack, question);
+            var answer = key.Kind is QuestionKind.Numeric or QuestionKind.CodeOutput or QuestionKind.ShortAnswer ? new Answer([], [], key.Grading.Correct[0]) : TestApi.Correct(pack, question);
             revision = await TestApi.Save(publisher, attempt, revision, question, answer);
         }
         var submit = await publisher.PostAsJsonAsync($"/api/me/attempts/{TestApi.Id(attempt)}/submit", new { revision });

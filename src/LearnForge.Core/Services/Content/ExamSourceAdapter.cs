@@ -19,7 +19,8 @@ internal static class ExamSourceAdapter
         [QuestionKind.Matching] = ["pairs", "extraMatches"],
         [QuestionKind.Dropdown] = ["blanks"],
         [QuestionKind.Numeric] = ["answer", "answers", "tolerance"],
-        [QuestionKind.CodeOutput] = ["answer", "answers", "code"]
+        [QuestionKind.CodeOutput] = ["answer", "answers", "code"],
+        [QuestionKind.ShortAnswer] = ["answer", "answers", "ignoreDiacritics"]
     };
 
     public static Pack? ToPack(ExamSource source, List<Diagnostic> errors)
@@ -62,7 +63,8 @@ internal static class ExamSourceAdapter
         {
             ("answer", q.Answer is not null), ("answers", q.Answers is not null), ("distractors", q.Distractors is not null),
             ("steps", q.Steps is not null), ("pairs", q.Pairs is not null), ("extraMatches", q.ExtraMatches is not null),
-            ("blanks", q.Blanks is not null), ("tolerance", q.Tolerance is not null), ("code", q.Code is not null)
+            ("blanks", q.Blanks is not null), ("tolerance", q.Tolerance is not null), ("code", q.Code is not null),
+            ("ignoreDiacritics", q.IgnoreDiacritics is not null)
         };
         foreach (var field in present.Where(f => f.Set && !allowed.Contains(f.Name))) error($"'{field.Name}' does not apply to {kind} questions.");
         string[] objectives = (q.Domain, q.Domains) switch
@@ -76,7 +78,7 @@ internal static class ExamSourceAdapter
 
         Question Make(Option[] options, Slot[] slots, int selectCount, bool reuse, ScoringPolicy policy, string[] correct,
             Dictionary<string, string>? matches = null) => new(id, q.Family ?? id, q.Kind, q.Prompt, objectives, options, slots, selectCount,
-            reuse, new(q.Scoring ?? policy, correct, matches, q.Tolerance), q.Explanation, q.CaseStudy, q.Weight, q.Code);
+            reuse, new(q.Scoring ?? policy, correct, matches, q.Tolerance, q.IgnoreDiacritics), q.Explanation, q.CaseStudy, q.Weight, q.Code);
 
         switch (q.Kind)
         {
@@ -160,7 +162,7 @@ internal static class ExamSourceAdapter
         return null;
     }
 
-    // Numeric keys may be JSON numbers; code output keys are text, though a bare number is accepted as its literal output.
+    // Numeric keys may be JSON numbers; code output and short-answer keys are text, though a bare number is accepted as its literal text.
     private static string? Typed(JsonElement value, QuestionKind kind, int index, Action<string> error)
     {
         if (value.ValueKind == JsonValueKind.String) return value.GetString();

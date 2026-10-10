@@ -114,6 +114,14 @@
       "explanation": "Context-aware output encoding makes the browser treat a comment as text instead of markup. HTTPS protects data in transit, hashing would make comments unreadable, and a short script still fits within a length cap."
     },
     {
+      "id": "security-hsts-header",
+      "kind": "shortAnswer",
+      "domain": "security",
+      "prompt": "Which HTTP response header tells browsers to reach a site only over HTTPS on later visits? Type the header name.",
+      "answer": "Strict-Transport-Security",
+      "explanation": "Strict-Transport-Security (HSTS) makes the browser upgrade every later request to that host to HTTPS until max-age expires, so a sign-in form can no longer be reached over plain HTTP. Header names are case-insensitive, and so is a short-answer response."
+    },
+    {
       "id": "performance-transfer-time",
       "kind": "numeric",
       "domain": "performance",

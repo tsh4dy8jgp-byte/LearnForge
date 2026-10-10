@@ -2914,6 +2914,12 @@
               "number"
             ],
             "format": "double"
+          },
+          "ignoreDiacritics": {
+            "type": [
+              "null",
+              "boolean"
+            ]
           }
         }
       },
@@ -3444,7 +3450,8 @@
           "dropdown",
           "sequence",
           "numeric",
-          "codeOutput"
+          "codeOutput",
+          "shortAnswer"
         ]
       },
       "ReadinessPolicy": {

@@ -80,9 +80,9 @@ This is the only approval checkpoint, because regenerating a 100+ question bank 
   | dropdown | 10% | 10 | 12 | 15 |
   | matching (drag and drop) | 10% | 10 | 12 | 15 |
   | sequence (ordering) | 10% | 10 | 12 | 15 |
-  | numeric or codeOutput | 10% | 10 | 12 | 15 |
+  | numeric, codeOutput or shortAnswer | 10% | 10 | 12 | 15 |
 
-  Use numeric and codeOutput only where the subject really has calculations or code reading; otherwise move that share to single and multiple.
+  Use numeric and codeOutput only where the subject really has calculations or code reading, and shortAnswer only where recalling an exact term, name or form is the skill; otherwise move that share to single and multiple.
 - Case studies: two to four scenarios of four to six questions each (about 15% of the bank). Give each a realistic 120–300-word background that contains every fact its questions need. Spread a scenario's questions across domains, and set each question's own domain.
 - Cognitive level: about 25% recall and understanding, 50% application to a situation, and 25% analysis or troubleshooting. Favour scenario-based stems over definitions.
 - Mocks: the full mock uses the official question count (at most 100) and time; the short mock uses about 20 questions with proportional time. Set lockCaseStudies to true when the real exam locks case-study sections.
@@ -111,6 +111,7 @@ Every question: "id", "kind", "domain" (or "domains": [ids] when it truly spans 
 | dropdown | "blanks": [{ "text": lead-in, "answer", "distractors": [2–3 texts] }] (1–3 blanks) |
 | numeric | "answer": number (or "answers": [numbers]), optional "tolerance" |
 | codeOutput | "code": { "language", "source" }, "answer": exact output text |
+| shortAnswer | "answer": text (or "answers": [up to 20 accepted texts]), optional "ignoreDiacritics": true |
 
 A complete example covering every kind and a case study (this file ships with LearnForge as docs/examples/exam-sample.json):
 
@@ -231,6 +232,14 @@ A complete example covering every kind and a case study (this file ships with Le
       "explanation": "Context-aware output encoding makes the browser treat a comment as text instead of markup. HTTPS protects data in transit, hashing would make comments unreadable, and a short script still fits within a length cap."
     },
     {
+      "id": "security-hsts-header",
+      "kind": "shortAnswer",
+      "domain": "security",
+      "prompt": "Which HTTP response header tells browsers to reach a site only over HTTPS on later visits? Type the header name.",
+      "answer": "Strict-Transport-Security",
+      "explanation": "Strict-Transport-Security (HSTS) makes the browser upgrade every later request to that host to HTTPS until max-age expires, so a sign-in form can no longer be reached over plain HTTP. Header names are case-insensitive, and so is a short-answer response."
+    },
+    {
       "id": "performance-transfer-time",
       "kind": "numeric",
       "domain": "performance",
@@ -323,17 +332,18 @@ Formats
 14. Dropdown: every choice fits the sentence grammatically and is of the same type. One blank's answer must not reveal another's.
 15. Numeric: state units, rounding and any constants in the prompt. Make the answer unique, and set a tolerance that covers legitimate rounding only.
 16. codeOutput: a deterministic program of at most 25 lines, with no randomness, clock, input or environment dependence. The answer is the exact printed output. The language is a lowercase ID such as python or javascript.
-17. Case studies: each question is answerable from the background plus knowledge of the objective, stands alone, and does not reveal another question's answer. Name people and organizations neutrally and define acronyms at first use. (LF223)
+17. shortAnswer: ask for one word, term or short phrase that has a single defensible answer, and state any required form in the prompt (for example "Type the header name"). List every acceptable spelling or variant in "answers". Letter case, spacing, apostrophe style and closing punctuation never affect the mark; accents and other diacritics do, unless you set "ignoreDiacritics": true.
+18. Case studies: each question is answerable from the background plus knowledge of the objective, stands alone, and does not reveal another question's answer. Name people and organizations neutrally and define acronyms at first use. (LF223)
 
 Bank and explanations
-18. Keep questions independent: no stem or option may answer another question, and no duplicate items. (LF213)
-19. Match each domain's count to its weight, and use at least four formats. (LF220, LF221)
-20. Write explanations of 2–4 sentences (at least 60 characters). Say why the key is right and why the most tempting distractor is wrong. Refer to options by their content, never by letter, and add no claims you cannot verify. (LF212)
+19. Keep questions independent: no stem or option may answer another question, and no duplicate items. (LF213)
+20. Match each domain's count to its weight, and use at least four formats. (LF220, LF221)
+21. Write explanations of 2–4 sentences (at least 60 characters). Say why the key is right and why the most tempting distractor is wrong. Refer to options by their content, never by letter, and add no claims you cannot verify. (LF212)
 
 Integrity
-21. Write only original items. Never reproduce, paraphrase or reconstruct real exam questions, recalled "dumps" or copyrighted practice tests.
-22. Base each item on the official objectives and verifiable facts, and check version-sensitive details. If you are unsure of a fact, write a different item instead of guessing.
-23. Describe the bank as unofficial practice. Do not claim endorsement, an exam-content match or a pass probability.
+22. Write only original items. Never reproduce, paraphrase or reconstruct real exam questions, recalled "dumps" or copyrighted practice tests.
+23. Base each item on the official objectives and verifiable facts, and check version-sensitive details. If you are unsure of a fact, write a different item instead of guessing.
+24. Describe the bank as unofficial practice. Do not claim endorsement, an exam-content match or a pass probability.
 
 6. WRITE IN BATCHES AND AUDIT EACH ONE
 

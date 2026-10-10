@@ -63,7 +63,7 @@ Compose is configured for **local development**, bound to loopback. Its sample p
 | --- | --- |
 | Teaching | Course library, lesson reader, text/callout/example/code blocks, saved completion |
 | Curriculum | Objective map, prerequisite relationships, linked teaching and practice |
-| Questions | Single choice, select N of M, matching with drag/drop or click placement, dropdown blanks, sequences, numeric answers with tolerance, program-output answers |
+| Questions | Single choice, select N of M, matching with drag/drop or click placement, dropdown blanks, sequences, numeric answers with tolerance, program-output answers, short typed answers with optional accent tolerance |
 | Scoring | Server-side exact or normalized partial credit, stable IDs, explanations, unanswered items scored zero |
 | Sessions | Timed short/full mocks, untimed learning with checked feedback, mistake and weak-objective practice |
 | Case studies | Shared backgrounds, atomic selection, optional forward-only mock sections |
@@ -146,7 +146,7 @@ Read the [authoring guide](docs/authoring.md) for templates and question contrac
 | --- | --- |
 | [Reasoning foundations](packs/reasoning-foundations.json) | 3 objectives, 3 lessons, 40 template-generated questions across all five formats |
 | [Evidence lab](packs/evidence-lab.json) | A different subject: 2 shared cases, 10 questions and section-locking blueprints |
-| [Web foundations sample](docs/examples/exam-sample.json) | The compact exam/1 format: 3 weighted domains, all seven question kinds and a case study (not seeded; copy it into `packs/` to try it) |
+| [Web foundations sample](docs/examples/exam-sample.json) | The compact exam/1 format: 3 weighted domains, all eight question kinds and a case study (not seeded; copy it into `packs/` to try it) |
 
 These original demonstration materials use CC0-1.0. They are not official certification questions or validated exams. Small banks and superficial variants cannot substantiate real readiness; production authors must create enough independent families.
 

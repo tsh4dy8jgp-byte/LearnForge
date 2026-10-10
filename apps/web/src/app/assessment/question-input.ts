@@ -36,6 +36,17 @@ export class QuestionInput {
     this.changed.emit({ selected: [], slots: {}, text: this.draft() });
     this.announcement.set('Answer saved');
   }
+  // Common Latin-script characters that many keyboards lack, offered for short typed answers.
+  protected readonly characters = [...'àâæçéèêëîïôœùûüÿäößñ«»’'];
+  protected insert(input: HTMLInputElement, character: string) {
+    if (this.disabled()) return;
+    const start = input.selectionStart ?? input.value.length;
+    const end = input.selectionEnd ?? start;
+    input.value = input.value.slice(0, start) + character + input.value.slice(end);
+    input.setSelectionRange(start + character.length, start + character.length);
+    input.focus();
+    this.draft.set(input.value);
+  }
   protected letter(i: number) {
     return String.fromCharCode(65 + i);
   }

@@ -14,6 +14,7 @@ const kindLabels: Record<QuestionKind, string> = {
   dropdown: 'Dropdown blanks',
   numeric: 'Numeric answer',
   codeOutput: 'Program output',
+  shortAnswer: 'Short answer',
 };
 
 @Component({

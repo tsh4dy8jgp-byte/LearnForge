@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { Answer, Question } from '../api-contracts';
 import { QuestionInput } from './question-input';
 
-const typed = (kind: 'numeric' | 'codeOutput'): Question => ({
+const typed = (kind: 'numeric' | 'codeOutput' | 'shortAnswer'): Question => ({
   id: 'q-' + kind,
   kind,
   prompt: 'Prompt?',
@@ -50,6 +50,37 @@ describe('typed question input', () => {
     element.querySelector<HTMLButtonElement>('button')!.click();
 
     expect(emitted).toEqual([{ selected: [], slots: {}, text: '2' }]);
+  });
+
+  it('saves a short answer with Enter', async () => {
+    const { element, emitted, fixture } = await render(typed('shortAnswer'));
+    const input = element.querySelector<HTMLInputElement>('input[type=text]')!;
+    expect(input.getAttribute('spellcheck')).toBe('false');
+    input.value = 'sommes partis';
+    input.dispatchEvent(new Event('input'));
+    await fixture.whenStable();
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+
+    expect(emitted).toEqual([{ selected: [], slots: {}, text: 'sommes partis' }]);
+  });
+
+  it('inserts an accented character at the caret from the keyboard-reachable palette', async () => {
+    const { element, emitted, fixture } = await render(typed('shortAnswer'));
+    const input = element.querySelector<HTMLInputElement>('input[type=text]')!;
+    input.value = 'est allee';
+    input.dispatchEvent(new Event('input'));
+    input.setSelectionRange(7, 8);
+    const accent = element.querySelector<HTMLButtonElement>('button[aria-label="Insert é"]')!;
+    expect(accent.type).toBe('button');
+    expect(accent.closest('details')!.querySelector('summary')!.textContent).toContain('Accents');
+    accent.click();
+    await fixture.whenStable();
+
+    expect(input.value).toBe('est allée');
+    expect(input.selectionStart).toBe(8);
+    expect(document.activeElement).toBe(input);
+    element.querySelector<HTMLButtonElement>('.button.secondary')!.click();
+    expect(emitted).toEqual([{ selected: [], slots: {}, text: 'est allée' }]);
   });
 
   it('does not save an empty answer', async () => {

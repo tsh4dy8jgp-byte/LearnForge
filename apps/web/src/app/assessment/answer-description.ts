@@ -1,6 +1,7 @@
 import { Answer, Grade, Question } from '../api-contracts';
 
-const typed = (q: Question) => q.kind === 'numeric' || q.kind === 'codeOutput';
+const typed = (q: Question) =>
+  q.kind === 'numeric' || q.kind === 'codeOutput' || q.kind === 'shortAnswer';
 
 export function hasResponse(answer: Answer | undefined): boolean {
   return (

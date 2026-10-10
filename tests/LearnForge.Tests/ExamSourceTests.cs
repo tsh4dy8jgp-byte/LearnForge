@@ -47,11 +47,11 @@ public class ExamSourceTests
 
     [Theory]
     [InlineData("single")][InlineData("multiple")][InlineData("sequence")][InlineData("matching")]
-    [InlineData("dropdown")][InlineData("numeric")][InlineData("codeOutput")]
+    [InlineData("dropdown")][InlineData("numeric")][InlineData("codeOutput")][InlineData("shortAnswer")]
     public void Every_kind_converts_to_a_gradable_question(string kind)
     {
         var q = Sample().Questions.First(q => q.Kind == Enum.Parse<QuestionKind>(kind, ignoreCase: true));
-        Answer perfect = q.Kind is QuestionKind.Numeric or QuestionKind.CodeOutput
+        Answer perfect = q.Kind is QuestionKind.Numeric or QuestionKind.CodeOutput or QuestionKind.ShortAnswer
             ? new([], [], q.Grading.Correct[0])
             : new(q.Grading.Correct, q.Grading.Matches ?? []);
         Assert.Null(Grader.Validate(q, perfect));
@@ -73,6 +73,21 @@ public class ExamSourceTests
         Assert.Equal(["miss miss hit"], Of("performance-cache-trace").Grading.Correct);
         Assert.Equal("javascript", Of("performance-cache-trace").Code!.Language);
         Assert.Equal(["b1", "b2"], Of("security-password-storage").Slots.Select(s => s.Id));
+        Assert.Equal(["Strict-Transport-Security"], Of("security-hsts-header").Grading.Correct);
+        Assert.Equal(ScoringPolicy.Exact, Of("security-hsts-header").Grading.Policy);
+        Assert.Null(Of("security-hsts-header").Grading.IgnoreDiacritics);
+    }
+
+    [Fact]
+    public void Only_short_answers_can_ignore_diacritics()
+    {
+        var lenient = Edit(source => Question(source, "security-hsts-header")["ignoreDiacritics"] = true);
+        Assert.True(lenient.Success);
+        Assert.True(lenient.Pack!.Questions.Single(q => q.Id == "security-hsts-header").Grading.IgnoreDiacritics);
+
+        var numeric = Edit(source => Question(source, "performance-transfer-time")["ignoreDiacritics"] = true);
+        Assert.Contains(numeric.Diagnostics, d => d.Code == "LF110" && d.Path == "performance-transfer-time"
+            && d.Message == "'ignoreDiacritics' does not apply to numeric questions.");
     }
 
     [Fact]

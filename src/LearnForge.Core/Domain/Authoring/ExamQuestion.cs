@@ -8,4 +8,4 @@ public sealed record ExamQuestion(string Id, QuestionKind Kind, string Prompt, s
     string[]? Domains = null, string? CaseStudy = null, string? Family = null, decimal Weight = 1, ScoringPolicy? Scoring = null,
     JsonElement? Answer = null, JsonElement[]? Answers = null, string[]? Distractors = null, string[]? Steps = null,
     ExamPair[]? Pairs = null, string[]? ExtraMatches = null, ExamBlank[]? Blanks = null, decimal? Tolerance = null,
-    CodeSample? Code = null);
+    CodeSample? Code = null, bool? IgnoreDiacritics = null);

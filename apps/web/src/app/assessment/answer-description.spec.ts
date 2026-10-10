@@ -49,5 +49,12 @@ describe('answers', () => {
     const output = question({ kind: 'codeOutput', options: [], selectCount: 0 });
     expect(describeExpected(output, grade(['3 [1, 2]', '3 [1,2]']))).toBe('3 [1, 2] or 3 [1,2]');
     expect(describeExpected(question({}), grade(['a']))).toBe('Alpha');
+    const short = question({ kind: 'shortAnswer', options: [], selectCount: 0 });
+    expect(describeAnswer(short, { selected: [], slots: {}, text: 'sommes partis' })).toBe(
+      'sommes partis',
+    );
+    expect(describeExpected(short, grade(['sommes partis', 'sommes parties']))).toBe(
+      'sommes partis or sommes parties',
+    );
   });
 });

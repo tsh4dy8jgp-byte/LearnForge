@@ -177,5 +177,41 @@
   <button class="button secondary" [disabled]="!canSaveText()" (click)="saveText()">
     Save answer
   </button>
+} @else if (question().kind === 'shortAnswer') {
+  <label class="typed-answer"
+    >Your answer
+    <input
+      #shortInput
+      type="text"
+      autocomplete="off"
+      autocapitalize="off"
+      spellcheck="false"
+      [disabled]="disabled()"
+      [value]="draft()"
+      (input)="updateText($event)"
+      (keydown.enter)="saveText()"
+  /></label>
+  <p class="muted small">
+    Capital letters, extra spaces and apostrophe style don't affect the mark.
+  </p>
+  <details class="character-palette">
+    <summary>Accents and special characters</summary>
+    <div class="character-buttons">
+      @for (character of characters; track character) {
+        <button
+          type="button"
+          class="icon-button"
+          [disabled]="disabled()"
+          [attr.aria-label]="'Insert ' + character"
+          (click)="insert(shortInput, character)"
+        >
+          {{ character }}
+        </button>
+      }
+    </div>
+  </details>
+  <button class="button secondary" [disabled]="!canSaveText()" (click)="saveText()">
+    Save answer
+  </button>
 }
 <p class="sr-only" aria-live="polite">{{ announcement() }}</p>

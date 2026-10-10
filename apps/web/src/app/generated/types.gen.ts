@@ -393,6 +393,7 @@ export type Grading = {
         [key: string]: string;
     };
     tolerance?: null | number;
+    ignoreDiacritics?: null | boolean;
 };
 
 export type JsonElement = unknown;
@@ -511,7 +512,7 @@ export type Question = {
     knowledgeLevel?: null | KnowledgeLevel;
 };
 
-export type QuestionKind = 'single' | 'multiple' | 'matching' | 'dropdown' | 'sequence' | 'numeric' | 'codeOutput';
+export type QuestionKind = 'single' | 'multiple' | 'matching' | 'dropdown' | 'sequence' | 'numeric' | 'codeOutput' | 'shortAnswer';
 
 export type ReadinessPolicy = {
     shortAttempts?: number;

@@ -46,11 +46,12 @@ All block content is rendered as text. Blocks cannot contain HTML or Markdown.
 
 Single questions have one correct option and selectCount 1. Multiple questions have exactly selectCount correct options and at least one distractor. Sequence questions use a complete permutation as grading.correct. Matching questions use slots, a shared options bank and grading.matches; set reuse true when a token may fill multiple slots. Dropdown questions put their option banks on each slot and also use grading.matches.
 
-Numeric and codeOutput questions take a typed answer instead of a selection. They have no options, slots or matches, selectCount 0 and exact scoring. List 1–20 accepted answers in grading.correct.
+Numeric, codeOutput and shortAnswer questions take a typed answer instead of a selection. They have no options, slots or matches, selectCount 0 and exact scoring. List 1–20 accepted answers in grading.correct.
 - **Numeric:** each key is an invariant-culture number such as `4` or `-2.5`. The optional grading.tolerance sets the allowed absolute difference and defaults to 0.
 - **codeOutput:** the question carries `code: { language, source }`. The program is shown as text and never executed. A response matches an accepted output when both are equal after trimming, normalizing line endings and collapsing runs of spaces or tabs.
+- **shortAnswer:** a word, term or short phrase, such as a verb form in a language course. A response matches an accepted answer when both are equal after Unicode normalization, ignoring letter case, runs of spaces (including no-break spaces), apostrophe and hyphen style, spaces around apostrophes, the œ and æ ligatures and closing `. ! ? …`. Diacritics count by default; set `grading.ignoreDiacritics` to true to accept "eleve" for "élève", and keep it unset where the accent changes the word (ou/où, a/à). Accepted answers must stay distinct after normalization. List every acceptable variant, such as both agreements when a subject's gender is unknown. Only shortAnswer accepts `ignoreDiacritics`.
 
-Question kinds are single, multiple, sequence, matching, dropdown, numeric and codeOutput. The Angular player provides drag/drop plus click or keyboard alternatives for matching and ordering. The server remains authoritative for all contracts.
+Question kinds are single, multiple, sequence, matching, dropdown, numeric, codeOutput and shortAnswer. The Angular player provides drag/drop plus click or keyboard alternatives for matching and ordering. The server remains authoritative for all contracts.
 
 ## Templates
 
@@ -99,6 +100,7 @@ Each question has `id`, `kind`, `prompt`, `explanation` and either `domain` or `
 | dropdown | `blanks: [{ text, answer, distractors }]` | slots `b1…`, each with its own choices, partial scoring |
 | numeric | `answer` or `answers` (numbers), `tolerance` | accepted values, exact scoring |
 | codeOutput | `code: { language, source }`, `answer` or `answers` | accepted outputs, exact scoring |
+| shortAnswer | `answer` or `answers` (text), optional `ignoreDiacritics` | accepted answers, exact scoring |
 
 Authors never write option IDs. Each option ID is `o` plus eight hex digits of a SHA-256 hash of the question ID, its bank and its text. Whether an option is the key never affects its ID, and banks are stored in ID order. Learners' browsers see option IDs, so with these IDs neither the ID nor the stored order reveals the key; attempts also shuffle the order. Rewording an option changes its ID. That is harmless because attempts snapshot their questions, but bump the version as for any change. Duplicate option texts within a bank (ignoring case) are rejected.
 

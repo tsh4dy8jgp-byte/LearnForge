@@ -42,6 +42,11 @@ One active session is allowed per account/course. Resume it through **Attempts &
 | Matching | Drag a token, or select it and activate the target using click/keyboard |
 | Dropdown | Choose an option for every blank |
 | Sequence | Drag or use move buttons, then save the order |
+| Numeric answer | Type a number such as 4 or -2.5, then save it |
+| Program output | Type the exact output of the program shown, then save it |
+| Short answer | Type a word or short phrase, then press Enter or save it. **Accents and special characters** inserts letters your keyboard lacks |
+
+Short answers ignore letter case, extra spaces, apostrophe style and closing punctuation. Accents count unless the course says otherwise, and feedback always shows the expected spelling.
 
 Matching states whether tokens may be reused. With reuse disabled, placing a token elsewhere moves its assignment.
 
