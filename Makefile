@@ -24,6 +24,14 @@ check-content:
 	dotnet run --project tools/cli -- check packs/reasoning-foundations.json
 	dotnet run --project tools/cli -- check packs/evidence-lab.json
 	dotnet run --project tools/cli -- check packs/recall-foundations.json
+	dotnet run --project tools/cli -- check packs/istqb-ctfl-4.json
+	dotnet run --project tools/cli -- lint packs/istqb-ctfl-4.json
+	dotnet run --project tools/cli -- check packs/istqb-ct-ai-2.json
+	dotnet run --project tools/cli -- lint packs/istqb-ct-ai-2.json
+	dotnet run --project tools/cli -- check packs/istqb-ct-genai-1.json
+	dotnet run --project tools/cli -- lint packs/istqb-ct-genai-1.json
+	dotnet run --project tools/cli -- check packs/ai-testing-genai-practical.json
+	dotnet run --project tools/cli -- lint packs/ai-testing-genai-practical.json --strict
 	dotnet run --project tools/cli -- check docs/examples/exam-sample.json
 	dotnet run --project tools/cli -- check docs/examples/flashcards-sample.json
 	dotnet run --project tools/cli -- lint docs/examples/exam-sample.json --strict

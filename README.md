@@ -6,7 +6,7 @@ Flashcards now support subject authoring, saved spaced review, Anki `.apkg`/text
 
 LearnForge connects teaching materials, curriculum objectives, mixed-format practice, saved attempts and evidence-based review. Subjects live in versioned JSON packs, so changing from reasoning to university coursework or certification preparation does not require rebuilding the application.
 
-This repository contains a runnable implementation, two original example packs, a content compiler, automated tests and deployment scaffolding. It is a single-organization foundation. Institutional SSO, multi-tenancy and other future capabilities are listed in the [roadmap](docs/roadmap.md).
+This repository contains a runnable implementation, original example packs, ISTQB preparation packs (Foundation, AI Testing and Testing with Generative AI), a content compiler, automated tests and deployment scaffolding. It is a single-organization foundation. Institutional SSO, multi-tenancy and other future capabilities are listed in the [roadmap](docs/roadmap.md).
 
 ## Quick start
 
@@ -146,6 +146,10 @@ Read the [authoring guide](docs/authoring.md) for templates and question contrac
 | --- | --- |
 | [Reasoning foundations](packs/reasoning-foundations.json) | 3 objectives, 3 lessons, 40 template-generated questions across all five formats |
 | [Evidence lab](packs/evidence-lab.json) | A different subject: 2 shared cases, 10 questions and section-locking blueprints |
+| [ISTQB Foundation 4.0](packs/istqb-ctfl-4.json) | 24 expanded English lessons, all 64 syllabus objectives, 366 original questions and seven fixed full papers with standard and extended-time versions; see the [preparation guide](docs/istqb-preparation.md) and [official reference library](references/istqb/ctfl-4/README.md) |
+| [ISTQB AI Testing 2.0](packs/istqb-ct-ai-2.json) | 18 English lessons, all 43 CT-AI v2.0 objectives, 203 original questions and four fixed papers weighted like the exam (44 points, pass 29); see the [CT-AI guide](docs/istqb-ct-ai.md) and [reference library](references/istqb/ct-ai-2/README.md) |
+| [ISTQB Testing with Generative AI 1.1](packs/istqb-ct-genai-1.json) | 16 English lessons, all 37 CT-GenAI v1.1 objectives, 197 original questions and four fixed papers weighted like the exam (46 points, pass 30); see the [CT-GenAI guide](docs/istqb-ct-genai.md) and [reference library](references/istqb/ct-genai-1/README.md) |
+| [AI Testing and Testing with GenAI: Practical QA](packs/ai-testing-genai-practical.json) | 16 English lessons, 80 original knowledge checks, supplied datasets and model outputs, worked exercises and an AI support-assistant capstone; practice and mastery without external tools or timed mocks. See the [practical course guide](docs/ai-testing-genai-practical.md) |
 | [Web foundations sample](docs/examples/exam-sample.json) | The compact exam/1 format: 3 weighted domains, all eight question kinds and a case study (not seeded; copy it into `packs/` to try it) |
 
 These original demonstration materials use CC0-1.0. They are not official certification questions or validated exams. Small banks and superficial variants cannot substantiate real readiness; production authors must create enough independent families.
@@ -160,6 +164,7 @@ apps/web/                Angular application and Playwright journeys
 src/LearnForge.Core/      Contracts, compiler, grader, composer, readiness
 tools/cli/               Content authoring CLI
 packs/                   Versioned subject sources
+references/istqb/        Official ISTQB syllabi, sample exams and exam rules with source maps (local, gitignored)
 tests/LearnForge.Tests/   Domain and HTTP integration tests
 deploy/                  nginx configuration
 scripts/                 Development helper
