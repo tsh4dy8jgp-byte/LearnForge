@@ -18,6 +18,8 @@ check-content:
 	dotnet run --project tools/cli -- lint packs/istqb-ct-ai-2.json
 	dotnet run --project tools/cli -- check packs/istqb-ct-genai-1.json
 	dotnet run --project tools/cli -- lint packs/istqb-ct-genai-1.json
+	dotnet run --project tools/cli -- check packs/ai-testing-genai-practical.json
+	dotnet run --project tools/cli -- lint packs/ai-testing-genai-practical.json --strict
 	dotnet run --project tools/cli -- check docs/examples/exam-sample.json
 	dotnet run --project tools/cli -- lint docs/examples/exam-sample.json --strict
 browser-test:
