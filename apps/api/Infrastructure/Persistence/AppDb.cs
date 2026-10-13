@@ -14,10 +14,25 @@ public class AppDb(DbContextOptions options) : IdentityDbContext<User>(options)
     public DbSet<EvidenceRecord> Evidence => Set<EvidenceRecord>();
     public DbSet<AuditEvent> Audit => Set<AuditEvent>();
     public DbSet<AuthoringDraft> Drafts => Set<AuthoringDraft>();
+    public DbSet<FlashcardState> FlashcardStates => Set<FlashcardState>();
+    public DbSet<FlashcardSession> FlashcardSessions => Set<FlashcardSession>();
+    public DbSet<FlashcardEvent> FlashcardEvents => Set<FlashcardEvent>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        builder.Entity<FlashcardState>().HasKey(x => new { x.UserId, x.PackId, x.UnitId });
+        builder.Entity<FlashcardState>().Property(x => x.Revision).IsConcurrencyToken();
+        builder.Entity<FlashcardState>().HasOne<User>().WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<FlashcardSession>().HasIndex(x => new { x.UserId, x.PackId, x.StartKey }).IsUnique();
+        builder.Entity<FlashcardSession>().HasIndex(x => x.ActiveKey).IsUnique();
+        builder.Entity<FlashcardSession>().Property(x => x.Revision).IsConcurrencyToken();
+        builder.Entity<FlashcardSession>().HasOne<User>().WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<FlashcardSession>().HasOne<PackRelease>().WithMany().HasForeignKey(x => x.ReleaseId).OnDelete(DeleteBehavior.Restrict);
+        builder.Entity<FlashcardEvent>().HasIndex(x => new { x.SessionId, x.RequestId }).IsUnique();
+        builder.Entity<FlashcardEvent>().HasOne<FlashcardSession>().WithMany().HasForeignKey(x => x.SessionId).OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<FlashcardEvent>().HasOne<User>().WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<FlashcardEvent>().Property(x => x.Rating).HasConversion<string>();
         builder.Entity<AuthoringDraft>().Property(x => x.Title).HasMaxLength(120);
         builder.Entity<AuthoringDraft>().Property(x => x.Revision).IsConcurrencyToken();
         builder.Entity<AuthoringDraft>().HasIndex(x => new { x.OwnerId, x.UpdatedAt });

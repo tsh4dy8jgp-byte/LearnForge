@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { toApiError } from './api-error';
@@ -17,6 +17,18 @@ export class ApiClient {
   }
   delete<T>(path: string, body: unknown): Promise<T> {
     return this.request<T>('DELETE', path, body);
+  }
+  async file(method: 'GET' | 'POST', path: string, body?: unknown): Promise<Blob> {
+    try { return await firstValueFrom(this.http.request(method, '/api' + path, { body, responseType: 'blob' })); }
+    catch (error) {
+      if (error instanceof HttpErrorResponse && error.error instanceof Blob) {
+        try {
+          const details = JSON.parse(await error.error.text());
+          throw toApiError(new HttpErrorResponse({ error: details, status: error.status }));
+        } catch (parsed) { if (parsed instanceof Error && parsed.name !== 'SyntaxError') throw parsed; }
+      }
+      throw toApiError(error);
+    }
   }
   private async request<T>(method: string, path: string, body?: unknown): Promise<T> {
     try {

@@ -90,6 +90,201 @@
         }
       }
     },
+    "/api/catalog/{id}/flashcards/exports": {
+      "get": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Format",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "apkg"
+            }
+          },
+          {
+            "name": "Paper",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "a4"
+            }
+          },
+          {
+            "name": "Mode",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "duplex"
+            }
+          },
+          {
+            "name": "Binding",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "long"
+            }
+          },
+          {
+            "name": "OffsetX",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "default": 0
+            }
+          },
+          {
+            "name": "OffsetY",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "default": 0
+            }
+          },
+          {
+            "name": "Deck",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Objective",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Tag",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/authoring/flashcards/exports": {
+      "post": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "Format",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "apkg"
+            }
+          },
+          {
+            "name": "Paper",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "a4"
+            }
+          },
+          {
+            "name": "Mode",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "duplex"
+            }
+          },
+          {
+            "name": "Binding",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "long"
+            }
+          },
+          {
+            "name": "OffsetX",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "default": 0
+            }
+          },
+          {
+            "name": "OffsetY",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "default": 0
+            }
+          },
+          {
+            "name": "Deck",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Objective",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Tag",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JsonElement"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/auth/csrf": {
       "get": {
         "tags": [
@@ -768,6 +963,291 @@
           }
         }
       }
+    },
+    "/api/me/courses/{id}/flashcards": {
+      "get": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlashcardSummaryDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/courses/{id}/flashcards/sessions": {
+      "post": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FlashcardStartRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlashcardSessionDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/courses/{id}/flashcards/sessions/{sessionId}": {
+      "get": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlashcardSessionDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/courses/{id}/flashcards/sessions/{sessionId}/reveal": {
+      "post": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FlashcardMutationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlashcardSessionDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/courses/{id}/flashcards/sessions/{sessionId}/rate": {
+      "post": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FlashcardMutationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlashcardSessionDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/courses/{id}/flashcards/sessions/{sessionId}/finish": {
+      "post": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FlashcardMutationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlashcardSessionDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/courses/{id}/flashcards/suspension": {
+      "put": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FlashcardSuspendRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlashcardStatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1214,6 +1694,27 @@
           }
         }
       },
+      "CardBinding": {
+        "enum": [
+          "long",
+          "short"
+        ],
+        "default": "long"
+      },
+      "CardPaper": {
+        "enum": [
+          "a4",
+          "letter"
+        ],
+        "default": "a4"
+      },
+      "CardPrintMode": {
+        "enum": [
+          "duplex",
+          "foldable"
+        ],
+        "default": "duplex"
+      },
       "CatalogSummaryDto": {
         "required": [
           "id",
@@ -1394,6 +1895,34 @@
           },
           "capabilities": {
             "$ref": "#/components/schemas/PackCapabilities"
+          },
+          "flashcardDecks": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/FlashcardDeck"
+            }
+          },
+          "flashcards": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/FlashcardUnit"
+            }
+          },
+          "flashcardExportDefaults": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/FlashcardExportOptions"
+              }
+            ]
           }
         }
       },
@@ -1401,7 +1930,8 @@
         "enum": [
           "readiness",
           "mastery",
-          "completion"
+          "completion",
+          "review"
         ]
       },
       "CourseGoalStatusDto": {
@@ -1526,6 +2056,16 @@
           },
           "capabilities": {
             "$ref": "#/components/schemas/PackCapabilities"
+          },
+          "flashcards": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/FlashcardSummaryDto"
+              }
+            ]
           }
         }
       },
@@ -1793,6 +2333,472 @@
           null
         ]
       },
+      "FlashcardDeck": {
+        "required": [
+          "id",
+          "title",
+          "notes"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FlashcardNote"
+            }
+          }
+        }
+      },
+      "FlashcardDeliveryDto": {
+        "required": [
+          "id",
+          "deckId",
+          "noteId",
+          "front",
+          "language",
+          "back",
+          "explanation",
+          "sources"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "deckId": {
+            "type": "string"
+          },
+          "noteId": {
+            "type": "string"
+          },
+          "front": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "back": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "explanation": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SourceReference"
+            }
+          }
+        }
+      },
+      "FlashcardExportFormat": {
+        "enum": [
+          "apkg",
+          "text",
+          "pdf"
+        ],
+        "default": "apkg"
+      },
+      "FlashcardExportOptions": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "$ref": "#/components/schemas/FlashcardExportFormat"
+          },
+          "paper": {
+            "$ref": "#/components/schemas/CardPaper"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/CardPrintMode"
+          },
+          "binding": {
+            "$ref": "#/components/schemas/CardBinding"
+          },
+          "offsetX": {
+            "type": "number",
+            "format": "double",
+            "default": 0
+          },
+          "offsetY": {
+            "type": "number",
+            "format": "double",
+            "default": 0
+          },
+          "deck": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "objective": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "tag": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "FlashcardKind": {
+        "enum": [
+          "basic",
+          "reversible",
+          "cloze"
+        ]
+      },
+      "FlashcardMutationRequest": {
+        "required": [
+          "requestId",
+          "revision"
+        ],
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rating": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ReviewRating"
+              }
+            ]
+          }
+        }
+      },
+      "FlashcardNote": {
+        "required": [
+          "id",
+          "kind",
+          "objectiveIds",
+          "explanation"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/FlashcardKind"
+          },
+          "objectiveIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "front": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "back": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "text": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "tags": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "language": {
+            "type": "string",
+            "default": "en"
+          },
+          "sources": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/SourceReference"
+            }
+          }
+        }
+      },
+      "FlashcardSessionDto": {
+        "required": [
+          "id",
+          "packId",
+          "releaseId",
+          "revision",
+          "position",
+          "count",
+          "revealed",
+          "completed",
+          "card"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "packId": {
+            "type": "string"
+          },
+          "releaseId": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "revealed": {
+            "type": "boolean"
+          },
+          "completed": {
+            "type": "boolean"
+          },
+          "card": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/FlashcardDeliveryDto"
+              }
+            ]
+          }
+        }
+      },
+      "FlashcardStartRequest": {
+        "required": [
+          "requestId"
+        ],
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string"
+          },
+          "deck": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "objective": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "tag": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "FlashcardStatusDto": {
+        "required": [
+          "unitId",
+          "introduced",
+          "suspended",
+          "dueAt",
+          "revision"
+        ],
+        "type": "object",
+        "properties": {
+          "unitId": {
+            "type": "string"
+          },
+          "introduced": {
+            "type": "boolean"
+          },
+          "suspended": {
+            "type": "boolean"
+          },
+          "dueAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "revision": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "FlashcardSummaryDto": {
+        "required": [
+          "total",
+          "new",
+          "due",
+          "suspended",
+          "introduced",
+          "upToDate",
+          "activeSessionId",
+          "cards"
+        ],
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "new": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "due": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "suspended": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "introduced": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "upToDate": {
+            "type": "boolean"
+          },
+          "activeSessionId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "cards": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FlashcardStatusDto"
+            }
+          }
+        }
+      },
+      "FlashcardSuspendRequest": {
+        "required": [
+          "unitId",
+          "suspended",
+          "revision"
+        ],
+        "type": "object",
+        "properties": {
+          "unitId": {
+            "type": "string"
+          },
+          "suspended": {
+            "type": "boolean"
+          },
+          "revision": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "FlashcardUnit": {
+        "required": [
+          "id",
+          "deckId",
+          "noteId",
+          "front",
+          "back",
+          "explanation",
+          "objectiveIds",
+          "tags",
+          "language",
+          "sources",
+          "contentHash"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "deckId": {
+            "type": "string"
+          },
+          "noteId": {
+            "type": "string"
+          },
+          "front": {
+            "type": "string"
+          },
+          "back": {
+            "type": "string"
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "objectiveIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "language": {
+            "type": "string"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SourceReference"
+            }
+          },
+          "contentHash": {
+            "type": "string"
+          }
+        }
+      },
       "Grade": {
         "required": [
           "earned",
@@ -2008,7 +3014,8 @@
           "readLesson",
           "practise",
           "review",
-          "takeMock"
+          "takeMock",
+          "reviewFlashcards"
         ]
       },
       "NextStepReason": {
@@ -2019,7 +3026,9 @@
           "belowProficient",
           "reviewDue",
           "readyForMock",
-          "assessmentAvailable"
+          "assessmentAvailable",
+          "cardsDue",
+          "newCards"
         ]
       },
       "Objective": {
@@ -2230,6 +3239,15 @@
                 "$ref": "#/components/schemas/PackCapabilities"
               }
             ]
+          },
+          "flashcardDecks": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/FlashcardDeck"
+            }
           }
         }
       },
@@ -2249,6 +3267,10 @@
           },
           "assessments": {
             "type": "boolean"
+          },
+          "flashcards": {
+            "type": "boolean",
+            "default": false
           }
         }
       },
@@ -2264,7 +3286,8 @@
         "enum": [
           "course",
           "exam",
-          "hybrid"
+          "hybrid",
+          "flashcards"
         ]
       },
       "Question": {
@@ -2503,6 +3526,15 @@
             "default": false
           }
         }
+      },
+      "ReviewRating": {
+        "enum": [
+          "again",
+          "hard",
+          "good",
+          "easy",
+          null
+        ]
       },
       "Scenario": {
         "required": [

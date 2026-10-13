@@ -1,3 +1,3 @@
 namespace LearnForge.Core;
 
-public enum CourseGoal { Readiness, Mastery, Completion }
+public enum CourseGoal { Readiness, Mastery, Completion, Review }

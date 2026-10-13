@@ -11,9 +11,11 @@ import { DraftEditorState } from './draft-editor-state';
 import { SourceEditor } from './source-editor';
 import { LearnerPreview } from './learner-preview';
 import { SiteSettingsStore } from '../site/site-settings-store';
+import { FlashcardEditor } from './flashcard-editor';
+import { FlashcardExports } from '../flashcards/flashcard-exports';
 
 @Component({
-  imports: [FormsModule, RouterLink, SourceEditor, LearnerPreview],
+  imports: [FormsModule, RouterLink, SourceEditor, LearnerPreview, FlashcardEditor, FlashcardExports],
   providers: [DraftEditorState],
   host: { '(window:beforeunload)': 'editor.beforeUnload($event)' },
   templateUrl: './studio-page.html',

@@ -61,6 +61,7 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<AttemptService>();
 builder.Services.AddSingleton<ReleaseCache>();
 builder.Services.AddScoped<LearningRecordService>();
+builder.Services.AddScoped<FlashcardService>();
 builder.Services.AddOptions<SiteSettings>().Bind(builder.Configuration.GetSection("Site"))
     .Validate(settings => settings.IsValid(), "Invalid Site settings. Check layout, color scheme, text lengths, locale, home page, font, local logo path and primary-color contrast (4.5:1).")
     .ValidateOnStart();
@@ -118,6 +119,7 @@ app.MapCatalog();
 app.MapLearner();
 app.MapAttempts();
 app.MapAuthoring();
+app.MapFlashcards();
 
 // Build-time OpenAPI generation runs this entry point with a mock server; it must not touch a database.
 var generatingOpenApiDocument = System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";

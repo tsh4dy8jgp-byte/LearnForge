@@ -1,5 +1,7 @@
 # LearnForge
 
+Flashcards now support subject authoring, saved spaced review, Anki `.apkg`/text downloads and cut-ready duplex/foldable PDFs. See the [flashcard guide](docs/flashcards.md).
+
 **A reusable education and exam-practice framework built with ASP.NET Core 10 and Angular 22.**
 
 LearnForge connects teaching materials, curriculum objectives, mixed-format practice, saved attempts and evidence-based review. Subjects live in versioned JSON packs, so changing from reasoning to university coursework or certification preparation does not require rebuilding the application.

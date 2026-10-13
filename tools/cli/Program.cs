@@ -4,7 +4,7 @@ using LearnForge.Core;
 
 if (args.Length == 0 || args[0] is "help" or "--help")
 {
-    Console.WriteLine("LearnForge content compiler\n  check <source.json> [--watch] [--json]\n  lint <source.json> [--json] [--strict]\n  build <source.json> --out <directory>\n  diff <before.json> <after.json>\n  init <source.json> [--profile course|exam|hybrid]\nSources are packs, {templates, pack} wrappers or compact \"format\": \"exam/1\" exams; see docs/authoring.md.");
+    Console.WriteLine("LearnForge content compiler\n  check <source.json> [--watch] [--json]\n  lint <source.json> [--json] [--strict]\n  build <source.json> --out <directory>\n  diff <before.json> <after.json>\n  init <source.json> [--profile course|exam|hybrid|flashcards]\n  export-flashcards <source.json> --format apkg|text|pdf --out <directory> [--paper a4|letter] [--mode duplex|foldable] [--binding long|short] [--deck id] [--objective id] [--tag id] [--offset-x mm] [--offset-y mm]\nSources are packs, {templates, pack} wrappers or compact \"format\": \"exam/1\" exams; see docs/authoring.md.");
     return 0;
 }
 try
@@ -18,7 +18,7 @@ try
         var profile = ProductProfile.Hybrid;
         if (profileIndex >= 0 && (profileIndex + 1 >= args.Length ||
             !Enum.TryParse(args[profileIndex + 1], true, out profile) || !Enum.IsDefined(profile)))
-            throw new ArgumentException("Use --profile course, exam or hybrid.");
+            throw new ArgumentException("Use --profile course, exam, hybrid or flashcards.");
         var pack = PackStarter.Create(profile);
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         await File.WriteAllTextAsync(path, Json.Write(pack));
@@ -71,6 +71,28 @@ try
             Changed = newItems.Keys.Intersect(oldItems.Keys).Where(id => Json.Write(newItems[id]) != Json.Write(oldItems[id])) }));
         return 0;
     }
+    if (command == "export-flashcards")
+    {
+        string? Value(string key)
+        {
+            var index = Array.IndexOf(args, key);
+            if (index < 0) return null;
+            if (index + 1 >= args.Length || args[index + 1].StartsWith("--", StringComparison.Ordinal)) throw new ArgumentException($"{key} requires a value.");
+            return args[index + 1];
+        }
+        T Choice<T>(string key, T fallback) where T : struct, Enum => Value(key) is { } value
+            ? Enum.TryParse<T>(value, true, out var parsed) && Enum.IsDefined(parsed) ? parsed : throw new ArgumentException($"Invalid {key}.") : fallback;
+        double Offset(string key) => Value(key) is { } value ? double.Parse(value, System.Globalization.CultureInfo.InvariantCulture) : 0;
+        var directory = Path.GetFullPath(Value("--out") ?? throw new ArgumentException("export-flashcards requires --out <directory>."));
+        var options = new FlashcardExportOptions(Choice("--format", FlashcardExportFormat.Apkg), Choice("--paper", CardPaper.A4),
+            Choice("--mode", CardPrintMode.Duplex), Choice("--binding", CardBinding.Long), Offset("--offset-x"), Offset("--offset-y"), Value("--deck"), Value("--objective"), Value("--tag"));
+        var result = await FlashcardExporter.Export(p, options);
+        Directory.CreateDirectory(directory);
+        var file = Path.Combine(directory, result.FileName);
+        if (File.Exists(file)) throw new ArgumentException("Export destination already exists. Use a fresh output directory.");
+        await File.WriteAllBytesAsync(file, result.Bytes);
+        Console.WriteLine($"Exported {file}"); return 0;
+    }
     if (command != "build") throw new ArgumentException("Unknown command. Use --help.");
     var outIndex = Array.IndexOf(args, "--out");
     if (outIndex < 0 || outIndex + 1 >= args.Length) throw new ArgumentException("build requires --out <new-directory>.");
@@ -80,7 +102,7 @@ try
     var artifacts = new Dictionary<string, string>
     {
         ["delivery.json"] = Json.Write(new { p.SchemaVersion, p.Id, p.Version, p.Title, p.Description, p.License, p.Objectives, p.Lessons,
-            p.Scenarios, p.Blueprints, p.Sources, p.Profile, Capabilities = p.Features, p.Goal, Questions = p.Questions.Select(DeliveryQuestion.From) }),
+            p.Scenarios, p.Blueprints, p.Sources, p.Profile, Capabilities = p.Features, p.Goal, Flashcards = Flashcards.Expand(p), Questions = p.Questions.Select(DeliveryQuestion.From) }),
         ["grading.private.json"] = Json.Write(p.Questions.ToDictionary(q => q.Id, q => new { q.Grading, q.Explanation })),
         ["pack.private.json"] = Json.Write(p),
         ["validation-report.json"] = Json.Write(new { compilation.Success, compilation.Diagnostics }),
@@ -95,7 +117,7 @@ try
     Console.WriteLine($"Built {destination}. Keep *.private.json outside any web root.");
     return 0;
 }
-catch (Exception e) when (e is IOException or UnauthorizedAccessException or ArgumentException)
+catch (Exception e) when (e is IOException or UnauthorizedAccessException or ArgumentException or FlashcardExportException or FormatException)
 {
     Console.Error.WriteLine(e.Message); return 1;
 }

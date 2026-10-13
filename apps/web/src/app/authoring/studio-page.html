@@ -24,6 +24,7 @@
           <option value="course">Course — lessons and completion</option>
           <option value="exam">Exam — practice and mock exams</option>
           <option value="hybrid">Hybrid — lessons, practice and exams</option>
+          <option value="flashcards">Flashcards — spaced recall</option>
         </select>
       </label>
       <button
@@ -68,6 +69,12 @@
     </label>
   </section>
   @if (editor.source() || editor.activeDraft()) {
+    <lf-flashcard-editor [source]="editor.source()" [disabled]="editor.busy() || editor.saving()" (changed)="editSource($event)" />
+    @if (report()?.catalog; as catalog) {
+      @if (catalog.capabilities.flashcards && report()?.success) {
+        <lf-flashcard-exports [packId]="catalog.id" [version]="catalog.version" [source]="editor.source()" />
+      }
+    }
     <div class="practice-layout studio-layout">
       <lf-source-editor
         [report]="report()"

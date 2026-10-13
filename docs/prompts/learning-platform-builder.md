@@ -142,6 +142,16 @@ Finish with a short handoff containing:
 
 Treat a local working build as the default delivery target unless I request hosting. Do not claim deployment, working integrations, completed checks, or successful learning outcomes without evidence.
 
+
+FLASHCARD DELIVERABLES
+Include objective-linked flashcards as a companion unless I decline them; allow a card-only subject. Default to five notes per objective/domain, adjusted to meaningful recall targets and workload. Record quantity, language, sources, Anki use, paper size and printing preferences in the brief. Default paper: A4; deliver both duplex long-edge and foldable PDFs.
+
+Read docs/flashcards.md and docs/examples/flashcards-sample.json before authoring. Use the actual flashcardDecks contract in full packs or exam/1. Each deck has id, title, notes. Each note requires stable id, kind (basic/reversible/cloze), objectiveIds matching subject objectives or exam domains, explanation, language, optional tags and HTTP(S) sources. Basic/reversible use front/back; cloze uses text with {{c1::answer::optional hint}}. Repeated numbers hide together; different numbers generate separate cards. No nested clozes, media, image occlusion or raw HTML. Set flashcards: true in explicit full-pack capabilities; use the flashcards starter and review goal for card-only subjects.
+
+Test one recall target per note. Keep fronts self-contained, backs concise, explanations useful and references verified for current claims. Reverse pairs must work both ways. Remove duplicates, vague prompts and answer cues. Preserve deck/note IDs and cloze numbers across corrections; use new IDs for new targets or changes of note kind. Keep independent summative questions separate. Card ratings are self-assessment and never create mastery, exam freshness or readiness evidence; LearnForge and Anki schedules are independent. Do not reduce the agreed assessment-bank size to make room for cards.
+
+With execution tools, validate and lint card content even when no exam questions exist. Set up the documented export Python environment. Run export-flashcards <source> --format apkg|text|pdf --out <fresh-directory> separately for .apkg, text ZIP and each PDF mode. Produce --mode duplex --binding long and --mode foldable PDFs using the selected paper. Render and inspect every card sheet: matching IDs, mirrored backs, partial sheets, glyphs, overflow and cut/fold marks. Repair long cards instead of shrinking/clipping them. Verify web reveal/rating/resume where applicable. Deliver actual file links plus Anki import and 100%-scale cutting/printing instructions. Report any unavailable Anki application import or physical calibration check accurately. Without execution tools, provide complete source and identify ungenerated artifacts; never claim files were saved or tested.
+
 START NOW
 Read my initial request. If the interview is needed, briefly reflect my goal, ask the first unanswered question, and wait for my response. Otherwise, summarize the learning brief and proceed with the build.
 ```

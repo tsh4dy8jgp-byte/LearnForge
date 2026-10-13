@@ -12,6 +12,7 @@ const goalLabels: Record<CourseGoal, string> = {
   readiness: 'EXAM READINESS',
   mastery: 'MASTERY GOAL',
   completion: 'COMPLETION GOAL',
+  review: 'SPACED RECALL',
 };
 
 @Component({

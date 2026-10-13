@@ -1,5 +1,7 @@
 # Authoring guide
 
+Subjects can include basic, reversible and cloze flashcards, or use a flashcard-only profile. See [flashcard authoring and exports](flashcards.md) and the [complete sample](examples/flashcards-sample.json). Content Studio provides structured editing and previews through the same compiler.
+
 Every content release must follow the [accessible content and authoring design](accessibility/content-and-authoring.md). Current text packs need manual accessibility review; the richer media/schema checks described there are planned additions, not fields accepted by today's compiler.
 
 ## Build a pack
@@ -99,3 +101,5 @@ Authors never write option IDs. Each option ID is `o` plus eight hex digits of a
 
 The bundled demonstration packs predate the linter and show several of these cues. Their releases are immutable, so they are left as they are.
 
+
+Flashcard lint warnings: LF230 duplicate recall fronts; LF231 oversized text; LF232 answer in the prompt; LF233 an objective without recall coverage. Warnings are editorial guidance and do not block publishing.

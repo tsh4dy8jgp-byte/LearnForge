@@ -28,6 +28,7 @@
       @if (c.capabilities.practice || c.capabilities.assessments) {
         <span class="pill">{{ c.questionCount }} questions</span>
       }
+      @if (c.capabilities.flashcards) { <span class="pill">{{ (c.flashcards ?? []).length }} flashcards</span> }
       @if (progress.hasValue()) {
         @switch (progress.value().enrollment) {
           @case ('active') {
@@ -110,6 +111,9 @@
           />
         </ng-template>
       </div>
+    }
+    @if (c.capabilities.flashcards) {
+      <div ngTabPanel value="flashcards" class="tab-panel"><ng-template ngTabContent><lf-course-flashcards [course]="c" /></ng-template></div>
     }
     <div ngTabPanel value="sources" class="tab-panel">
       <ng-template ngTabContent>

@@ -1,5 +1,7 @@
 # Setup and first run
 
+Flashcard exports require the Python environment and Unicode font documented in [flashcard setup](flashcards.md#setup-and-cli). Docker includes these dependencies. Native users run `make setup-flashcards` and set `LEARNFORGE_EXPORT_PYTHON` before starting the API.
+
 ## Prerequisites
 
 Use the .NET 10 SDK, Node.js 22.22.3 and npm 10+ for the tested toolchain. Other Node versions must satisfy [Angular's compatibility table](https://angular.dev/reference/versions). Docker Compose is optional.

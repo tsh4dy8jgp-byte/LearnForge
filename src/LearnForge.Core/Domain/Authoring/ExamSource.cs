@@ -5,4 +5,4 @@ namespace LearnForge.Core;
 public sealed record ExamSource(string Format, string Id, string Version, string Title, string Description, string License,
     ExamDomain[] Domains, ExamMocks Mocks, ExamQuestion[] Questions, Scenario[]? CaseStudies = null,
     SourceReference[]? Sources = null, ReadinessPolicy? Readiness = null, CourseGoal Goal = CourseGoal.Readiness,
-    MasteryPolicy? Mastery = null);
+    MasteryPolicy? Mastery = null, FlashcardDeck[]? FlashcardDecks = null);

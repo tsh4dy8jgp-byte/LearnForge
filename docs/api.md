@@ -1,5 +1,7 @@
 # API guide
 
+Flashcards: authenticated GET `/api/me/courses/{id}/flashcards/`; POST `/sessions`; GET `/sessions/{sessionId}`; POST `/sessions/{sessionId}/reveal|rate|finish`; PUT `/suspension`. Start takes requestId and optional deck/objective/tag; mutations take requestId, revision and optional rating. GET `/api/catalog/{id}/flashcards/exports` accepts version, format (apkg/text/pdf), deck/objective/tag, paper (a4/letter), mode (duplex/foldable), binding (long/short) and offsetX/offsetY in mm. Publisher POST `/api/authoring/flashcards/exports` accepts pack source with the same query settings. See [flashcards](flashcards.md).
+
 The API is JSON over same-origin HTTP. Identity cookies carry the session. Unsafe API requests require the X-CSRF-TOKEN header from GET /api/auth/csrf.
 
 ## Public

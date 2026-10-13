@@ -27,6 +27,7 @@ public static partial class ContentLinter
         void Warn(string code, string path, string message) => warnings.Add(new(code, path, message));
         foreach (var q in pack.Questions) Question(q, Warn);
         Bank(pack, Warn);
+        if (pack.Features.Flashcards) warnings.AddRange(Flashcards.Lint(pack));
         return warnings.ToArray();
     }
 

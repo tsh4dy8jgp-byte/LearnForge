@@ -1,5 +1,7 @@
 # Learner guide
 
+Open a subject’s **Flashcards** tab for saved spaced review, filters, suspension, Anki downloads and cut-ready PDFs. See [flashcards](flashcards.md) for review intervals, import instructions and printer calibration. Recall ratings remain separate from assessed mastery and readiness.
+
 ## Learn and navigate
 
 Open **Learning library**, choose a subject, and work through its lessons. A course provides four views:

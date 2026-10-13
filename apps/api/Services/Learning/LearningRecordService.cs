@@ -87,24 +87,30 @@ public sealed class LearningRecordService(AppDb db, ReleaseCache releases, TimeP
             readiness = ReadinessEvaluator.Evaluate(mocks.Select(a => new ReadinessEvidence(a.Id, a.Size, a.CompletedAt!.Value, a.CorrectPercent, a.Eligible)), pack.Readiness ?? new(), Now);
         }
         var proficient = mastery.Count(m => m.State == MasteryState.Proficient);
+        var flashcards = pack.Features.Flashcards ? await new FlashcardService(db, releases, this, clock).Summary(user, pack) : null;
         var met = pack.Goal switch
         {
             CourseGoal.Mastery => proficient == pack.Objectives.Length,
             CourseGoal.Completion => completed.Count == pack.Lessons.Length,
+            CourseGoal.Review => flashcards?.UpToDate == true,
             _ => readiness?.Ready == true,
         };
         var objectives = pack.Objectives.ToDictionary(o => o.Id);
         var lessons = pack.Lessons.ToDictionary(l => l.Id);
+        var steps = NextStepPlanner.Plan(pack, mastery, completed, readiness).Select(s => new NextStepDto(s.Kind, s.Reason,
+            s.ObjectiveId, s.ObjectiveId is null ? null : objectives[s.ObjectiveId].Title,
+            s.LessonId, s.LessonId is null ? null : lessons[s.LessonId].Title, s.BlueprintId)).ToList();
+        if (flashcards is { Due: > 0 } || flashcards?.ActiveSessionId is not null)
+            steps.Insert(0, new(NextStepKind.ReviewFlashcards, NextStepReason.CardsDue, null, null, null, null, null));
+        else if (flashcards is { New: > 0 }) steps.Add(new(NextStepKind.ReviewFlashcards, NextStepReason.NewCards, null, null, null, null, null));
         return new CourseProgressDto(pack.Id, pack.Title, pack.Version, enrollment?.Status, pack.Lessons.Length,
             completed.ToArray(), revised,
             mastery.Select(m => new ObjectiveMasteryDto(m.ObjectiveId, objectives[m.ObjectiveId].Title, objectives[m.ObjectiveId].Prerequisites,
                 m.State, m.Correct, m.Considered, m.Independent, m.LastEvidenceAt, m.ReviewDue,
                 pack.Lessons.Where(l => l.ObjectiveIds.Contains(m.ObjectiveId)).Select(l => l.Id).ToArray(),
                 pack.Features.Practice && pack.Questions.Any(q => q.ScenarioId is null && q.ObjectiveIds.Contains(m.ObjectiveId)))).ToArray(),
-            NextStepPlanner.Plan(pack, mastery, completed, readiness).Select(s => new NextStepDto(s.Kind, s.Reason,
-                s.ObjectiveId, s.ObjectiveId is null ? null : objectives[s.ObjectiveId].Title,
-                s.LessonId, s.LessonId is null ? null : lessons[s.LessonId].Title, s.BlueprintId)).ToArray(),
+            steps.Take(3).ToArray(),
             new CourseGoalStatusDto(pack.Goal, met, proficient, pack.Objectives.Length, completed.Count, pack.Lessons.Length, readiness),
-            enrollment?.LastActivityAt, pack.Features);
+            enrollment?.LastActivityAt, pack.Features, flashcards);
     }
 }

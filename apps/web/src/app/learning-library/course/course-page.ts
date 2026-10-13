@@ -13,6 +13,7 @@ import { CourseLessons } from './course-lessons';
 import { ObjectiveMap } from './objective-map';
 import { PracticeSetup } from './practice-setup';
 import { PracticeSelection } from './practice-selection';
+import { CourseFlashcards } from '../../flashcards/course-flashcards';
 
 @Component({
   imports: [
@@ -26,6 +27,7 @@ import { PracticeSelection } from './practice-selection';
     CourseLessons,
     ObjectiveMap,
     PracticeSetup,
+    CourseFlashcards,
   ],
   templateUrl: './course-page.html',
 })
@@ -53,6 +55,7 @@ export class CoursePage {
     return [
       ...(features?.lessons ? [{ id: 'learn', title: 'Lessons' }] : []),
       { id: 'map', title: 'Content map' },
+      ...(features?.flashcards ? [{ id: 'flashcards', title: 'Flashcards' }] : []),
       ...(features?.practice || features?.assessments
         ? [
             {
@@ -78,7 +81,7 @@ export class CoursePage {
         ? 'learn'
         : this.tabs().some((t) => t.id === 'practice')
           ? 'practice'
-          : 'map';
+          : this.course()?.capabilities.flashcards ? 'flashcards' : 'map';
   });
   protected readonly lessonId = linkedSignal(() => this.lesson() ?? '');
   protected readonly course = computed(() =>

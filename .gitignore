@@ -14,3 +14,5 @@ build/
 *.db-wal
 /references
 /output/
+/.venv-flashcards/
+**/__pycache__/

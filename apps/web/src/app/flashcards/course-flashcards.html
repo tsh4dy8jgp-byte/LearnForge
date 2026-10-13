@@ -1,0 +1,162 @@
+<div class="section-heading">
+  <div>
+    <h2>Recall, then reveal</h2>
+    <p class="muted">
+      Practise remembering before you look at the answer. Ratings are self-assessed recall.
+    </p>
+  </div>
+</div>
+<div class="panel filter-row">
+  <label
+    >Deck<select [ngModel]="deck()" (ngModelChange)="deck.set($event)">
+      <option value="">All decks</option>
+      @for (d of course().flashcardDecks ?? []; track d.id) {
+        <option [value]="d.id">{{ d.title }}</option>
+      }
+    </select></label
+  >
+  <label
+    >Objective<select [ngModel]="objective()" (ngModelChange)="objective.set($event)">
+      <option value="">All objectives</option>
+      @for (o of course().objectives; track o.id) {
+        <option [value]="o.id">{{ o.title }}</option>
+      }
+    </select></label
+  >
+  <label
+    >Tag<select [ngModel]="tag()" (ngModelChange)="tag.set($event)">
+      <option value="">All tags</option>
+      @for (t of tags(); track t) {
+        <option [value]="t">{{ t }}</option>
+      }
+    </select></label
+  >
+</div>
+@if (summary.error(); as e) {
+  <p class="alert error" role="alert">{{ errorText(e) }}</p>
+}
+@if (error()) {
+  <p class="alert error" role="alert">{{ error() }}</p>
+  @if (retryPending) {
+    <button class="button secondary" [disabled]="busy()" (click)="retry()">
+      Retry the same action
+    </button>
+  }
+}
+@if (account.user()) {
+  @if (summary.value(); as s) {
+    <section class="panel">
+      <p>{{ s.due }} due · {{ s.new }} new · {{ s.suspended }} suspended (whole subject)</p>
+      @if (s.upToDate) {
+        <p>Introduced cards are up to date. {{ s.new }} cards are still new.</p>
+      }
+      @if (s.activeSessionId) {
+        <button class="button" [disabled]="busy()" (click)="resume()">Resume review</button>
+      } @else {
+        <button class="button" [disabled]="busy() || (!s.due && !s.new)" (click)="start()">
+          Start spaced review
+        </button>
+      }
+      <p class="muted small">
+        Up to 20 cards, due first, including at most 10 new cards. Related cards are separated.
+        Review ratings do not count toward assessed mastery or exam readiness.
+      </p>
+    </section>
+  } @else if (summary.isLoading()) {
+    <p role="status">Loading review progress…</p>
+  }
+} @else {
+  <p class="alert">
+    <a routerLink="/sign-in">Sign in</a> to save review progress. You can browse and export cards
+    below.
+  </p>
+}
+@if (session(); as current) {
+  <section class="panel recall-card" aria-label="Flashcard review">
+    <p #reviewStatus tabindex="-1" role="status">
+      {{
+        current.completed
+          ? 'Review finished'
+          : 'Card ' + (current.position + 1) + ' of ' + current.count
+      }}
+    </p>
+    @if (current.card; as card) {
+      <p class="eyebrow">{{ card.deckId }}</p>
+      <h3 #questionHeading tabindex="-1" class="card-text" [lang]="card.language">
+        {{ card.front }}
+      </h3>
+      @if (current.revealed) {
+        <h4 #answerHeading tabindex="-1">Answer</h4>
+        <div [lang]="card.language">
+          <p class="card-text">{{ card.back }}</p>
+          <p class="card-text muted">{{ card.explanation }}</p>
+        </div>
+        @for (source of card.sources; track source.url) {
+          <p>
+            <a [href]="source.url" target="_blank" rel="noopener noreferrer">{{ source.title }}</a>
+          </p>
+        }
+        <fieldset [disabled]="busy() || retryPending">
+          <legend>How well did you recall it?</legend>
+          <div class="row">
+            <button class="button secondary" (click)="mutate('rate', 'again')">
+              Again · 10 minutes
+            </button>
+            <button class="button secondary" (click)="mutate('rate', 'hard')">Hard</button>
+            <button class="button" (click)="mutate('rate', 'good')">Good</button>
+            <button class="button secondary" (click)="mutate('rate', 'easy')">Easy</button>
+          </div>
+        </fieldset>
+      } @else {
+        <button class="button" [disabled]="busy() || retryPending" (click)="mutate('reveal')">
+          Reveal answer
+        </button>
+      }
+      <p>
+        <button class="text-button" [disabled]="busy() || retryPending" (click)="mutate('finish')">
+          Finish this session
+        </button>
+      </p>
+    } @else {
+      <p>
+        Your progress is saved. Come back when cards are due or start another session for new cards.
+      </p>
+    }
+  </section>
+}
+<lf-flashcard-exports
+  [packId]="course().id"
+  [version]="course().version"
+  [deck]="deck()"
+  [objective]="objective()"
+  [tag]="tag()"
+/>
+<section class="panel card-list">
+  <h3>Browse cards and references</h3>
+  <p class="muted">The same readable content is included in the exports.</p>
+  @for (card of cards(); track card.id) {
+    <details>
+      <summary class="card-text" [lang]="card.language">{{ card.front }}</summary>
+      <div [lang]="card.language">
+        <p class="card-text">{{ card.back }}</p>
+        <p class="card-text muted">{{ card.explanation }}</p>
+      </div>
+      <p class="small muted">{{ card.id }} · {{ card.tags.join(', ') }}</p>
+      @for (s of card.sources; track s.url) {
+        <p>
+          <a [href]="s.url" rel="noopener noreferrer" target="_blank">{{ s.title }}</a>
+        </p>
+      }
+      @if (states().get(card.id); as state) {
+        @if (state.dueAt) {
+          <p class="small">Due {{ state.dueAt | date: 'medium' }}</p>
+        }
+        <button class="button secondary" [disabled]="busy()" (click)="suspend(card.id)">
+          {{ state.suspended ? 'Resume card' : 'Suspend card' }}
+        </button>
+      }
+    </details>
+  } @empty {
+    <p class="empty">No cards match these filters.</p>
+  }
+</section>

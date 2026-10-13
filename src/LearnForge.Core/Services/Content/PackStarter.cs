@@ -14,7 +14,9 @@ public static class PackStarter
                 [new(ContentBlockKind.Text, "An integer is even when it is divisible by two.")])] : [],
             features.Practice || features.Assessments ? [question] : [], [],
             features.Practice || features.Assessments ? [new("short", "Quick check", 1, 5, AssessmentSize.Short, ["parity"], [QuestionKind.Single])] : [], [],
-            Goal: profile == ProductProfile.Course ? CourseGoal.Completion : CourseGoal.Readiness,
-            Profile: profile, Capabilities: features);
+            Goal: profile == ProductProfile.Flashcards ? CourseGoal.Review : profile == ProductProfile.Course ? CourseGoal.Completion : CourseGoal.Readiness,
+            Profile: profile, Capabilities: features,
+            FlashcardDecks: features.Flashcards ? [new("recall", "Even integers", [new("even", FlashcardKind.Basic,
+                ["parity"], "Divisibility by two defines even integers.", "What makes an integer even?", "It is divisible by two.")])] : null);
     }
 }

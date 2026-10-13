@@ -32,6 +32,8 @@ public static partial class ContentEngine
             var pack = node!.Deserialize<Pack>(Json.Options) ?? throw new JsonException("Missing pack.");
             if (pack.Profile == ProductProfile.Course && node is JsonObject body && !body.ContainsKey("goal"))
                 pack = pack with { Goal = CourseGoal.Completion };
+            if (pack.Profile == ProductProfile.Flashcards && node is JsonObject cards && !cards.ContainsKey("goal"))
+                pack = pack with { Goal = CourseGoal.Review };
             var errors = Validate(pack);
             return new(pack, errors, hash);
         }
@@ -108,8 +110,38 @@ public static partial class ContentEngine
         if (string.IsNullOrWhiteSpace(p.Title) || string.IsNullOrWhiteSpace(p.License)) Error("title", "Title and license are required.");
         var features = p.Features;
         var questionsEnabled = features.Practice || features.Assessments;
-        if (!Enum.IsDefined(p.Profile)) Error("profile", "Profile must be course, exam or hybrid.");
-        if (!features.Lessons && !questionsEnabled) Error("capabilities", "Enable lessons, practice or assessments.");
+        if (!Enum.IsDefined(p.Profile)) Error("profile", "Profile must be course, exam, hybrid or flashcards.");
+        if (!features.Lessons && !questionsEnabled && !features.Flashcards) Error("capabilities", "Enable lessons, practice, assessments or flashcards.");
+        if (features.Flashcards != (p.Decks.Length > 0)) Error("flashcardDecks", "Flashcard content and the flashcards capability must agree.");
+        if (p.Goal == CourseGoal.Review && !features.Flashcards) Error("goal", "A review goal requires flashcards.");
+        Ids("flashcardDecks", p.Decks.Select(d => d.Id));
+        var noteCount = 0;
+        var unitCount = 0;
+        foreach (var deck in p.Decks)
+        {
+            if (string.IsNullOrWhiteSpace(deck.Title) || deck.Notes.Length == 0) Error(deck.Id, "A flashcard deck needs a title and notes.");
+            Ids(deck.Id, deck.Notes.Select(n => n.Id));
+            foreach (var note in deck.Notes)
+            {
+                var path = $"flashcardDecks/{deck.Id}/{note.Id}";
+                noteCount++;
+                if (!Enum.IsDefined(note.Kind)) Error(path, "Unsupported flashcard kind.");
+                if (note.ObjectiveIds.Length == 0 || note.ObjectiveIds.Distinct().Count() != note.ObjectiveIds.Length ||
+                    note.ObjectiveIds.Any(id => !p.Objectives.Any(o => o.Id == id))) Error(path, "Flashcard objectives must resolve and be distinct.");
+                if (string.IsNullOrWhiteSpace(note.Explanation)) Error(path, "A flashcard requires an explanation.");
+                if (!Flashcards.Languages.Contains(note.Language)) Error(path, "Unsupported flashcard language. Use en, ru, kk, uk, de, fr, es, it, pt, tr, nl or pl.");
+                if ((note.Tags ?? []).Any(t => !Identifier().IsMatch(t))) Error(path, "Tags must use stable lowercase identifiers.");
+                foreach (var source in note.Sources ?? [])
+                    if (string.IsNullOrWhiteSpace(source.Title) || !Uri.TryCreate(source.Url, UriKind.Absolute, out var url) || url.Scheme is not ("http" or "https"))
+                        Error(path, "Sources need titles and absolute HTTP(S) URLs.");
+                var valid = note.Kind == FlashcardKind.Cloze
+                    ? note.Front is null && note.Back is null && note.Text is not null && Flashcards.ValidCloze(note.Text)
+                    : note.Text is null && !string.IsNullOrWhiteSpace(note.Front) && !string.IsNullOrWhiteSpace(note.Back);
+                if (!valid) Error(path, "Basic/reversible notes need front and back only; cloze notes need valid {{c1::answer::hint}} text only.");
+                else unitCount += Flashcards.Expand(new FlashcardDeck(deck.Id, deck.Title, [note])).Length;
+            }
+        }
+        if (noteCount > 2000 || unitCount > 5000) Error("flashcardDecks", "Limit packs to 2000 notes and 5000 expanded cards.");
         if (p.Objectives.Length is < 1 or > 200 || p.Questions.Length > 2000 || p.Lessons.Length > 500)
             Error("pack", "Require 1–200 objectives, at most 2000 questions and at most 500 lessons.");
         if (features.Lessons != (p.Lessons.Length > 0)) Error("lessons", features.Lessons
@@ -219,7 +251,7 @@ public static partial class ContentEngine
         if (questionsEnabled && p.Blueprints.Length == 0) Error("blueprints", "Practice or assessments require at least one session blueprint.");
         var r = p.Readiness ?? new();
         if (r.ShortAttempts is < 1 or > 20 || r.FullAttempts is < 1 or > 20 || r.Threshold is < 0 or >= 100 || r.LookbackDays is < 1 or > 365 || r.MinimumFreshPercent is < 0 or > 100) Error("readiness", "Readiness policy is out of bounds.");
-        if (!Enum.IsDefined(p.Goal)) Error("goal", "Goal must be readiness, mastery or completion.");
+        if (!Enum.IsDefined(p.Goal)) Error("goal", "Goal must be readiness, mastery, completion or review.");
         var m = p.Mastery ?? new();
         if (m.MinimumEvidence < 1 || m.Window < m.MinimumEvidence || m.Window > 20 || m.ProficientPercent is < 50 or > 100 || m.ReviewAfterDays is < 1 or > 365)
             Error("mastery", "Mastery policy is out of bounds: 1 ≤ minimumEvidence ≤ window ≤ 20, proficientPercent 50–100, reviewAfterDays 1–365.");

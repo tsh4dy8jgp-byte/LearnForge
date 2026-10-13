@@ -18,6 +18,8 @@ export function describeStep(step: NextStepDto): string {
       return 'Every objective is proficient. Take a timed mock to build readiness evidence.';
     case 'assessmentAvailable':
       return 'Take an assessment to demonstrate what you know and build objective evidence.';
+    case 'cardsDue': return 'Resume your review or recall the flashcards that are due.';
+    case 'newCards': return 'Introduce new flashcards for spaced recall practice.';
   }
 }
 
@@ -27,6 +29,7 @@ export function stepLink(
 ): { path: string[]; query: Record<string, string> } {
   const path = ['/courses', packId];
   switch (step.kind) {
+    case 'reviewFlashcards': return { path, query: { tab: 'flashcards' } };
     case 'readLesson':
       return { path, query: { tab: 'learn', lesson: step.lessonId ?? '' } };
     case 'takeMock':
@@ -44,4 +47,5 @@ export const stepActions: Record<NextStepDto['kind'], string> = {
   practise: 'Practise',
   review: 'Review',
   takeMock: 'Start a mock',
+  reviewFlashcards: 'Review flashcards',
 };

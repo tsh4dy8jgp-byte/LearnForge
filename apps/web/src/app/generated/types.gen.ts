@@ -106,6 +106,12 @@ export type Blueprint = {
     };
 };
 
+export type CardBinding = 'long' | 'short';
+
+export type CardPaper = 'a4' | 'letter';
+
+export type CardPrintMode = 'duplex' | 'foldable';
+
 export type CatalogSummaryDto = {
     id: string;
     title: string;
@@ -151,9 +157,12 @@ export type CourseCatalogDto = {
     questionCount: number;
     profile: ProductProfile;
     capabilities: PackCapabilities;
+    flashcardDecks?: null | Array<FlashcardDeck>;
+    flashcards?: null | Array<FlashcardUnit>;
+    flashcardExportDefaults?: null | FlashcardExportOptions;
 };
 
-export type CourseGoal = 'readiness' | 'mastery' | 'completion';
+export type CourseGoal = 'readiness' | 'mastery' | 'completion' | 'review';
 
 export type CourseGoalStatusDto = {
     goal: CourseGoal;
@@ -178,6 +187,7 @@ export type CourseProgressDto = {
     goal: CourseGoalStatusDto;
     lastActivityAt: null | string;
     capabilities: PackCapabilities;
+    flashcards?: null | FlashcardSummaryDto;
 };
 
 export type CsrfResponse = {
@@ -250,6 +260,116 @@ export type EnrollmentRequest = {
 
 export type EnrollmentStatus = 'active' | 'archived';
 
+export type FlashcardDeck = {
+    id: string;
+    title: string;
+    notes: Array<FlashcardNote>;
+};
+
+export type FlashcardDeliveryDto = {
+    id: string;
+    deckId: string;
+    noteId: string;
+    front: string;
+    language: string;
+    back: null | string;
+    explanation: null | string;
+    sources: Array<SourceReference>;
+};
+
+export type FlashcardExportFormat = 'apkg' | 'text' | 'pdf';
+
+export type FlashcardExportOptions = {
+    format?: FlashcardExportFormat;
+    paper?: CardPaper;
+    mode?: CardPrintMode;
+    binding?: CardBinding;
+    offsetX?: number;
+    offsetY?: number;
+    deck?: null | string;
+    objective?: null | string;
+    tag?: null | string;
+};
+
+export type FlashcardKind = 'basic' | 'reversible' | 'cloze';
+
+export type FlashcardMutationRequest = {
+    requestId: string;
+    revision: number;
+    rating?: null | ReviewRating;
+};
+
+export type FlashcardNote = {
+    id: string;
+    kind: FlashcardKind;
+    objectiveIds: Array<string>;
+    explanation: string;
+    front?: null | string;
+    back?: null | string;
+    text?: null | string;
+    tags?: null | Array<string>;
+    language?: string;
+    sources?: null | Array<SourceReference>;
+};
+
+export type FlashcardSessionDto = {
+    id: string;
+    packId: string;
+    releaseId: string;
+    revision: number;
+    position: number;
+    count: number;
+    revealed: boolean;
+    completed: boolean;
+    card: null | FlashcardDeliveryDto;
+};
+
+export type FlashcardStartRequest = {
+    requestId: string;
+    deck?: null | string;
+    objective?: null | string;
+    tag?: null | string;
+};
+
+export type FlashcardStatusDto = {
+    unitId: string;
+    introduced: boolean;
+    suspended: boolean;
+    dueAt: null | string;
+    revision: number;
+};
+
+export type FlashcardSummaryDto = {
+    total: number;
+    new: number;
+    due: number;
+    suspended: number;
+    introduced: number;
+    upToDate: boolean;
+    activeSessionId: null | string;
+    cards: Array<FlashcardStatusDto>;
+};
+
+export type FlashcardSuspendRequest = {
+    unitId: string;
+    suspended: boolean;
+    revision: number;
+};
+
+export type FlashcardUnit = {
+    id: string;
+    deckId: string;
+    noteId: string;
+    front: string;
+    back: string;
+    explanation: string;
+    objectiveIds: Array<string>;
+    tags: Array<string>;
+    language: string;
+    sources: Array<SourceReference>;
+    contentHash: string;
+};
+
 export type Grade = {
     earned: number;
     possible: number;
@@ -304,9 +424,9 @@ export type NextStepDto = {
     blueprintId: null | string;
 };
 
-export type NextStepKind = 'readLesson' | 'practise' | 'review' | 'takeMock';
+export type NextStepKind = 'readLesson' | 'practise' | 'review' | 'takeMock' | 'reviewFlashcards';
 
-export type NextStepReason = 'startObjective' | 'continueReading' | 'needsEvidence' | 'belowProficient' | 'reviewDue' | 'readyForMock' | 'assessmentAvailable';
+export type NextStepReason = 'startObjective' | 'continueReading' | 'needsEvidence' | 'belowProficient' | 'reviewDue' | 'readyForMock' | 'assessmentAvailable' | 'cardsDue' | 'newCards';
 
 export type Objective = {
     id: string;
@@ -351,17 +471,19 @@ export type Pack = {
     mastery?: null | MasteryPolicy;
     profile?: ProductProfile;
     capabilities?: null | PackCapabilities;
+    flashcardDecks?: null | Array<FlashcardDeck>;
 };
 
 export type PackCapabilities = {
     lessons: boolean;
     practice: boolean;
     assessments: boolean;
+    flashcards?: boolean;
 };
 
 export type PracticeFocus = 'mistakes' | 'weak' | 'objective';
 
-export type ProductProfile = 'course' | 'exam' | 'hybrid';
+export type ProductProfile = 'course' | 'exam' | 'hybrid' | 'flashcards';
 
 export type Question = {
     id: string;
@@ -419,6 +541,8 @@ export type ResponseRequest = {
     answer: Answer;
     check?: boolean;
 };
+
+export type ReviewRating = 'again' | 'hard' | 'good' | 'easy';
 
 export type Scenario = {
     id: string;
@@ -552,6 +676,57 @@ export type GetApiCatalogByIdResponses = {
 };
 
 export type GetApiCatalogByIdResponse = GetApiCatalogByIdResponses[keyof GetApiCatalogByIdResponses];
+
+export type GetApiCatalogByIdFlashcardsExportsData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: {
+        version?: string;
+        Format?: string;
+        Paper?: string;
+        Mode?: string;
+        Binding?: string;
+        OffsetX?: number;
+        OffsetY?: number;
+        Deck?: string;
+        Objective?: string;
+        Tag?: string;
+    };
+    url: '/api/catalog/{id}/flashcards/exports';
+};
+
+export type GetApiCatalogByIdFlashcardsExportsResponses = {
+    /**
+     * OK
+     */
+    200: unknown;
+};
+
+export type PostApiAuthoringFlashcardsExportsData = {
+    body: JsonElement;
+    path?: never;
+    query?: {
+        Format?: string;
+        Paper?: string;
+        Mode?: string;
+        Binding?: string;
+        OffsetX?: number;
+        OffsetY?: number;
+        Deck?: string;
+        Objective?: string;
+        Tag?: string;
+    };
+    url: '/api/authoring/flashcards/exports';
+};
+
+export type PostApiAuthoringFlashcardsExportsResponses = {
+    /**
+     * OK
+     */
+    200: unknown;
+};
 
 export type GetApiAuthCsrfData = {
     body?: never;
@@ -971,3 +1146,133 @@ export type PostApiAuthoringPublishResponses = {
      */
     200: unknown;
 };
+
+export type GetApiMeCoursesByIdFlashcardsData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/me/courses/{id}/flashcards';
+};
+
+export type GetApiMeCoursesByIdFlashcardsResponses = {
+    /**
+     * OK
+     */
+    200: FlashcardSummaryDto;
+};
+
+export type GetApiMeCoursesByIdFlashcardsResponse = GetApiMeCoursesByIdFlashcardsResponses[keyof GetApiMeCoursesByIdFlashcardsResponses];
+
+export type PostApiMeCoursesByIdFlashcardsSessionsData = {
+    body: FlashcardStartRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/me/courses/{id}/flashcards/sessions';
+};
+
+export type PostApiMeCoursesByIdFlashcardsSessionsResponses = {
+    /**
+     * OK
+     */
+    200: FlashcardSessionDto;
+};
+
+export type PostApiMeCoursesByIdFlashcardsSessionsResponse = PostApiMeCoursesByIdFlashcardsSessionsResponses[keyof PostApiMeCoursesByIdFlashcardsSessionsResponses];
+
+export type GetApiMeCoursesByIdFlashcardsSessionsBySessionIdData = {
+    body?: never;
+    path: {
+        id: string;
+        sessionId: string;
+    };
+    query?: never;
+    url: '/api/me/courses/{id}/flashcards/sessions/{sessionId}';
+};
+
+export type GetApiMeCoursesByIdFlashcardsSessionsBySessionIdResponses = {
+    /**
+     * OK
+     */
+    200: FlashcardSessionDto;
+};
+
+export type GetApiMeCoursesByIdFlashcardsSessionsBySessionIdResponse = GetApiMeCoursesByIdFlashcardsSessionsBySessionIdResponses[keyof GetApiMeCoursesByIdFlashcardsSessionsBySessionIdResponses];
+
+export type PostApiMeCoursesByIdFlashcardsSessionsBySessionIdRevealData = {
+    body: FlashcardMutationRequest;
+    path: {
+        id: string;
+        sessionId: string;
+    };
+    query?: never;
+    url: '/api/me/courses/{id}/flashcards/sessions/{sessionId}/reveal';
+};
+
+export type PostApiMeCoursesByIdFlashcardsSessionsBySessionIdRevealResponses = {
+    /**
+     * OK
+     */
+    200: FlashcardSessionDto;
+};
+
+export type PostApiMeCoursesByIdFlashcardsSessionsBySessionIdRevealResponse = PostApiMeCoursesByIdFlashcardsSessionsBySessionIdRevealResponses[keyof PostApiMeCoursesByIdFlashcardsSessionsBySessionIdRevealResponses];
+
+export type PostApiMeCoursesByIdFlashcardsSessionsBySessionIdRateData = {
+    body: FlashcardMutationRequest;
+    path: {
+        id: string;
+        sessionId: string;
+    };
+    query?: never;
+    url: '/api/me/courses/{id}/flashcards/sessions/{sessionId}/rate';
+};
+
+export type PostApiMeCoursesByIdFlashcardsSessionsBySessionIdRateResponses = {
+    /**
+     * OK
+     */
+    200: FlashcardSessionDto;
+};
+
+export type PostApiMeCoursesByIdFlashcardsSessionsBySessionIdRateResponse = PostApiMeCoursesByIdFlashcardsSessionsBySessionIdRateResponses[keyof PostApiMeCoursesByIdFlashcardsSessionsBySessionIdRateResponses];
+
+export type PostApiMeCoursesByIdFlashcardsSessionsBySessionIdFinishData = {
+    body: FlashcardMutationRequest;
+    path: {
+        id: string;
+        sessionId: string;
+    };
+    query?: never;
+    url: '/api/me/courses/{id}/flashcards/sessions/{sessionId}/finish';
+};
+
+export type PostApiMeCoursesByIdFlashcardsSessionsBySessionIdFinishResponses = {
+    /**
+     * OK
+     */
+    200: FlashcardSessionDto;
+};
+
+export type PostApiMeCoursesByIdFlashcardsSessionsBySessionIdFinishResponse = PostApiMeCoursesByIdFlashcardsSessionsBySessionIdFinishResponses[keyof PostApiMeCoursesByIdFlashcardsSessionsBySessionIdFinishResponses];
+
+export type PutApiMeCoursesByIdFlashcardsSuspensionData = {
+    body: FlashcardSuspendRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/me/courses/{id}/flashcards/suspension';
+};
+
+export type PutApiMeCoursesByIdFlashcardsSuspensionResponses = {
+    /**
+     * OK
+     */
+    200: FlashcardStatusDto;
+};
+
+export type PutApiMeCoursesByIdFlashcardsSuspensionResponse = PutApiMeCoursesByIdFlashcardsSuspensionResponses[keyof PutApiMeCoursesByIdFlashcardsSuspensionResponses];

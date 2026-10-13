@@ -1,6 +1,17 @@
 // All API types are generated from the OpenAPI document (`make api-types`); never edit generated/.
 export type {
   SiteSettings,
+  FlashcardNote,
+  FlashcardDeck,
+  FlashcardUnit,
+  FlashcardKind,
+  FlashcardExportFormat,
+  CardPaper,
+  CardPrintMode,
+  CardBinding,
+  FlashcardSummaryDto,
+  FlashcardSessionDto,
+  ReviewRating,
   SiteLayout,
   SiteColorScheme,
   ProductProfile,

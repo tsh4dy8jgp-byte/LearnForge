@@ -1,5 +1,7 @@
 # Architecture
 
+Flashcards are objective-linked pack content, expanded into stable review units by Core. Review sessions pin releases and store idempotent ratings in separate FlashcardStates, FlashcardSessions and FlashcardEvents tables, never the assessment evidence ledger. A bounded Python export process handles Anki archives and printable PDFs; see [flashcards](flashcards.md).
+
 LearnForge is a modular monolith. The API owns identity, content releases, attempts, grading and analytics; Angular owns presentation and interaction; the Core library contains subject-neutral rules.
 
 ## Runtime flow

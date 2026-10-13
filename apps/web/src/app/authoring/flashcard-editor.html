@@ -1,0 +1,134 @@
+<section class="panel">
+  <h2>Flashcard authoring</h2>
+  <p>
+    Write one recall target per note. Validate for card previews and objective coverage. Keep
+    published IDs stable; use a new ID when changing a note's kind.
+  </p>
+  @if (!parsed()) {
+    <p class="muted">Repair the JSON source to use the card editor.</p>
+  } @else {
+    <fieldset [disabled]="disabled()">
+      <legend>Decks and notes</legend>
+      <button type="button" class="button secondary" (click)="addDeck()">Add deck</button>
+      @for (d of decks(); track $index; let di = $index) {
+        <details open>
+          <summary>{{ d.title }} · {{ d.notes.length }} notes</summary>
+          <div class="filter-row">
+            <label
+              >Deck ID<input [ngModel]="d.id" (ngModelChange)="updateDeck(di, 'id', $event)"
+            /></label>
+            <label
+              >Deck title<input
+                [ngModel]="d.title"
+                (ngModelChange)="updateDeck(di, 'title', $event)"
+            /></label>
+          </div>
+          <button type="button" class="button secondary" (click)="addNote(di)">Add note</button>
+          <button type="button" class="text-button" (click)="removeDeck(di)">Remove deck</button>
+          @for (n of d.notes; track $index; let ni = $index) {
+            <details>
+              <summary>Note {{ ni + 1 }} · {{ n.id }} · {{ n.kind }}</summary>
+              <div class="filter-row">
+                <label
+                  >Note ID<input
+                    [ngModel]="n.id"
+                    (ngModelChange)="updateNote(di, ni, 'id', $event)"
+                /></label>
+                <label
+                  >Kind<select [ngModel]="n.kind" (ngModelChange)="kind(di, ni, $event)">
+                    <option value="basic">Basic</option>
+                    <option value="reversible">Reversible</option>
+                    <option value="cloze">Cloze</option>
+                  </select></label
+                >
+                <label
+                  >Language<select
+                    [ngModel]="n.language"
+                    (ngModelChange)="updateNote(di, ni, 'language', $event)"
+                  >
+                    @for (
+                      language of [
+                        'en',
+                        'ru',
+                        'kk',
+                        'uk',
+                        'de',
+                        'fr',
+                        'es',
+                        'it',
+                        'pt',
+                        'tr',
+                        'nl',
+                        'pl',
+                      ];
+                      track language
+                    ) {
+                      <option [value]="language">{{ language }}</option>
+                    }
+                  </select></label
+                >
+              </div>
+              @if (n.kind === 'cloze') {
+                <label
+                  >Cloze text<textarea
+                    rows="3"
+                    [ngModel]="n.text"
+                    (ngModelChange)="updateNote(di, ni, 'text', $event)"
+                  ></textarea>
+                </label>
+                <p class="small muted">Use numbered deletions, such as {{ clozeExample }}.</p>
+              } @else {
+                <label
+                  >Front<textarea
+                    rows="2"
+                    [ngModel]="n.front"
+                    (ngModelChange)="updateNote(di, ni, 'front', $event)"
+                  ></textarea></label
+                ><label
+                  >Back<textarea
+                    rows="2"
+                    [ngModel]="n.back"
+                    (ngModelChange)="updateNote(di, ni, 'back', $event)"
+                  ></textarea>
+                </label>
+              }
+              <label
+                >Explanation<textarea
+                  rows="3"
+                  [ngModel]="n.explanation"
+                  (ngModelChange)="updateNote(di, ni, 'explanation', $event)"
+                ></textarea>
+              </label>
+              <label
+                >Objective IDs, comma separated<input
+                  [ngModel]="n.objectiveIds.join(', ')"
+                  (ngModelChange)="list(di, ni, 'objectiveIds', $event)"
+              /></label>
+              <label
+                >Tags, comma separated<input
+                  [ngModel]="(n.tags ?? []).join(', ')"
+                  (ngModelChange)="list(di, ni, 'tags', $event)"
+              /></label>
+              <label
+                >Sources, one title | URL per line<textarea
+                  rows="2"
+                  [ngModel]="sourceText(n)"
+                  (ngModelChange)="sources(di, ni, $event)"
+                ></textarea>
+              </label>
+              <button type="button" class="text-button" (click)="removeNote(di, ni)">
+                Remove note
+              </button>
+            </details>
+          }
+        </details>
+      }
+    </fieldset>
+    <h3>Recall coverage</h3>
+    <ul>
+      @for (o of objectives(); track o.id) {
+        <li>{{ o.id }} · {{ o.title }}: {{ coverage(o.id) }} notes</li>
+      }
+    </ul>
+  }
+</section>

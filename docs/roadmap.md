@@ -1,6 +1,6 @@
 # Roadmap
 
-LearnForge is a subject-neutral learning and assessment foundation. The [README](../README.md) lists implemented capabilities; the items below are future work, not supported contracts. Authoring preview, numeric and program-output answers, weighted blueprints, enrollment, cross-release lesson progress, mastery, next steps, generated API types and appearance preferences are already implemented.
+LearnForge is a subject-neutral learning and assessment foundation. The [README](../README.md) lists implemented capabilities; the items below are future work, not supported contracts. Authoring preview, numeric and program-output answers, weighted blueprints, enrollment, cross-release lesson progress, mastery, next steps, generated API types and appearance preferences, flashcards, spaced review and Anki/print exports are already implemented.
 
 WCAG 2.2 AA is a design and release requirement for every feature. Follow the [accessibility baseline](accessibility/README.md), including content alternatives, timing, keyboard/focus behavior and manual verification. Passing automated tests does not establish conformance.
 
@@ -14,7 +14,7 @@ WCAG 2.2 AA is a design and release requirement for every feature. Follow the [a
 
 ## Learner tools
 
-- Spaced review and flashcards, sibling-question practice, confidence calibration and transparent adaptive practice. Assisted evidence must remain separate from independent readiness evidence.
+- Sibling-question practice, confidence calibration and transparent adaptive practice. Assisted evidence must remain separate from independent readiness evidence.
 - Study plans, target dates, reminders, block-anchored notes/bookmarks, search and richer results analysis.
 - Offline reading and explicit sync, localization, calendar export and accessible confirmation dialogs. Adjustable mock timing and unique interaction-instance IDs remain accessibility foundation work, not prerequisites to defer until personalization.
 
