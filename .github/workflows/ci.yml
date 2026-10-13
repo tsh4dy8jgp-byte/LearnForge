@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.22.3'
+          node-version-file: '.node-version'
           cache: npm
           cache-dependency-path: apps/web/package-lock.json
       - run: npm ci --prefix apps/web
@@ -42,7 +42,7 @@ jobs:
       # make api-types runs openapi-ts from apps/web, so this job needs the web dependencies too.
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.22.3'
+          node-version-file: '.node-version'
           cache: npm
           cache-dependency-path: apps/web/package-lock.json
       - run: dotnet restore LearnForge.slnx
@@ -50,3 +50,63 @@ jobs:
       - run: make check-content
       - run: make api-types
       - run: git diff --exit-code -- apps/web/openapi apps/web/src/app/generated
+
+  installer:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Check POSIX entry point
+        if: runner.os != 'Windows'
+        run: bash -n scripts/install.sh scripts/dev.sh && bash scripts/install.sh --check
+      - name: Check PowerShell entry point
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $tokens = $null
+          $parseErrors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile("$PWD/scripts/install.ps1", [ref]$tokens, [ref]$parseErrors) | Out-Null
+          if ($parseErrors.Count) { throw ($parseErrors | Out-String) }
+          & powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/install.ps1 --check
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - run: node --test scripts/tests/install.test.mjs scripts/tests/launcher.test.mjs scripts/tests/bootstrap.test.mjs
+      - run: dotnet restore LearnForge.slnx
+      - run: npm ci --prefix apps/web
+      - run: node scripts/tests/smoke-real.mjs
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: installer-logs-${{ runner.os }}
+          path: .learnforge/logs/
+
+  installer-fresh-linux:
+    runs-on: ubuntu-latest
+    container: ubuntu:24.04
+    timeout-minutes: 20
+    steps:
+      # Git is only needed by checkout; the application bootstrap needs neither Git nor Make.
+      - run: apt-get update && apt-get install -y git
+      - uses: actions/checkout@v4
+      - run: bash scripts/install.sh --install-only
+      - run: bash scripts/install.sh --check
+      - name: Verify repeat preparation reuses managed tools and dependencies
+        run: bash scripts/install.sh --install-only
+      - name: Exercise the installed application with disposable data
+        run: .learnforge/tools/node/v$(cat .node-version)/bin/node scripts/tests/smoke-real.mjs
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: installer-fresh-linux-logs
+          path: .learnforge/logs/

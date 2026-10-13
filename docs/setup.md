@@ -1,6 +1,47 @@
 # Setup and first run
 
-## Prerequisites
+## Automatic installation and startup
+
+Download/extract or clone the repository, then run:
+
+~~~sh
+# macOS 14+, Ubuntu 22.04/24.04, or Debian 12/13
+bash scripts/install.sh
+~~~
+
+~~~powershell
+# Windows 11, Windows PowerShell 5.1 or PowerShell 7
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/install.ps1
+~~~
+
+Both entry points support x64 and ARM64 official binaries. The PowerShell execution-policy override applies only to this invocation. Git, Make, Docker, PostgreSQL, a separate SQLite installation, and a global Angular CLI are not prerequisites for the native installer.
+
+The installer checks the Node/npm pair pinned by .node-version and packageManager, and a stable .NET SDK selected by global.json. It uses compatible installed tools or installs official, checksum-verified archives under .learnforge/tools/. Global tools and shell profiles are preserved. On supported Linux distributions, missing native libraries and download utilities are installed using apt-get; sudo can request your password. Run interactively when those packages are missing.
+
+It then restores/builds the API and content compiler, installs locked web dependencies, validates all JSON files recursively under packs/, and starts both servers on loopback. Defaults are 5080 for the API and 4300 for the website; occupied default ports select nearby available ports and a generated proxy follows them. Explicit occupied ports fail without terminating the other application.
+
+The browser opens only after API, database, web page, and proxied API checks succeed. If browser opening is unavailable, the terminal prints the URL and keeps the servers running. Keep the terminal open; Ctrl+C stops the servers. Running the same command while this checkout is already running reuses the verified instance.
+
+| Option | Purpose |
+| --- | --- |
+| --check | Read-only toolchain/native-facility report; missing requirements produce exit code 2. Web preparation status is informational. |
+| --install-only | Install and prepare, then exit. |
+| --no-install | Require existing tools/packages; build, validate, and start without acquiring them. |
+| --no-browser | Print the URL without launching a browser. |
+| --api-port 5180 --web-port 4380 | Choose explicit ports; proxy configuration is generated automatically. |
+| --startup-timeout 300 | Allow up to 300 seconds for server readiness; default 180, maximum 3600. |
+| --data-dir "/path/with spaces" | Use a separate SQLite database and session-key directory. Relative paths are resolved against the checkout. |
+| --help | Print usage. |
+
+On macOS/Linux, make install runs the whole installer, make setup prepares it, and make dev starts with existing tools/packages and no browser. Windows uses the PowerShell entry point with the same options.
+
+Application data defaults to apps/api/data/learnforge.db and apps/api/data/keys/. Installer state is ignored by Git under .learnforge/: tools/, cache/, logs/installer.log, separate timestamped server logs, and run/proxy.json. Successful web dependency installs are fingerprinted by the lockfile and toolchain, so repeat installations skip npm ci until those inputs change. API builds are incremental; ordinary launches do not run tests or regenerate API types.
+
+Exit codes: 0 success or requested shutdown; 2 missing/invalid requirements or arguments; 3 installation failure; 4 restore/build/course-validation failure; 5 server startup/runtime failure. A failed build or invalid pack prevents startup. Inspect the printed log path for details.
+
+Use the explicit manual API commands below for PostgreSQL or other hosting configuration; the installer starts the local SQLite configuration. When using --data-dir, maintenance commands must target the same database via ConnectionStrings__Database and session keys via DataProtection__KeyDirectory.
+
+## Manual prerequisites
 
 Use the .NET 10 SDK, Node.js 22.22.3 and npm 10+ for the tested toolchain. Other Node versions must satisfy [Angular's compatibility table](https://angular.dev/reference/versions). Docker Compose is optional.
 
@@ -25,7 +66,7 @@ The launch profile sets Development and API port 5080. The frontend proxy forwar
 
 Local data lives in `apps/api/data/learnforge.db`; session Data Protection keys live under `apps/api/data/keys`. Both are ignored by version control.
 
-On macOS/Linux, `make setup` and `make dev` automate this. The launcher checks its ports and does not stop unrelated applications. On Windows, use the manual two-terminal setup. Environment examples use POSIX syntax; PowerShell uses `$env:Name = 'value'`.
+Environment examples below use POSIX shell syntax. In PowerShell, assign variables with $env:Name = 'value'.
 
 ## Docker with PostgreSQL
 

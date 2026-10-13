@@ -1,11 +1,15 @@
-.PHONY: setup dev test build check-content browser-test api-types check-api-types
+.DEFAULT_GOAL := setup
+.PHONY: install setup dev test build check-content browser-test api-types check-api-types installer-test
+install:
+	bash scripts/install.sh
 setup:
-	dotnet restore LearnForge.slnx
-	npm ci --prefix apps/web
+	bash scripts/install.sh --install-only
 dev:
 	bash scripts/dev.sh
 test:
 	dotnet test LearnForge.slnx
+installer-test:
+	node --test scripts/tests/*.test.mjs
 build:
 	dotnet build LearnForge.slnx -c Release
 	npm run build --prefix apps/web

@@ -56,7 +56,8 @@ builder.Services.AddAntiforgery(o =>
     o.Cookie.SecurePolicy = builder.Environment.IsDevelopment() || builder.Environment.IsEnvironment("Testing") ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
 });
 Directory.CreateDirectory(Path.Combine(builder.Environment.ContentRootPath, "data"));
-builder.Services.AddDataProtection().SetApplicationName("LearnForge").PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "data", "keys")));
+var keyDirectory = builder.Configuration["DataProtection:KeyDirectory"] ?? Path.Combine(builder.Environment.ContentRootPath, "data", "keys");
+builder.Services.AddDataProtection().SetApplicationName("LearnForge").PersistKeysToFileSystem(new DirectoryInfo(keyDirectory));
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<AttemptService>();
 builder.Services.AddSingleton<ReleaseCache>();
