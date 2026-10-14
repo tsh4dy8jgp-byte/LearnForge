@@ -1,4 +1,7 @@
-.PHONY: setup dev test build check-content browser-test api-types check-api-types setup-flashcards test-flashcard-exports
+.DEFAULT_GOAL := setup
+.PHONY: install setup dev test installer-test build check-content browser-test api-types check-api-types setup-flashcards test-flashcard-exports
+install:
+	bash scripts/install.sh
 setup-flashcards:
 	python3 -m venv .venv-flashcards
 	.venv-flashcards/bin/pip install -r tools/flashcards/requirements.txt
@@ -7,12 +10,13 @@ test-flashcard-exports:
 	.venv-flashcards/bin/pip install -r tools/flashcards/requirements-test.txt
 	.venv-flashcards/bin/python -m unittest discover -s tools/flashcards -v
 setup:
-	dotnet restore LearnForge.slnx
-	npm ci --prefix apps/web
+	bash scripts/install.sh --install-only
 dev:
 	bash scripts/dev.sh
 test:
 	dotnet test LearnForge.slnx
+installer-test:
+	node --test scripts/tests/*.test.mjs
 build:
 	dotnet build LearnForge.slnx -c Release
 	npm run build --prefix apps/web

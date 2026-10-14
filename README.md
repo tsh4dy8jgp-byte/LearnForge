@@ -10,6 +10,24 @@ This repository contains a runnable implementation, two original example packs, 
 
 ## Quick start
 
+For automatic installation and startup, run from this checkout:
+
+~~~sh
+# macOS / Ubuntu 22.04 or 24.04 / Debian 12 or 13
+bash scripts/install.sh
+~~~
+
+~~~powershell
+# Windows 11
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/install.ps1
+~~~
+
+The installer checks the SDK and Node/npm versions, installs missing tools privately under .learnforge/, restores dependencies, validates every course JSON, starts the API and website, and opens your default browser once both are ready. The terminal stays open; Ctrl+C stops both servers. Re-running preserves accounts and progress. Missing Linux libraries may require sudo; only that package-installation step is elevated.
+
+Use --check for a read-only requirement report, --install-only to prepare without starting, and --no-browser for a headless session. See the [setup guide](docs/setup.md#automatic-installation-and-startup) for options, logs, platform details, and manual setup.
+
+### Manual setup
+
 Install the **.NET 10 SDK**, **Node.js 22.22.3** and npm. SQLite is included; no database installation is required.
 
 ```sh
@@ -28,8 +46,6 @@ npm start --prefix apps/web
 ```
 
 Open **http://127.0.0.1:4300** and create an account. The API runs on port **5080**. Use the web address for normal use; its proxy keeps authentication and API calls on one origin.
-
-On macOS/Linux, `make setup` followed by `make dev` starts the same environment with port checks. Stop with Ctrl+C.
 
 ### Docker with PostgreSQL
 
