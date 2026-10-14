@@ -15,7 +15,9 @@
             ? 'YOUR EXAM PLAN'
             : c.profile === 'course'
               ? 'YOUR COURSE'
-              : 'YOUR LEARNING PATH'
+              : c.profile === 'flashcards'
+                ? 'YOUR FLASHCARDS'
+                : 'YOUR LEARNING PATH'
         }}
       </p>
       <h1>{{ c.title }}</h1>
@@ -28,7 +30,9 @@
       @if (c.capabilities.practice || c.capabilities.assessments) {
         <span class="pill">{{ c.questionCount }} questions</span>
       }
-      @if (c.capabilities.flashcards) { <span class="pill">{{ (c.flashcards ?? []).length }} flashcards</span> }
+      @if (c.capabilities.flashcards) {
+        <span class="pill">{{ (c.flashcards ?? []).length }} flashcards</span>
+      }
       @if (progress.hasValue()) {
         @switch (progress.value().enrollment) {
           @case ('active') {
@@ -113,7 +117,9 @@
       </div>
     }
     @if (c.capabilities.flashcards) {
-      <div ngTabPanel value="flashcards" class="tab-panel"><ng-template ngTabContent><lf-course-flashcards [course]="c" /></ng-template></div>
+      <div ngTabPanel value="flashcards" class="tab-panel">
+        <ng-template ngTabContent><lf-course-flashcards [course]="c" /></ng-template>
+      </div>
     }
     <div ngTabPanel value="sources" class="tab-panel">
       <ng-template ngTabContent>

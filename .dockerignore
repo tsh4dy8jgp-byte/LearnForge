@@ -11,3 +11,6 @@ apps/api/data/keys
 .git
 .env
 build
+.venv-flashcards
+**/__pycache__
+.learnforge

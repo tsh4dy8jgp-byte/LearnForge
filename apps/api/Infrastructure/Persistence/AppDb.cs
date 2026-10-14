@@ -18,6 +18,13 @@ public class AppDb(DbContextOptions options) : IdentityDbContext<User>(options)
     public DbSet<FlashcardSession> FlashcardSessions => Set<FlashcardSession>();
     public DbSet<FlashcardEvent> FlashcardEvents => Set<FlashcardEvent>();
 
+    protected override void ConfigureConventions(ModelConfigurationBuilder builder)
+    {
+        // Every stored time is UTC. SQLite reads it back without a kind, which would serialize without "Z".
+        builder.Properties<DateTime>().HaveConversion<UtcDateTimeConverter>();
+        builder.Properties<DateTime?>().HaveConversion<UtcDateTimeConverter>();
+    }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -33,6 +40,9 @@ public class AppDb(DbContextOptions options) : IdentityDbContext<User>(options)
         builder.Entity<FlashcardEvent>().HasOne<FlashcardSession>().WithMany().HasForeignKey(x => x.SessionId).OnDelete(DeleteBehavior.Cascade);
         builder.Entity<FlashcardEvent>().HasOne<User>().WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
         builder.Entity<FlashcardEvent>().Property(x => x.Rating).HasConversion<string>();
+        // Stored in lower case, the spelling used before the column was typed and inside replay fingerprints.
+        builder.Entity<FlashcardEvent>().Property(x => x.Operation).HasConversion(
+            v => v.ToString().ToLowerInvariant(), v => Enum.Parse<FlashcardOperation>(v, true));
         builder.Entity<AuthoringDraft>().Property(x => x.Title).HasMaxLength(120);
         builder.Entity<AuthoringDraft>().Property(x => x.Revision).IsConcurrencyToken();
         builder.Entity<AuthoringDraft>().HasIndex(x => new { x.OwnerId, x.UpdatedAt });

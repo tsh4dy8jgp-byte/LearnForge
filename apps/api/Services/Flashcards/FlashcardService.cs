@@ -73,10 +73,10 @@ public sealed class FlashcardService(AppDb db, ReleaseCache releases, LearningRe
         await db.FlashcardSessions.SingleOrDefaultAsync(s => s.Id == id && s.UserId == user && s.PackId == packId)
         ?? throw new DomainError(404, "Review session not found.");
 
-    public async Task<FlashcardSessionDto> Mutate(string user, string packId, string id, string operation, FlashcardMutationRequest request)
+    public async Task<FlashcardSessionDto> Mutate(string user, string packId, string id, FlashcardOperation operation, FlashcardMutationRequest request)
     {
         var session = await Find(user, packId, id);
-        var fingerprint = ContentHash.Of(new[] { operation, Json.Write(request) });
+        var fingerprint = ContentHash.Of(new[] { operation.ToString().ToLowerInvariant(), Json.Write(request) });
         var replay = await db.FlashcardEvents.SingleOrDefaultAsync(e => e.SessionId == id && e.RequestId == request.RequestId);
         if (replay is not null)
         {
@@ -86,17 +86,19 @@ public sealed class FlashcardService(AppDb db, ReleaseCache releases, LearningRe
         if (session.Revision != request.Revision) throw new DomainError(409, "Review changed in another window. Resume to reload it.");
         if (session.CompletedAt is not null) throw new DomainError(409, "This review is already finished.");
         var unit = Json.Read<FlashcardUnit[]>(session.UnitsJson)[session.Position];
-        if (operation == "reveal")
+        if (operation == FlashcardOperation.Reveal)
         {
             if (request.Rating is not null) throw new DomainError(400, "Reveal does not accept a rating.");
             session.Revealed = true;
         }
-        else if (operation == "rate")
+        else if (operation == FlashcardOperation.Rate)
         {
             if (!session.Revealed) throw new DomainError(400, "Reveal the answer before rating recall.");
             if (request.Rating is not { } rating || !Enum.IsDefined(rating)) throw new DomainError(400, "Choose Again, Hard, Good or Easy.");
-            // An old pinned session can record history without overwriting the schedule of newer content.
-            var current = Cards.Expand((await Release(packId)).Pack).FirstOrDefault(u => u.Id == unit.Id);
+            // An old pinned session can record history without overwriting the schedule of newer content,
+            // including after the latest release removed every deck.
+            var latest = await releases.Latest(db, packId);
+            var current = latest is { Pack.Features.Flashcards: true } ? Cards.Expand(latest.Pack).FirstOrDefault(u => u.Id == unit.Id) : null;
             if (current?.ContentHash == unit.ContentHash)
             {
                 var state = await db.FlashcardStates.FindAsync(user, packId, unit.Id);
@@ -112,12 +114,12 @@ public sealed class FlashcardService(AppDb db, ReleaseCache releases, LearningRe
             session.Position++; session.Revealed = false;
             if (session.Position == Json.Read<FlashcardUnit[]>(session.UnitsJson).Length) { session.CompletedAt = Now; session.ActiveKey = null; }
         }
-        else if (operation == "finish") { session.CompletedAt = Now; session.ActiveKey = null; }
+        else if (operation == FlashcardOperation.Finish) { session.CompletedAt = Now; session.ActiveKey = null; }
         else throw new DomainError(400, "Unknown review action.");
         session.Revision++;
         var view = View(session);
         db.FlashcardEvents.Add(new() { UserId = user, SessionId = id, RequestId = request.RequestId, Fingerprint = fingerprint,
-            Operation = operation, UnitId = unit.Id, Rating = operation == "rate" ? request.Rating : null, At = Now, ViewJson = Json.Write(view) });
+            Operation = operation, UnitId = unit.Id, Rating = operation == FlashcardOperation.Rate ? request.Rating : null, At = Now, ViewJson = Json.Write(view) });
         await learning.Touch(user, packId); await db.SaveChangesAsync();
         return view;
     }

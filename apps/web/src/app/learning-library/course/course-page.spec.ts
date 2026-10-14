@@ -72,15 +72,13 @@ async function render(
   const http = TestBed.inject(HttpTestingController);
   http.expectOne('/api/catalog/' + data.id).flush(data);
   if (signedIn)
-    http
-      .expectOne('/api/me/courses/' + data.id)
-      .flush({
-        completedLessons: [],
-        revisedLessons: [],
-        objectives: [],
-        nextSteps: [],
-        enrollment: 'none',
-      });
+    http.expectOne('/api/me/courses/' + data.id).flush({
+      completedLessons: [],
+      revisedLessons: [],
+      objectives: [],
+      nextSteps: [],
+      enrollment: 'none',
+    });
   await fixture.whenStable();
   fixture.detectChanges();
   return { fixture, http, element: fixture.nativeElement as HTMLElement };

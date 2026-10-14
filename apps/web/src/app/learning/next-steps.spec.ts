@@ -62,6 +62,16 @@ describe('next steps', () => {
     });
   });
 
+  it('sends flashcard steps to the review tab', () => {
+    const due = step({ kind: 'reviewFlashcards', reason: 'cardsDue', objectiveId: null });
+    expect(describeStep(due)).toContain('flashcards that are due');
+    expect(describeStep({ ...due, reason: 'newCards' })).toContain('Introduce new flashcards');
+    expect(stepLink('demo', due)).toEqual({
+      path: ['/courses', 'demo'],
+      query: { tab: 'flashcards' },
+    });
+  });
+
   it('sends practice on case-study-only objectives to a learning session on the suggested blueprint', () => {
     expect(stepLink('demo', step({ kind: 'practise', blueprintId: 'short' }))).toEqual({
       path: ['/courses', 'demo'],

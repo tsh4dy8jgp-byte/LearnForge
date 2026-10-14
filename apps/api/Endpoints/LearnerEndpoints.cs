@@ -42,9 +42,14 @@ public static class LearnerEndpoints
                         e.Source, e.Answered, e.FullyCorrect, e.Earned, e.Possible, e.At)).ToArrayAsync();
                 var drafts = await db.Drafts.AsNoTracking().Where(d => d.OwnerId == id)
                     .Select(d => new DraftDto(d.Id, d.Title, d.Source, d.Revision, d.UpdatedAt)).ToArrayAsync();
-                var cardHistory = new FlashcardHistoryDto(await db.FlashcardStates.AsNoTracking().Where(s => s.UserId == id).ToArrayAsync(),
-                    await db.FlashcardSessions.AsNoTracking().Where(s => s.UserId == id).ToArrayAsync(),
-                    await db.FlashcardEvents.AsNoTracking().Where(s => s.UserId == id).OrderBy(e => e.Id).ToArrayAsync());
+                var schedules = await db.FlashcardStates.AsNoTracking().Where(s => s.UserId == id)
+                    .Select(s => new FlashcardScheduleExportDto(s.PackId, s.UnitId, s.ContentHash, s.Stage, s.DueAt, s.Introduced, s.Suspended, s.SchedulerVersion)).ToArrayAsync();
+                var sessions = (await db.FlashcardSessions.AsNoTracking().Where(s => s.UserId == id).OrderBy(s => s.StartedAt).ToArrayAsync())
+                    .Select(s => new FlashcardSessionExportDto(s.Id, s.PackId, s.ReleaseId, Json.Read<FlashcardUnit[]>(s.UnitsJson).Select(u => u.Id).ToArray(),
+                        s.Position, s.StartedAt, s.CompletedAt)).ToArray();
+                var cardEvents = await db.FlashcardEvents.AsNoTracking().Where(e => e.UserId == id).OrderBy(e => e.Id)
+                    .Select(e => new FlashcardEventExportDto(e.SessionId, e.Operation, e.UnitId, e.Rating, e.At)).ToArrayAsync();
+                var cardHistory = new FlashcardHistoryDto(schedules, sessions, cardEvents);
                 var export = new LearnerExportDto(service.Now, await learning.Dashboard(id), attempts.Select(service.View).ToArray(), enrollments, lessons, evidence, drafts, cardHistory);
                 return Results.File(System.Text.Encoding.UTF8.GetBytes(Json.Write(export)), "application/json", "learnforge-history.json");
             });

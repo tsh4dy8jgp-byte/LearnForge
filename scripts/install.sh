@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Compatible with the Bash 3.2 shipped by macOS. Node is not a bootstrap prerequisite.
 set -euo pipefail
-task_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
+task_root="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
 cd "$task_root"
 task_read_only=false
 task_native_only=false
@@ -9,6 +9,7 @@ task_expect_value=
 task_check=false
 task_prepare=false
 task_no_install=false
+task_no_browser=false
 for task_argument in "$@"; do
   if [ -n "$task_expect_value" ]; then
     if [ -z "$task_argument" ] || [[ "$task_argument" == --* ]]; then echo "Missing value for $task_expect_value" >&2; exit 2; fi
@@ -25,7 +26,7 @@ for task_argument in "$@"; do
     --check) task_read_only=true; task_check=true ;;
     --no-install) task_read_only=true; task_no_install=true ;;
     --install-only) task_prepare=true ;;
-    --no-browser) ;;
+    --no-browser) task_no_browser=true ;;
     --api-port|--web-port|--startup-timeout|--data-dir) task_expect_value="$task_argument" ;;
     --repair-native) task_native_only=true ;;
     --help|-h)
@@ -49,13 +50,24 @@ done
 [ -z "$task_expect_value" ] || { echo "Missing value for $task_expect_value" >&2; exit 2; }
 if "$task_prepare" && { "$task_check" || "$task_no_install"; }; then echo '--install-only cannot be combined with --check or --no-install.' >&2; exit 2; fi
 trap 'echo "LearnForge bootstrap failed. Review the preceding error." >&2; exit 3' ERR
+# Root-owned tools, logs and data would break every later run as a normal user.
+if [ "$(id -u)" = 0 ] && [ "${LEARNFORGE_ALLOW_ROOT:-}" != 1 ]; then
+  echo 'Run LearnForge as your normal user, without sudo. It asks for administrator rights only to install missing OS packages.' >&2
+  echo 'In a disposable container, set LEARNFORGE_ALLOW_ROOT=1.' >&2
+  exit 2
+fi
+# Starting existing tools (--no-install) only warns about platforms automatic installation does not support.
+task_unsupported() {
+  if "$task_no_install"; then echo "Warning: $1 Continuing with existing tools." >&2; else echo "$1" >&2; exit 2; fi
+}
+task_icu=
 
 task_system="$(uname -s)"
 case "$task_system" in
   Darwin)
     task_os=darwin
     task_os_major="$(sw_vers -productVersion | cut -d. -f1)"
-    [ "$task_os_major" -ge 14 ] || { echo 'LearnForge requires macOS 14 or newer.' >&2; exit 2; }
+    [ "$task_os_major" -ge 14 ] || task_unsupported 'LearnForge requires macOS 14 or newer.'
     task_machine="$(uname -m)"
     if [ "$(sysctl -in hw.optional.arm64 2>/dev/null || true)" = 1 ]; then task_machine=arm64; fi
     ;;
@@ -69,7 +81,7 @@ case "$task_system" in
       ubuntu:24.04) task_icu=libicu74; task_ssl=libssl3t64 ;;
       debian:12) task_icu=libicu72; task_ssl=libssl3 ;;
       debian:13) task_icu=libicu76; task_ssl=libssl3t64 ;;
-      *) echo "Automatic installation supports Ubuntu 22.04/24.04 and Debian 12/13; found $task_id $task_release." >&2; exit 2 ;;
+      *) task_unsupported "Automatic installation supports Ubuntu 22.04/24.04 and Debian 12/13; found $task_id $task_release." ;;
     esac
     ;;
   *) echo "Unsupported operating system: $task_system. On Windows use scripts/install.ps1." >&2; exit 2 ;;
@@ -81,9 +93,9 @@ case "$task_machine" in
 esac
 
 # Install only missing distro packages. Never elevate the whole launcher.
-if [ "$task_os" = linux ]; then
-  task_packages=(ca-certificates curl tar gzip xz-utils libc6 libgcc-s1 libstdc++6 libgssapi-krb5-2 "$task_icu" "$task_ssl" tzdata zlib1g)
-  if [ -n "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ]; then task_packages+=(xdg-utils); fi
+if [ "$task_os" = linux ] && [ -n "$task_icu" ]; then
+  task_packages=(ca-certificates curl tar gzip xz-utils procps libc6 libgcc-s1 libstdc++6 libgssapi-krb5-2 "$task_icu" "$task_ssl" tzdata zlib1g)
+  if [ -n "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ] && ! "$task_no_browser"; then task_packages+=(xdg-utils); fi
   task_missing=()
   for task_package in "${task_packages[@]}"; do
     if [ "$(dpkg-query -W -f='${Status}' "$task_package" 2>/dev/null || true)" != 'install ok installed' ]; then
@@ -94,8 +106,11 @@ if [ "$task_os" = linux ]; then
     echo "Missing OS packages: ${task_missing[*]}"
     if "$task_read_only"; then
       echo "Install with: sudo apt-get update && sudo apt-get install -y ${task_missing[*]}" >&2
-      exit 2
+      if "$task_check"; then exit 2; fi
+      task_missing=()
     fi
+  fi
+  if [ "${#task_missing[@]}" -gt 0 ]; then
     if [ "$(id -u)" = 0 ]; then
       task_elevate=()
     elif command -v sudo >/dev/null 2>&1; then
@@ -108,8 +123,9 @@ if [ "$task_os" = linux ]; then
       echo "Install as administrator: apt-get update && apt-get install -y ${task_missing[*]}" >&2
       exit 3
     fi
-    "${task_elevate[@]}" apt-get update
-    "${task_elevate[@]}" apt-get install -y "${task_missing[@]}"
+    # Unattended runs must not wait on debconf prompts (tzdata) or fail while apt is busy.
+    "${task_elevate[@]}" env DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=300 update
+    "${task_elevate[@]}" env DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=300 install -y "${task_missing[@]}"
     for task_package in "${task_missing[@]}"; do
       [ "$(dpkg-query -W -f='${Status}' "$task_package")" = 'install ok installed' ] || exit 3
     done
@@ -133,6 +149,10 @@ for task_candidate in "$task_managed/bin/node" "$(command -v node || true)"; do
     fi
   fi
 done
+if [ -z "$task_node" ] && "$task_no_install" && command -v node >/dev/null 2>&1 && [ "$(node -p 'process.arch' 2>/dev/null || true)" = "$task_arch" ]; then
+  # The launcher checks this Node against Angular's supported versions.
+  task_node="$(command -v node)"
+fi
 if [ -z "$task_node" ] && "$task_read_only"; then
   echo "Required: Node $task_node_version with the npm version in apps/web/package.json." >&2
   echo 'Run bash scripts/install.sh to acquire a private copy.' >&2
@@ -179,18 +199,19 @@ if [ -z "$task_node" ]; then
   task_hash="$(awk -v file="$task_archive" '$2 == file {print $1}' "$task_sums")"
   [[ "$task_hash" =~ ^[a-fA-F0-9]{64}$ ]] || { echo 'Official Node checksum was not found.' >&2; exit 3; }
   task_verify() {
-    [ -f "$task_cache" ] || return 1
+    [ -f "$1" ] || return 1
     if command -v shasum >/dev/null 2>&1; then
-      task_actual="$(shasum -a 256 "$task_cache" | awk '{print $1}')"
+      task_actual="$(shasum -a 256 "$1" | awk '{print $1}')"
     else
-      task_actual="$(sha256sum "$task_cache" | awk '{print $1}')"
+      task_actual="$(sha256sum "$1" | awk '{print $1}')"
     fi
     [ "$task_actual" = "$task_hash" ]
   }
-  if ! task_verify; then
-    curl --fail --location --proto '=https' --proto-redir '=https' --connect-timeout 20 --max-time 600 --retry 2 "$task_base/$task_archive" -o "$task_partial"
+  if ! task_verify "$task_cache"; then
+    # Abort stalled transfers instead of capping total time, so slow connections can finish.
+    curl --fail --location --proto '=https' --proto-redir '=https' --connect-timeout 20 --speed-limit 1024 --speed-time 60 --retry 2 "$task_base/$task_archive" -o "$task_partial"
+    task_verify "$task_partial" || { echo 'Node archive checksum mismatch; installation aborted.' >&2; exit 3; }
     mv "$task_partial" "$task_cache"
-    task_verify || { echo 'Node archive checksum mismatch; installation aborted.' >&2; exit 3; }
   fi
   mkdir "$task_stage/extracted"
   tar -xf "$task_cache" -C "$task_stage/extracted" --strip-components=1

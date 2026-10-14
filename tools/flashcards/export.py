@@ -113,6 +113,8 @@ def export_pdf(payload, destination):
         raise ValueError("No card font found. Install DejaVu Sans or set LEARNFORGE_CARD_FONT to a Unicode .ttf file.")
     pdfmetrics.registerFont(TTFont("Cards", font_path))
     widths = pdfmetrics.getFont("Cards").face.charWidths
+    if any(ord(c) not in widths for c in payload["title"] if not c.isspace()):
+        raise ValueError("The subject title contains glyphs unsupported by the configured font.")
     for unit in payload["units"]:
         for text in [unit["front"], unit["back"], unit["explanation"]] + [s["title"] + s["url"] for s in unit["sources"]]:
             if any(ord(c) not in widths for c in text if not c.isspace()):
@@ -134,6 +136,9 @@ def export_pdf(payload, destination):
     for unit in payload["units"]:
         paragraph(unit["front"], card_w - 10 * mm, card_h - 16 * mm, unit["id"])
         paragraph(unit["back"], card_w - 10 * mm, card_h - 16 * mm, unit["id"])
+        # Learners match fronts to backs by this ID, so it must stay on its card.
+        if pdfmetrics.stringWidth(unit["id"], "Cards", 7) > card_w - 10 * mm:
+            raise ValueError("Card " + unit["id"] + " has an ID too long to print. Shorten its deck or note ID.")
     c = canvas.Canvas(str(destination), pagesize=(width, height), pageCompression=1)
     c.setTitle(payload["title"] + " - printable flashcards " + payload["version"])
     c.setAuthor("LearnForge")

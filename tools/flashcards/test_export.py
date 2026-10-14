@@ -129,6 +129,11 @@ class ExportTests(unittest.TestCase):
         payload = {**self.payload, 'units': [{**self.payload['units'][0], 'front': 'Very long answer ' * 500}]}
         with self.assertRaisesRegex(ValueError, 'does not fit'):
             export.export_pdf(payload, self.directory / 'overflow.pdf')
+        payload = {**self.payload, 'units': [{**self.payload['units'][0], 'id': 'deck/' + 'n' * 120 + '/forward'}]}
+        with self.assertRaisesRegex(ValueError, 'ID too long'):
+            export.export_pdf(payload, self.directory / 'long-id.pdf')
+        with self.assertRaisesRegex(ValueError, 'subject title'):
+            export.export_pdf({**self.payload, 'title': '漢字'}, self.directory / 'title.pdf')
 
     def test_cyrillic_text_and_literal_markup_are_preserved(self):
         payload = copy.deepcopy(self.payload)

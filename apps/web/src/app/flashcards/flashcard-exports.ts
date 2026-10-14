@@ -72,12 +72,7 @@ import { FlashcardExportFormat, CardPaper, CardPrintMode, CardBinding } from '..
       90 × 60 mm cards. Print at 100% scale. Instructions and calibration are separate from card
       sheets. Text imports require the supplied LearnForge note types.
     </p>
-    @if (busy()) {
-      <p role="status">Preparing your download…</p>
-    }
-    @if (notice()) {
-      <p role="status">{{ notice() }}</p>
-    }
+    <p role="status">{{ busy() ? 'Preparing your download…' : notice() }}</p>
     @if (error()) {
       <p class="alert error" role="alert">{{ error() }}</p>
     }
@@ -109,10 +104,13 @@ export class FlashcardExports {
         paper: this.paper,
         mode: this.mode,
         binding: this.binding,
-        offsetX: String(this.offsetX),
-        offsetY: String(this.offsetY),
         version: this.version(),
       });
+      // Offsets only apply to duplex PDFs; a cleared number field is null.
+      if (format === 'pdf' && this.mode === 'duplex') {
+        query.set('offsetX', String(this.offsetX || 0));
+        query.set('offsetY', String(this.offsetY || 0));
+      }
       if (this.deck()) query.set('deck', this.deck());
       if (this.objective()) query.set('objective', this.objective());
       if (this.tag()) query.set('tag', this.tag());

@@ -79,6 +79,11 @@ builder.Services.AddRateLimiter(o =>
         _ => new FixedWindowRateLimiterOptions { PermitLimit = 300, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
     o.AddPolicy("auth", ctx => RateLimitPartition.GetFixedWindowLimiter(ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown",
         _ => new FixedWindowRateLimiterOptions { PermitLimit = 30, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
+    // The exporter has two process slots for the whole server; one client may hold at most one of them.
+    o.AddPolicy("exports", ctx => RateLimitPartition.Get(
+        ctx.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+        _ => RateLimiter.CreateChained(new ConcurrencyLimiter(new ConcurrencyLimiterOptions { PermitLimit = 1, QueueLimit = 0 }),
+            new FixedWindowRateLimiter(new FixedWindowRateLimiterOptions { PermitLimit = 12, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }))));
 });
 var app = builder.Build();
 app.Use(async (context, next) =>

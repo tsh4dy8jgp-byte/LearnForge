@@ -34,6 +34,9 @@
 </div>
 @if (summary.error(); as e) {
   <p class="alert error" role="alert">{{ errorText(e) }}</p>
+  <button class="button secondary" [disabled]="summary.isLoading()" (click)="summary.reload()">
+    Reload review progress
+  </button>
 }
 @if (error()) {
   <p class="alert error" role="alert">{{ error() }}</p>
@@ -44,7 +47,8 @@
   }
 }
 @if (account.user()) {
-  @if (summary.value(); as s) {
+  @if (summary.hasValue()) {
+    @let s = summary.value();
     <section class="panel">
       <p>{{ s.due }} due · {{ s.new }} new · {{ s.suspended }} suspended (whole subject)</p>
       @if (s.upToDate) {
@@ -81,7 +85,7 @@
       }}
     </p>
     @if (current.card; as card) {
-      <p class="eyebrow">{{ card.deckId }}</p>
+      <p class="eyebrow">{{ deckTitles().get(card.deckId) ?? card.deckId }}</p>
       <h3 #questionHeading tabindex="-1" class="card-text" [lang]="card.language">
         {{ card.front }}
       </h3>
@@ -152,7 +156,7 @@
           <p class="small">Due {{ state.dueAt | date: 'medium' }}</p>
         }
         <button class="button secondary" [disabled]="busy()" (click)="suspend(card.id)">
-          {{ state.suspended ? 'Resume card' : 'Suspend card' }}
+          {{ state.suspended ? 'Unsuspend card' : 'Suspend card' }}
         </button>
       }
     </details>

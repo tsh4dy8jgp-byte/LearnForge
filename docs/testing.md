@@ -1,6 +1,6 @@
 # Testing
 
-Flashcard checks cover content compatibility/validation, card expansion, review intervals, ownership, reveal rules, replay/concurrency, revised content, account export/deletion and export validation. `make test-flashcard-exports` covers Anki archives and printable geometry. Actual application import and printer calibration are manual checks.
+Flashcard checks cover content compatibility/validation, card expansion, review intervals, ownership, reveal rules, request replay and stale revisions, session selection limits, suspension, revised content, account export/deletion, export validation and per-client export limits. `make test-flashcard-exports` covers Anki archives and printable geometry. Actual application import and printer calibration are manual checks.
 
 Accessibility acceptance is defined in the [WCAG 2.2 AA verification plan](accessibility/verification.md), with [criterion traceability](accessibility/conformance-matrix.md) and complete learner/publisher journeys. It requires manual keyboard, assistive-technology and content evaluation as well as planned automated scans. The commands below run existing tests; they are not evidence of full WCAG conformance.
 

@@ -42,7 +42,7 @@
           [disabled]="editor.busy() || editor.saving()"
         >
           <option value="">Choose a draft…</option>
-          @for (draft of editor.drafts.value() ?? []; track draft.id) {
+          @for (draft of editor.drafts.hasValue() ? editor.drafts.value() : []; track draft.id) {
             <option [value]="draft.id">{{ draft.title }} · revision {{ draft.revision }}</option>
           }
         </select>
@@ -69,10 +69,18 @@
     </label>
   </section>
   @if (editor.source() || editor.activeDraft()) {
-    <lf-flashcard-editor [source]="editor.source()" [disabled]="editor.busy() || editor.saving()" (changed)="editSource($event)" />
+    <lf-flashcard-editor
+      [source]="editor.source()"
+      [disabled]="editor.busy() || editor.saving()"
+      (changed)="editSource($event)"
+    />
     @if (report()?.catalog; as catalog) {
       @if (catalog.capabilities.flashcards && report()?.success) {
-        <lf-flashcard-exports [packId]="catalog.id" [version]="catalog.version" [source]="editor.source()" />
+        <lf-flashcard-exports
+          [packId]="catalog.id"
+          [version]="catalog.version"
+          [source]="editor.source()"
+        />
       }
     }
     <div class="practice-layout studio-layout">

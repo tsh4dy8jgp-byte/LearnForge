@@ -70,7 +70,7 @@ jobs:
           cache-dependency-path: apps/web/package-lock.json
       - name: Check POSIX entry point
         if: runner.os != 'Windows'
-        run: bash -n scripts/install.sh scripts/dev.sh && bash scripts/install.sh --check
+        run: bash -n scripts/install.sh && bash -n scripts/dev.sh && bash scripts/install.sh --check
       - name: Check PowerShell entry point
         if: runner.os == 'Windows'
         shell: powershell
@@ -95,6 +95,10 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:24.04
     timeout-minutes: 20
+    env:
+      DEBIAN_FRONTEND: noninteractive
+      # The job container runs as root; real installs refuse it.
+      LEARNFORGE_ALLOW_ROOT: '1'
     steps:
       # Git is only needed by checkout; the application bootstrap needs neither Git nor Make.
       - run: apt-get update && apt-get install -y git
@@ -102,7 +106,10 @@ jobs:
       - run: bash scripts/install.sh --install-only
       - run: bash scripts/install.sh --check
       - name: Verify repeat preparation reuses managed tools and dependencies
-        run: bash scripts/install.sh --install-only
+        run: |
+          set -o pipefail
+          bash scripts/install.sh --install-only | tee repeat.log
+          if grep -E 'Installing (Node|a compatible \.NET SDK|web dependencies)' repeat.log; then exit 1; fi
       - name: Exercise the installed application with disposable data
         run: .learnforge/tools/node/v$(cat .node-version)/bin/node scripts/tests/smoke-real.mjs
       - uses: actions/upload-artifact@v4

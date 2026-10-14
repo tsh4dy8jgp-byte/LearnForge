@@ -7,7 +7,7 @@ public sealed class FlashcardEvent
     public required string SessionId { get; set; }
     public required string RequestId { get; set; }
     public required string Fingerprint { get; set; }
-    public required string Operation { get; set; }
+    public FlashcardOperation Operation { get; set; }
     public required string UnitId { get; set; }
     public ReviewRating? Rating { get; set; }
     public DateTime At { get; set; }

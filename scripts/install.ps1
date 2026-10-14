@@ -1,6 +1,8 @@
 # Windows PowerShell 5.1 and PowerShell 7. Arguments mirror install.sh.
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+# Windows PowerShell 5.1 downloads many times slower while drawing its progress bar.
+$ProgressPreference = 'SilentlyContinue'
 $InstallerArguments = @($args)
 $TaskRoot = Split-Path -Parent $PSScriptRoot
 $TaskExitCode = 2

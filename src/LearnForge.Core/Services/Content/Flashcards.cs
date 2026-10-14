@@ -33,7 +33,9 @@ public static partial class Flashcards
                 .Select(number => Unit("c" + number, Deletion().Replace(note.Text!, m =>
                 {
                     var parts = m.Groups[2].Value.Split("::");
-                    return int.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture) == number ? "[" + (parts.Length == 2 ? parts[1] : "...") + "]" : parts[0];
+                    // A blank hint shows the default placeholder, as Anki does.
+                    return int.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture) == number
+                        ? "[" + (parts.Length == 2 && !string.IsNullOrWhiteSpace(parts[1]) ? parts[1] : "...") + "]" : parts[0];
                 }), Deletion().Replace(note.Text!, m => m.Groups[2].Value.Split("::")[0]))).ToArray();
         return note.Kind == FlashcardKind.Reversible
             ? new[] { Unit("forward", note.Front!, note.Back!), Unit("reverse", note.Back!, note.Front!) }

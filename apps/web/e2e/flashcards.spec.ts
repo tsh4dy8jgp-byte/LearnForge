@@ -11,7 +11,7 @@ test('flashcards review resumes, exports, and keeps recall separate from mastery
   await page.getByRole('button', { name: 'Create account', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Welcome back, Recall Learner.' })).toBeVisible();
 
-  // The browser fixture uses a new private database. Seed a published sample through its test setup.
+  // The API seeds packs/ at startup, which includes the recall-foundations sample.
   await page.goto('/courses/recall-foundations?tab=flashcards');
   await expect(page.getByRole('tab', { name: 'Flashcards' })).toHaveAttribute(
     'aria-selected',

@@ -16,7 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Session } from '../authentication/session';
 import { ApiClient } from '../http/api-client';
-import { message } from '../http/api-error';
+import { ApiError, message } from '../http/api-error';
 import {
   CourseCatalogDto,
   FlashcardSummaryDto,
@@ -24,6 +24,9 @@ import {
   ReviewRating,
 } from '../api-contracts';
 import { FlashcardExports } from './flashcard-exports';
+
+const isRejection = (status: number) =>
+  status >= 400 && status < 500 && status !== 408 && status !== 429;
 
 @Component({
   selector: 'lf-course-flashcards',
@@ -73,6 +76,9 @@ export class CourseFlashcards {
   protected readonly deck = signal('');
   protected readonly objective = signal('');
   protected readonly tag = signal('');
+  protected readonly deckTitles = computed(
+    () => new Map((this.course().flashcardDecks ?? []).map((d) => [d.id, d.title])),
+  );
   protected readonly tags = computed(() =>
     [...new Set((this.course().flashcards ?? []).flatMap((c) => c.tags))].sort(),
   );
@@ -85,7 +91,10 @@ export class CourseFlashcards {
     ),
   );
   protected readonly states = computed(
-    () => new Map((this.summary.value()?.cards ?? []).map((s) => [s.unitId, s])),
+    () =>
+      new Map(
+        (this.summary.hasValue() ? this.summary.value().cards : []).map((s) => [s.unitId, s]),
+      ),
   );
   protected readonly errorText = message;
   private pending?: { action: string; path: string; body: unknown };
@@ -94,13 +103,16 @@ export class CourseFlashcards {
       this.course().id;
       this.session.set(null);
       this.pending = undefined;
+      this.deck.set('');
+      this.objective.set('');
+      this.tag.set('');
     });
   }
   private base() {
     return `/me/courses/${this.course().id}/flashcards`;
   }
   protected async resume() {
-    const id = this.summary.value()?.activeSessionId;
+    const id = this.summary.hasValue() ? this.summary.value().activeSessionId : null;
     if (!id) return;
     await this.run(async () => {
       this.session.set(await this.api.get(`${this.base()}/sessions/${id}`));
@@ -109,16 +121,24 @@ export class CourseFlashcards {
     });
   }
   protected async start() {
-    if (!this.pending)
+    const filters = {
+      deck: this.deck() || null,
+      objective: this.objective() || null,
+      tag: this.tag() || null,
+    };
+    const previous =
+      this.pending?.action === 'start' ? (this.pending.body as typeof filters) : null;
+    // A changed filter is a new request, so it needs a new request ID.
+    if (
+      !previous ||
+      previous.deck !== filters.deck ||
+      previous.objective !== filters.objective ||
+      previous.tag !== filters.tag
+    )
       this.pending = {
         action: 'start',
         path: `${this.base()}/sessions`,
-        body: {
-          requestId: crypto.randomUUID(),
-          deck: this.deck() || null,
-          objective: this.objective() || null,
-          tag: this.tag() || null,
-        },
+        body: { requestId: crypto.randomUUID(), ...filters },
       };
     await this.retry();
   }
@@ -141,7 +161,16 @@ export class CourseFlashcards {
     const pending = this.pending;
     if (!pending) return;
     await this.run(async () => {
-      this.session.set(await this.api.post<FlashcardSessionDto>(pending.path, pending.body));
+      try {
+        this.session.set(await this.api.post<FlashcardSessionDto>(pending.path, pending.body));
+      } catch (error) {
+        // Resending a rejected request cannot succeed; keep only transport and server failures.
+        if (error instanceof ApiError && isRejection(error.status)) {
+          this.pending = undefined;
+          this.summary.reload();
+        }
+        throw error;
+      }
       this.pending = undefined;
       this.summary.reload();
       this.focusCard();

@@ -58,7 +58,11 @@
             ></progress>
           }
           <h3 class="small">Next steps</h3>
-          @if (course.flashcards; as cards) { <p>{{ cards.due }} cards due · {{ cards.new }} new · {{ cards.introduced }} introduced</p> }
+          @if (course.flashcards; as cards) {
+            <p>
+              {{ cards.due }} cards due · {{ cards.new }} new · {{ cards.introduced }} introduced
+            </p>
+          }
           <lf-next-steps [packId]="course.packId" [steps]="course.nextSteps" />
           @if (course.capabilities.practice || course.capabilities.assessments) {
             <div class="objective-list">
@@ -143,7 +147,13 @@
                 objectives proficient.
               </p>
             }
-            @case ('review') { <p>Self-assessed recall: {{ course.flashcards?.introduced }} cards introduced, {{ course.flashcards?.due }} due.</p><p class="muted small">Review activity does not establish assessed mastery.</p> }
+            @case ('review') {
+              <p>
+                Self-assessed recall: {{ course.flashcards?.introduced }} cards introduced,
+                {{ course.flashcards?.due }} due.
+              </p>
+              <p class="muted small">Review activity does not establish assessed mastery.</p>
+            }
             @default {
               <p>
                 {{ course.goal.completedLessons }} of {{ course.goal.lessonCount }} lessons
@@ -152,7 +162,11 @@
             }
           }
           @if (course.goal.met) {
-            <p><span class="pill success">{{ course.goal.goal === 'review' ? 'Review up to date' : 'Goal met' }}</span></p>
+            <p>
+              <span class="pill success">{{
+                course.goal.goal === 'review' ? 'Review up to date' : 'Goal met'
+              }}</span>
+            </p>
           }
         </div>
       }

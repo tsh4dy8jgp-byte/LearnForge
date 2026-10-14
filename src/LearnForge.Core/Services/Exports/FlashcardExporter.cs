@@ -37,9 +37,17 @@ public static class FlashcardExporter
                 var errors = process.StandardError.ReadToEndAsync(timeout.Token);
                 var stdout = process.StandardOutput.ReadToEndAsync(timeout.Token);
                 var selected = pack with { FlashcardDecks = decks };
-                await process.StandardInput.WriteAsync(Json.Write(new FlashcardExportPayload(pack.Id, pack.Title, pack.Version, decks,
-                    Flashcards.Expand(selected), options)).AsMemory(), timeout.Token);
-                process.StandardInput.Close();
+                try
+                {
+                    await process.StandardInput.WriteAsync(Json.Write(new FlashcardExportPayload(pack.Id, pack.Title, pack.Version, decks,
+                        Flashcards.Expand(selected), options)).AsMemory(), timeout.Token);
+                    process.StandardInput.Close();
+                }
+                catch (IOException)
+                {
+                    // The exporter exited before reading its input; its exit code and error output explain why.
+                    try { process.StandardInput.Close(); } catch (IOException) { }
+                }
                 await process.WaitForExitAsync(timeout.Token);
                 var error = await errors; await stdout;
                 if (process.ExitCode != 0) throw new FlashcardExportException(error.StartsWith("EXPORT_ERROR:", StringComparison.Ordinal)
@@ -60,7 +68,9 @@ public static class FlashcardExporter
         catch (Win32Exception) { throw new FlashcardExportException("Export Python is unavailable. Run the flashcard setup instructions."); }
         finally
         {
+            // A leftover temporary directory must not replace the export result or error.
             try { if (Directory.Exists(directory)) Directory.Delete(directory, true); }
+            catch (Exception e) when (e is IOException or UnauthorizedAccessException) { }
             finally { Slots.Release(); }
         }
     }

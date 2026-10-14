@@ -81,7 +81,9 @@ export class CoursePage {
         ? 'learn'
         : this.tabs().some((t) => t.id === 'practice')
           ? 'practice'
-          : this.course()?.capabilities.flashcards ? 'flashcards' : 'map';
+          : this.course()?.capabilities.flashcards
+            ? 'flashcards'
+            : 'map';
   });
   protected readonly lessonId = linkedSignal(() => this.lesson() ?? '');
   protected readonly course = computed(() =>

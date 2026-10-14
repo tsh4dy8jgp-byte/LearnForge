@@ -26,6 +26,8 @@ public class FlashcardTests
         Assert.Equal(units, Flashcards.Expand(changed));
         var repeated = new FlashcardDeck("repeat", "Repeat", [new("n", FlashcardKind.Cloze, ["recall"], "Explanation", Text: "{{c2::one}} then {{c2::two}}")]);
         Assert.Equal("[...] then [...]", Assert.Single(Flashcards.Expand(repeated)).Front);
+        var blankHint = new FlashcardDeck("hint", "Hint", [new("n", FlashcardKind.Cloze, ["recall"], "Explanation", Text: "Say {{c1::hello:: }}.")]);
+        Assert.Equal("Say [...].", Assert.Single(Flashcards.Expand(blankHint)).Front);
     }
     [Theory]
     [InlineData("{{c0::bad}}")]

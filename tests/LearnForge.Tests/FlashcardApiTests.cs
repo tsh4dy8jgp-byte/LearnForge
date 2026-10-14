@@ -79,6 +79,51 @@ public class FlashcardApiTests(ApiFactory factory) : IClassFixture<ApiFactory>
         var summary = await client.GetFromJsonAsync<JsonElement>(Base(packId) + "/");
         Assert.False(summary.GetProperty("cards").EnumerateArray().Single(c => c.GetProperty("unitId").GetString() == currentId).GetProperty("introduced").GetBoolean());
     }
+    private static Pack Bulk(FlashcardKind kind, int notes) => FlashcardTests.Sample() with
+    {
+        FlashcardDecks = [new("bulk", "Bulk", Enumerable.Range(1, notes).Select(i =>
+            new FlashcardNote($"note-{i}", kind, ["recall"], "Explanation.", $"Prompt {i}?", $"Answer {i}.")).ToArray())]
+    };
+    [Fact] public async Task Sessions_cap_new_cards_take_one_card_per_note_and_skip_suspended_cards()
+    {
+        var client = await TestApi.Publisher(factory);
+        var capped = await Publish(client, Bulk(FlashcardKind.Basic, 12));
+        Assert.Equal(10, (await Start(client, capped)).GetProperty("count").GetInt32());
+        Assert.Equal(6, (await Start(client, await Publish(client, Bulk(FlashcardKind.Reversible, 6)))).GetProperty("count").GetInt32());
+        var suspended = await Publish(client, Bulk(FlashcardKind.Basic, 9));
+        foreach (var unit in new[] { "bulk/note-1/forward", "bulk/note-2/forward" })
+            (await client.PutAsJsonAsync(Base(suspended) + "/suspension", new { unitId = unit, suspended = true, revision = 0 })).EnsureSuccessStatusCode();
+        var session = await Start(client, suspended);
+        Assert.Equal(7, session.GetProperty("count").GetInt32());
+        for (var i = 0; i < 7; i++)
+        {
+            Assert.DoesNotContain(session.GetProperty("card").GetProperty("noteId").GetString(), new[] { "note-1", "note-2" });
+            session = await Action(client, suspended, await Action(client, suspended, session, "reveal"), "rate", "good");
+        }
+        Assert.True(session.GetProperty("completed").GetBoolean());
+        var dueAt = (await client.GetFromJsonAsync<JsonElement>(Base(suspended) + "/")).GetProperty("cards").EnumerateArray()
+            .First(c => c.GetProperty("introduced").GetBoolean()).GetProperty("dueAt").GetString()!;
+        Assert.EndsWith("Z", dueAt);
+    }
+    [Fact] public async Task Pinned_sessions_can_be_rated_after_the_latest_release_drops_flashcards()
+    {
+        var client = await TestApi.Publisher(factory); var packId = await Publish(client);
+        var session = await Start(client, packId);
+        (await client.PostAsJsonAsync("/api/authoring/publish", CoreTests.Demo() with { Id = packId, Version = "2.0.0" })).EnsureSuccessStatusCode();
+        session = await Action(client, packId, await Action(client, packId, session, "reveal"), "rate", "good");
+        Assert.Equal(1, session.GetProperty("position").GetInt32());
+        var events = (await client.GetFromJsonAsync<JsonElement>("/api/me/export")).GetProperty("flashcards").GetProperty("events");
+        Assert.Equal(["reveal", "rate"], events.EnumerateArray().Select(e => e.GetProperty("operation").GetString()));
+        Assert.False(events[0].TryGetProperty("viewJson", out _));
+    }
+    [Fact] public async Task Exports_are_limited_per_client()
+    {
+        var client = await TestApi.Publisher(factory); var pack = await Publish(client);
+        var path = $"/api/catalog/{pack}/flashcards/exports?deck=missing";
+        for (var i = 0; i < 12; i++) Assert.Equal(HttpStatusCode.UnprocessableEntity, (await client.GetAsync(path)).StatusCode);
+        Assert.Equal(HttpStatusCode.TooManyRequests, (await client.GetAsync(path)).StatusCode);
+        Assert.Equal(HttpStatusCode.UnprocessableEntity, (await (await TestApi.Account(factory)).GetAsync(path)).StatusCode);
+    }
     [Fact] public async Task Export_rejects_invalid_filters_settings_and_unpublished_versions()
     {
         var client = await TestApi.Publisher(factory); var pack = await Publish(client);

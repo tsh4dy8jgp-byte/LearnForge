@@ -9,7 +9,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 import {
   parseOptions, sdkMatches, selectSdk, toolEnvironment, hashFile, downloadVerified,
   acquireLock, choosePort, waitForHttp, launchChild, stopChildren, processIdentity,
-  browserCommand, dependencyFingerprint, runCommand,
+  browserCommand, dependencyFingerprint, runCommand, satisfiesEngines,
 } from '../install.mjs';
 
 async function temporary(t) {
@@ -48,7 +48,21 @@ test('selected tool environment avoids mismatched roots and Windows Path duplica
   assert.equal(env.Path, undefined);
   assert.equal(env.MSBuildSDKsPath, undefined);
   assert.equal(env.HTTPS_PROXY, 'https://proxy.invalid');
-  assert.equal(env.DOTNET_ROOT, '/some');
+  // Only a directory that contains SDKs is a DOTNET_ROOT; a shim such as snap's is not.
+  assert.equal(env.DOTNET_ROOT, undefined);
+});
+
+test('a tool environment names the SDK root of the selected host', async t => {
+  const root = await temporary(t);
+  await fs.mkdir(path.join(root, 'sdk'));
+  await fs.writeFile(path.join(root, 'dotnet'), '');
+  assert.equal(toolEnvironment(path.join(root, 'dotnet'), '/some/node', {}).DOTNET_ROOT, await fs.realpath(root));
+});
+
+test('--no-install accepts only Node versions Angular supports', () => {
+  const engines = '^22.22.3 || ^24.15.0 || >=26.0.0';
+  for (const version of ['v22.22.3', 'v22.30.0', 'v24.15.0', 'v26.0.0', 'v27.1.0']) assert.equal(satisfiesEngines(version, engines), true, version);
+  for (const version of ['v22.22.2', 'v23.0.0', 'v24.14.9', 'v25.9.0', 'v20.19.0']) assert.equal(satisfiesEngines(version, engines), false, version);
 });
 
 test('verified downloads reuse good caches and reject tampered archives atomically', async t => {

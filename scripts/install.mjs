@@ -63,6 +63,19 @@ export function selectSdk(metadata, sdk, rid) {
   throw new InstallError('No official SDK archive satisfies global.json for ' + rid + '.');
 }
 
+// Supports the "^x.y.z" and ">=x.y.z" alternatives Angular uses in engines.node.
+export function satisfiesEngines(version, range) {
+  const parse = text => text.replace(/^v/, '').split('.').map(Number);
+  const v = parse(version);
+  const atLeast = w => v[0] - w[0] || v[1] - w[1] || v[2] - w[2];
+  return range.split('||').map(part => part.trim()).some(part => {
+    const match = /^(\^|>=)(\d+\.\d+\.\d+)$/.exec(part);
+    if (!match) return false;
+    const wanted = parse(match[2]);
+    return atLeast(wanted) >= 0 && (match[1] === '>=' || v[0] === wanted[0]);
+  });
+}
+
 export function toolEnvironment(dotnet, node = process.execPath, source = process.env) {
   const env = { ...source };
   const oldPath = Object.entries(source).find(([key]) => key.toUpperCase() === 'PATH')?.[1] ?? '';
@@ -71,7 +84,7 @@ export function toolEnvironment(dotnet, node = process.execPath, source = proces
   }
   const host = dotnet && fs.existsSync(dotnet) ? fs.realpathSync(dotnet) : dotnet;
   env.PATH = [path.dirname(node), ...(host ? [path.dirname(host)] : []), oldPath].join(path.delimiter);
-  if (host) env.DOTNET_ROOT = path.dirname(host);
+  if (host && fs.existsSync(path.join(path.dirname(host), 'sdk'))) env.DOTNET_ROOT = path.dirname(host);
   Object.assign(env, { DOTNET_NOLOGO: '1', DOTNET_CLI_UI_LANGUAGE: 'en-US', DOTNET_CLI_TELEMETRY_OPTOUT: '1', DOTNET_CLI_USE_MSBUILD_SERVER: '0', MSBUILDDISABLENODEREUSE: '1', NG_CLI_ANALYTICS: 'false', npm_config_fund: 'false', npm_config_audit: 'false' });
   return env;
 }
@@ -136,7 +149,7 @@ export async function hashFile(file, algorithm = 'sha256') {
 
 function validateOfficialUrl(value) {
   const url = new URL(value);
-  if (url.protocol !== 'https:' || !['builds.dotnet.microsoft.com', 'download.visualstudio.microsoft.com', 'dotnetcli.azureedge.net', 'nodejs.org'].includes(url.hostname)) {
+  if (url.protocol !== 'https:' || !['builds.dotnet.microsoft.com', 'download.visualstudio.microsoft.com', 'nodejs.org'].includes(url.hostname)) {
     throw new InstallError('Release metadata contains an unsupported download location.');
   }
 }
@@ -188,7 +201,7 @@ export async function acquireLock(file) {
       if (error.code !== 'EEXIST') throw error;
       const owner = await readJson(file);
       // A malformed/new lock may be in the brief create/write window. Never steal it.
-      if (!owner || isAlive(owner.pid) && (!owner.identity || processIdentity(owner.pid) === owner.identity)) throw new InstallError('Another installer or launcher owns this checkout. Wait for it to finish.');
+      if (!owner || isAlive(owner.pid) && (!owner.identity || processIdentity(owner.pid) === owner.identity)) throw new InstallError('Another installer or launcher owns this checkout. Stop it first, or delete ' + file + ' if no LearnForge process is running.');
       await fsp.rm(file, { force: true });
     }
   }
@@ -296,17 +309,34 @@ export function browserCommand(url, platform = process.platform, env = process.e
   return null;
 }
 
-async function openBrowser(url, log) {
+function openBrowser(url, log) {
   const command = browserCommand(url);
   if (!command) { log('Browser unavailable in this session. Open ' + url + ' on a desktop browser.'); return; }
-  try {
-    await runCommand(command[0], command[1], { code: 5, signal: AbortSignal.timeout(8000) });
-  } catch { log('Could not open the browser automatically. Open ' + url); }
+  // Detached so a blocking opener (xdg-open) neither delays startup nor joins the launcher's process group.
+  const child = spawn(command[0], command[1], { detached: true, stdio: 'ignore', windowsHide: true });
+  child.once('error', () => log('Could not open the browser automatically. Open ' + url));
+  child.unref();
+}
+
+// Stops servers recorded by a launcher that died without cleanup (for example, a closed terminal).
+async function stopOrphans(record, log) {
+  const owned = member => member?.identity && processIdentity(member.pid) === member.identity;
+  const orphans = [record.api, record.web].filter(owned);
+  if (!orphans.length) return;
+  log('Stopping LearnForge servers left running by an earlier launcher.');
+  for (const { pid } of orphans) {
+    if (process.platform === 'win32') await runCommand('taskkill.exe', ['/PID', String(pid), '/T', '/F'], { code: 5 }).catch(() => {});
+    else try { process.kill(-pid, 'SIGTERM'); } catch { /* Already gone. */ }
+  }
+  for (let wait = 0; wait < 30 && orphans.some(({ pid }) => isAlive(pid)); wait++) await delay(100);
+  if (process.platform !== 'win32') for (const { pid } of orphans) try { process.kill(-pid, 'SIGKILL'); } catch { /* Group is gone. */ }
 }
 
 async function existingInstance(ctx) {
   const record = await readJson(path.join(ctx.state, 'instance.json'));
-  if (!record || record.root !== ctx.root || record.dataDir !== ctx.dataDir || !record.owner?.identity) return null;
+  if (!record || record.root !== ctx.root || !record.owner?.identity) return null;
+  if (processIdentity(record.owner.pid) !== record.owner.identity) { await stopOrphans(record, ctx.log); return null; }
+  if (record.dataDir !== ctx.dataDir) return null;
   if (!Number.isInteger(record.webPort) || record.url !== 'http://127.0.0.1:' + record.webPort) return null;
   if (ctx.options.apiPort && record.apiPort !== ctx.options.apiPort || ctx.options.webPort && record.webPort !== ctx.options.webPort) return null;
   for (const member of [record.owner, record.api, record.web]) if (!member?.identity || processIdentity(member.pid) !== member.identity) return null;
@@ -325,7 +355,7 @@ async function startServers(ctx, dotnet) {
   const { root, options, env, log, signal } = ctx;
   const instanceFile = path.join(ctx.state, 'instance.json');
   for (let attempt = 0; attempt < 3; attempt++) {
-    const apiPort = await choosePort(options.apiPort ?? 5080 + attempt, { explicit: !!options.apiPort });
+    const apiPort = await choosePort(options.apiPort ?? 5080 + attempt, { explicit: !!options.apiPort, excluded: options.webPort ? [options.webPort] : [] });
     const webPort = await choosePort(options.webPort ?? 4300 + attempt, { explicit: !!options.webPort, excluded: [apiPort] });
     const apiUrl = 'http://127.0.0.1:' + apiPort, url = 'http://127.0.0.1:' + webPort;
     const proxy = path.join(ctx.state, 'run/proxy.json');
@@ -364,7 +394,7 @@ async function startServers(ctx, dotnet) {
       await writeJson(instanceFile, { root, dataDir: ctx.dataDir, url, apiPort, webPort, owner: { pid: process.pid, identity: processIdentity(process.pid) }, api: identities[0], web: identities[1] });
       ready = true;
       log('LearnForge is ready: ' + url + '\nData: ' + ctx.dataDir + '\nLogs: ' + path.join(ctx.state, 'logs') + '\nPress Ctrl+C to stop both servers.');
-      if (!options.noBrowser) await openBrowser(url, log);
+      if (!options.noBrowser) openBrowser(url, log);
       const aborted = new Promise(resolve => {
         if (signal.aborted) resolve(null);
         else signal.addEventListener('abort', () => resolve(null), { once: true });
@@ -390,7 +420,7 @@ async function installDotnet(ctx) {
   const rid = (process.platform === 'darwin' ? 'osx' : process.platform === 'win32' ? 'win' : 'linux') + '-' + process.arch;
   ctx.log('Installing a compatible .NET SDK for ' + rid + '…');
   const downloader = (url, destination) => runCommand(process.platform === 'win32' ? 'curl.exe' : 'curl', [
-    '--fail', '--location', '--proto', '=https', '--proto-redir', '=https', '--connect-timeout', '20', '--max-time', '600', '--retry', '2', '--output', destination, url,
+    '--fail', '--location', '--proto', '=https', '--proto-redir', '=https', '--connect-timeout', '20', '--speed-limit', '1024', '--speed-time', '60', '--retry', '2', '--output', destination, url,
   ], { cwd: ctx.root, env: ctx.env, signal: ctx.signal, logFile: ctx.logFile, code: 3 });
   const metadataFile = path.join(ctx.state, 'cache/releases-' + channel + '.json');
   await downloader('https://builds.dotnet.microsoft.com/dotnet/release-metadata/' + channel + '/releases.json', metadataFile);
@@ -439,10 +469,10 @@ async function packFiles(directory) {
 
 async function prepare(ctx, dotnet, npm) {
   const run = (command, args) => runCommand(command, args, { cwd: ctx.root, env: ctx.env, logFile: ctx.logFile, signal: ctx.signal, code: 4 });
-  const npmVersion = capture(process.execPath, [npm, '--version'], { env: ctx.env }).text;
-  const fingerprint = await dependencyFingerprint(ctx.root, process.version, npmVersion);
   const stampFile = path.join(ctx.state, 'dependencies.json');
   const stamp = await readJson(stampFile);
+  const fingerprint = ctx.options.noInstall ? null
+    : await dependencyFingerprint(ctx.root, process.version, capture(process.execPath, [npm, '--version'], { env: ctx.env }).text);
   if (!ctx.options.noInstall && (stamp?.fingerprint !== fingerprint || !fs.existsSync(ctx.angularCli))) {
     ctx.log('Installing web dependencies from package-lock.json…');
     await fsp.rm(stampFile, { force: true });
@@ -450,7 +480,10 @@ async function prepare(ctx, dotnet, npm) {
     if (!fs.existsSync(ctx.angularCli)) throw new InstallError('npm ci completed without the local Angular CLI.', 4);
     await writeJson(stampFile, { fingerprint });
   } else if (!fs.existsSync(ctx.angularCli)) throw new InstallError('Web dependencies are absent. Run without --no-install.', 4);
-  else ctx.log('Using installed web dependencies.');
+  else {
+    if (ctx.options.noInstall && !stamp) ctx.log('Web dependencies were not prepared by this installer. If the build fails, run it once without --no-install.');
+    ctx.log('Using installed web dependencies.');
+  }
   for (const project of ['apps/api/LearnForge.Api.csproj', 'tools/cli/LearnForge.Cli.csproj']) {
     if (!ctx.options.noInstall) {
       ctx.log('Restoring ' + project + '…');
@@ -480,6 +513,9 @@ export async function main(args = process.argv.slice(2), root = path.resolve(pat
   if (!framework) throw new InstallError('Cannot resolve the target framework from Directory.Build.props.', 2);
   const expectedNode = (await fsp.readFile(path.join(root, '.node-version'), 'utf8')).trim();
   const expectedNpm = JSON.parse(await fsp.readFile(path.join(root, 'apps/web/package.json'), 'utf8')).packageManager?.replace(/^npm@/, '');
+  if (process.getuid?.() === 0 && process.env.LEARNFORGE_ALLOW_ROOT !== '1') {
+    throw new InstallError('Run LearnForge as your normal user, without sudo. In a disposable container, set LEARNFORGE_ALLOW_ROOT=1.', 2);
+  }
   const npm = npmCli();
   const npmVersion = npm ? capture(process.execPath, [npm, '--version']).text : null;
   const controller = new AbortController();
@@ -488,6 +524,8 @@ export async function main(args = process.argv.slice(2), root = path.resolve(pat
   const parentMessage = message => { if (message === 'learnforge:stop') interrupted(); };
   process.once('SIGINT', interrupted);
   process.once('SIGTERM', interrupted);
+  // Closing the terminal sends SIGHUP; the detached servers would otherwise outlive the launcher.
+  process.once('SIGHUP', interrupted);
   process.on('message', parentMessage);
   const ctx = {
     root, state, sdk, framework, options, signal: controller.signal, env: toolEnvironment(null),
@@ -510,12 +548,16 @@ export async function main(args = process.argv.slice(2), root = path.resolve(pat
       if (!nodeOk || !dotnet) throw new InstallError('Requirements are missing. Run the platform installer without --check.', 2);
       return;
     }
-    if (!nodeOk) throw new InstallError('Use scripts/install.sh or scripts/install.ps1 to acquire the tested Node/npm pair.', 2);
+    if (!nodeOk) {
+      const engines = (await readJson(path.join(root, 'apps/web/node_modules/@angular/core/package.json')))?.engines?.node;
+      if (!options.noInstall || !engines || !satisfiesEngines(process.version, engines)) throw new InstallError('Use scripts/install.sh or scripts/install.ps1 to acquire the tested Node/npm pair.', 2);
+      ctx.log('Using Node ' + process.version + ' (tested: ' + expectedNode + ') because --no-install was given.');
+    }
     if (!options.installOnly) {
       const existing = await existingInstance(ctx);
       if (existing) {
         ctx.log('LearnForge is already running: ' + existing.url);
-        if (!options.noBrowser) await openBrowser(existing.url, ctx.log);
+        if (!options.noBrowser) openBrowser(existing.url, ctx.log);
         return;
       }
     }
@@ -543,6 +585,7 @@ export async function main(args = process.argv.slice(2), root = path.resolve(pat
     if (releaseLock) await releaseLock();
     process.removeListener('SIGINT', interrupted);
     process.removeListener('SIGTERM', interrupted);
+    process.removeListener('SIGHUP', interrupted);
     process.removeListener('message', parentMessage);
     if (process.connected) process.disconnect();
   }

@@ -27,7 +27,9 @@
             ? 'EXAM PREP'
             : course.profile === 'hybrid'
               ? 'LEARNING PATH'
-              : course.profile === 'flashcards' ? 'SPACED RECALL' : 'COURSE'
+              : course.profile === 'flashcards'
+                ? 'SPACED RECALL'
+                : 'COURSE'
         }}</span>
       </div>
       <div class="course-card-body">
@@ -38,7 +40,9 @@
         <h2>{{ course.title }}</h2>
         <p>{{ course.description }}</p>
         <div class="card-meta">
-          @if (course.capabilities.flashcards) { <span>Flashcards · Anki · Print</span> }
+          @if (course.capabilities.flashcards) {
+            <span>Flashcards · Anki · Print</span>
+          }
           @if (course.capabilities.lessons) {
             <span>{{ course.lessonCount }} lessons</span>
           }

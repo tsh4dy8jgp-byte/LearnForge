@@ -15,7 +15,14 @@ import { FlashcardEditor } from './flashcard-editor';
 import { FlashcardExports } from '../flashcards/flashcard-exports';
 
 @Component({
-  imports: [FormsModule, RouterLink, SourceEditor, LearnerPreview, FlashcardEditor, FlashcardExports],
+  imports: [
+    FormsModule,
+    RouterLink,
+    SourceEditor,
+    LearnerPreview,
+    FlashcardEditor,
+    FlashcardExports,
+  ],
   providers: [DraftEditorState],
   host: { '(window:beforeunload)': 'editor.beforeUnload($event)' },
   templateUrl: './studio-page.html',

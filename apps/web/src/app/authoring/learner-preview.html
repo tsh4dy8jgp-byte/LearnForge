@@ -9,7 +9,12 @@
     @if (catalog.capabilities.flashcards) {
       <h3>Flashcard previews</h3>
       @for (card of catalog.flashcards ?? []; track card.id) {
-        <details><summary [lang]="card.language">{{ card.front }}</summary><p [lang]="card.language" style="white-space: pre-wrap">{{ card.back }}</p><p [lang]="card.language">{{ card.explanation }}</p><p class="muted small">{{ card.id }}</p></details>
+        <details>
+          <summary [lang]="card.language">{{ card.front }}</summary>
+          <p [lang]="card.language" style="white-space: pre-wrap">{{ card.back }}</p>
+          <p [lang]="card.language">{{ card.explanation }}</p>
+          <p class="muted small">{{ card.id }}</p>
+        </details>
       }
     }
     @if (catalog.capabilities.lessons) {

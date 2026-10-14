@@ -16,19 +16,19 @@ bash scripts/install.sh
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/install.ps1
 ~~~
 
-Both entry points support x64 and ARM64 official binaries. The PowerShell execution-policy override applies only to this invocation. Git, Make, Docker, PostgreSQL, a separate SQLite installation, and a global Angular CLI are not prerequisites for the native installer.
+Both entry points target the official x64 and ARM64 binaries. A complete installation has so far been verified on macOS with Apple silicon; treat Windows, Linux and Intel Macs as unverified until confirmed on those machines. The PowerShell execution-policy override applies only to this invocation. Git, Make, Docker, PostgreSQL, a separate SQLite installation, and a global Angular CLI are not prerequisites for the native installer.
 
-The installer checks the Node/npm pair pinned by .node-version and packageManager, and a stable .NET SDK selected by global.json. It uses compatible installed tools or installs official, checksum-verified archives under .learnforge/tools/. Global tools and shell profiles are preserved. On supported Linux distributions, missing native libraries and download utilities are installed using apt-get; sudo can request your password. Run interactively when those packages are missing.
+The installer checks the Node/npm pair pinned by .node-version and packageManager, and a stable .NET SDK selected by global.json. It uses compatible installed tools or installs official, checksum-verified archives under .learnforge/tools/. Global tools and shell profiles are preserved. On supported Linux distributions, missing native libraries and download utilities are installed using apt-get; sudo can request your password. Run interactively when those packages are missing. Run the installer itself as your normal user, never with sudo: it refuses to run as root, because root-owned tools and data would break later runs (set LEARNFORGE_ALLOW_ROOT=1 only in a disposable container).
 
 It then restores/builds the API and content compiler, installs locked web dependencies, validates all JSON files recursively under packs/, and starts both servers on loopback. Defaults are 5080 for the API and 4300 for the website; occupied default ports select nearby available ports and a generated proxy follows them. Explicit occupied ports fail without terminating the other application.
 
-The browser opens only after API, database, web page, and proxied API checks succeed. If browser opening is unavailable, the terminal prints the URL and keeps the servers running. Keep the terminal open; Ctrl+C stops the servers. Running the same command while this checkout is already running reuses the verified instance.
+The browser opens only after API, database, web page, and proxied API checks succeed. If browser opening is unavailable, the terminal prints the URL and keeps the servers running. Keep the terminal open; Ctrl+C or closing the terminal stops the servers. If a launcher is killed outright, the next launch stops the servers it left running. Running the same command while this checkout is already running reuses the verified instance.
 
 | Option | Purpose |
 | --- | --- |
 | --check | Read-only toolchain/native-facility report; missing requirements produce exit code 2. Web preparation status is informational. |
 | --install-only | Install and prepare, then exit. |
-| --no-install | Require existing tools/packages; build, validate, and start without acquiring them. |
+| --no-install | Require existing tools/packages; build, validate, and start without acquiring them. Any Node version Angular supports is accepted with a warning, and platforms without automatic installation support only produce a warning. |
 | --no-browser | Print the URL without launching a browser. |
 | --api-port 5180 --web-port 4380 | Choose explicit ports; proxy configuration is generated automatically. |
 | --startup-timeout 300 | Allow up to 300 seconds for server readiness; default 180, maximum 3600. |

@@ -16,9 +16,9 @@ public static class FlashcardEndpoints
             cards.MapGet("/", (string id, ClaimsPrincipal user, FlashcardService service) => service.Summary(UserId(user), id));
             cards.MapPost("/sessions", (string id, FlashcardStartRequest request, ClaimsPrincipal user, FlashcardService service) => service.Start(UserId(user), id, request));
             cards.MapGet("/sessions/{sessionId}", (string id, string sessionId, ClaimsPrincipal user, FlashcardService service) => service.Get(UserId(user), id, sessionId));
-            cards.MapPost("/sessions/{sessionId}/reveal", (string id, string sessionId, FlashcardMutationRequest request, ClaimsPrincipal user, FlashcardService service) => service.Mutate(UserId(user), id, sessionId, "reveal", request));
-            cards.MapPost("/sessions/{sessionId}/rate", (string id, string sessionId, FlashcardMutationRequest request, ClaimsPrincipal user, FlashcardService service) => service.Mutate(UserId(user), id, sessionId, "rate", request));
-            cards.MapPost("/sessions/{sessionId}/finish", (string id, string sessionId, FlashcardMutationRequest request, ClaimsPrincipal user, FlashcardService service) => service.Mutate(UserId(user), id, sessionId, "finish", request));
+            cards.MapPost("/sessions/{sessionId}/reveal", (string id, string sessionId, FlashcardMutationRequest request, ClaimsPrincipal user, FlashcardService service) => service.Mutate(UserId(user), id, sessionId, FlashcardOperation.Reveal, request));
+            cards.MapPost("/sessions/{sessionId}/rate", (string id, string sessionId, FlashcardMutationRequest request, ClaimsPrincipal user, FlashcardService service) => service.Mutate(UserId(user), id, sessionId, FlashcardOperation.Rate, request));
+            cards.MapPost("/sessions/{sessionId}/finish", (string id, string sessionId, FlashcardMutationRequest request, ClaimsPrincipal user, FlashcardService service) => service.Mutate(UserId(user), id, sessionId, FlashcardOperation.Finish, request));
             cards.MapPut("/suspension", (string id, FlashcardSuspendRequest request, ClaimsPrincipal user, FlashcardService service) => service.Suspend(UserId(user), id, request));
             app.MapGet("/api/catalog/{id}/flashcards/exports", async (string id, string? version, [AsParameters] FlashcardExportQuery query,
                 AppDb db, ReleaseCache releases, IConfiguration config, CancellationToken cancellation) =>
@@ -32,14 +32,14 @@ public static class FlashcardEndpoints
                 }
                 if (release is null) throw new DomainError(404, "Subject release not found.");
                 return await Export(release.Pack, query.Options(), config, cancellation);
-            });
+            }).RequireRateLimiting("exports");
             app.MapPost("/api/authoring/flashcards/exports", async (JsonElement source, [AsParameters] FlashcardExportQuery query,
                 IConfiguration config, CancellationToken cancellation) =>
             {
                 var compiled = ContentEngine.Compile(source.GetRawText());
                 if (!compiled.Success) throw new DomainError(400, "Validate and repair the source before exporting flashcards.");
                 return await Export(compiled.Pack!, query.Options(), config, cancellation);
-            }).RequireAuthorization(policy => policy.RequireRole("Publisher"));
+            }).RequireAuthorization(policy => policy.RequireRole("Publisher")).RequireRateLimiting("exports");
         }
     }
 
