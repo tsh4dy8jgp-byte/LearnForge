@@ -99,6 +99,10 @@ jobs:
       DEBIAN_FRONTEND: noninteractive
       # The job container runs as root; real installs refuse it.
       LEARNFORGE_ALLOW_ROOT: '1'
+    # Container steps default to sh (dash), which rejects pipefail; bash runs them with -eo pipefail.
+    defaults:
+      run:
+        shell: bash
     steps:
       # Git is only needed by checkout; the application bootstrap needs neither Git nor Make.
       - run: apt-get update && apt-get install -y git
@@ -107,7 +111,6 @@ jobs:
       - run: bash scripts/install.sh --check
       - name: Verify repeat preparation reuses managed tools and dependencies
         run: |
-          set -o pipefail
           bash scripts/install.sh --install-only | tee repeat.log
           if grep -E 'Installing (Node|a compatible \.NET SDK|web dependencies)' repeat.log; then exit 1; fi
       - name: Exercise the installed application with disposable data

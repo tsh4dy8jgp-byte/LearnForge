@@ -56,7 +56,9 @@ test('a tool environment names the SDK root of the selected host', async t => {
   const root = await temporary(t);
   await fs.mkdir(path.join(root, 'sdk'));
   await fs.writeFile(path.join(root, 'dotnet'), '');
-  assert.equal(toolEnvironment(path.join(root, 'dotnet'), '/some/node', {}).DOTNET_ROOT, await fs.realpath(root));
+  const { DOTNET_ROOT } = toolEnvironment(path.join(root, 'dotnet'), '/some/node', {});
+  // Compare directories, not spellings: Windows temp paths may use 8.3 short names (RUNNER~1).
+  assert.equal(await fs.realpath(DOTNET_ROOT), await fs.realpath(root));
 });
 
 test('--no-install accepts only Node versions Angular supports', () => {
