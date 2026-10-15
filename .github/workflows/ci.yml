@@ -11,8 +11,8 @@ jobs:
   dotnet:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
       - run: dotnet restore LearnForge.slnx
@@ -22,8 +22,8 @@ jobs:
   web:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version-file: '.node-version'
           cache: npm
@@ -35,12 +35,12 @@ jobs:
   content:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
       # make api-types runs openapi-ts from apps/web, so this job needs the web dependencies too.
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version-file: '.node-version'
           cache: npm
@@ -59,11 +59,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version-file: '.node-version'
           cache: npm
@@ -85,7 +85,7 @@ jobs:
       - run: dotnet restore LearnForge.slnx
       - run: npm ci --prefix apps/web
       - run: node scripts/tests/smoke-real.mjs
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: installer-logs-${{ runner.os }}
@@ -106,7 +106,7 @@ jobs:
     steps:
       # Git is only needed by checkout; the application bootstrap needs neither Git nor Make.
       - run: apt-get update && apt-get install -y git
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: bash scripts/install.sh --install-only
       - run: bash scripts/install.sh --check
       - name: Verify repeat preparation reuses managed tools and dependencies
@@ -115,7 +115,7 @@ jobs:
           if grep -E 'Installing (Node|a compatible \.NET SDK|web dependencies)' repeat.log; then exit 1; fi
       - name: Exercise the installed application with disposable data
         run: .learnforge/tools/node/v$(cat .node-version)/bin/node scripts/tests/smoke-real.mjs
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: installer-fresh-linux-logs
