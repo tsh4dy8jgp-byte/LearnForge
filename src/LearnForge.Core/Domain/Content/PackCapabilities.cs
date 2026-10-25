@@ -1,7 +1,7 @@
 namespace LearnForge.Core;
 
 // These are supported delivery capabilities, not permissions or future feature flags.
-public sealed record PackCapabilities(bool Lessons, bool Practice, bool Assessments, bool Flashcards = false)
+public sealed record PackCapabilities(bool Lessons, bool Practice, bool Assessments, bool Flashcards = false, bool Writing = false)
 {
     public static PackCapabilities For(ProductProfile profile) => profile switch
     {

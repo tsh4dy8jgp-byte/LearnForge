@@ -6,11 +6,13 @@ public sealed record Pack(int SchemaVersion, string Id, string Version, string T
     Blueprint[] Blueprints, SourceReference[] Sources, ReadinessPolicy? Readiness = null,
     CourseGoal Goal = CourseGoal.Readiness, MasteryPolicy? Mastery = null,
     ProductProfile Profile = ProductProfile.Hybrid, PackCapabilities? Capabilities = null,
-    FlashcardDeck[]? FlashcardDecks = null)
+    FlashcardDeck[]? FlashcardDecks = null, WritingCharacter[]? Characters = null)
 {
     [System.Text.Json.Serialization.JsonIgnore]
     public FlashcardDeck[] Decks => FlashcardDecks ?? [];
     // Older immutable releases have no profile/capabilities and retain all existing features.
     [System.Text.Json.Serialization.JsonIgnore]
-    public PackCapabilities Features => Capabilities ?? (PackCapabilities.For(Profile) with { Flashcards = Decks.Length > 0 });
+    public WritingCharacter[] WritingCharacters => Characters ?? [];
+    [System.Text.Json.Serialization.JsonIgnore]
+    public PackCapabilities Features => Capabilities ?? (PackCapabilities.For(Profile) with { Flashcards = Decks.Length > 0, Writing = WritingCharacters.Length > 0 });
 }

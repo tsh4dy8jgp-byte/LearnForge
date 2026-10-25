@@ -36,7 +36,7 @@ public static class FlashcardEndpoints
             app.MapPost("/api/authoring/flashcards/exports", async (JsonElement source, [AsParameters] FlashcardExportQuery query,
                 IConfiguration config, CancellationToken cancellation) =>
             {
-                var compiled = ContentEngine.Compile(source.GetRawText());
+                var compiled = WritingAssetValidator.Check(ContentEngine.Compile(source.GetRawText()));
                 if (!compiled.Success) throw new DomainError(400, "Validate and repair the source before exporting flashcards.");
                 return await Export(compiled.Pack!, query.Options(), config, cancellation);
             }).RequireAuthorization(policy => policy.RequireRole("Publisher")).RequireRateLimiting("exports");

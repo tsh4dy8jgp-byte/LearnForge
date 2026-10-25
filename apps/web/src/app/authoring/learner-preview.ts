@@ -1,12 +1,13 @@
 import { Component, computed, input, linkedSignal, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Answer, AuthoringPreviewDto } from '../api-contracts';
+import { CourseWriting } from '../writing/course-writing';
 import { LessonContent } from '../learning/lesson-content';
 import { QuestionInput } from '../assessment/question-input';
 
 @Component({
   selector: 'lf-learner-preview',
-  imports: [FormsModule, LessonContent, QuestionInput],
+  imports: [FormsModule, LessonContent, QuestionInput, CourseWriting],
   host: { style: 'display: contents' },
   templateUrl: './learner-preview.html',
 })

@@ -1,0 +1,50 @@
+{
+  "strokeData": {
+    "package": "hanzi-writer-data",
+    "version": "2.0.1",
+    "tarballSha256": "72baf3d82b114e60d6e40ea05f24d2262a05cd39d544e2f322ba2fceb7beff15"
+  },
+  "font": {
+    "source": "LXGW WenKai GB Regular v1.521",
+    "upstreamSha256": "8ab6b8f48bc793d675bfa8a24c6ad518c9157ad1022fec7e015fde718dee780f",
+    "subsetName": "LearnForge WenKai Pilot"
+  },
+  "sha256": {
+    "NOTICE.txt": "c04b8ed5dfb683d2ce7f38291a3cdf9a97103f7764da54e1b61d5ea158f05e3a",
+    "audio/u4e00.wav": "b068c1871b8c4acf521c25af081fde57e123dc93030d4a19de7de703db0d5422",
+    "audio/u4e03.wav": "5448cbae67d250199bb8aa7081a3e20f1e39f8d1dd618a7dc239b33649d85b2d",
+    "audio/u4e09.wav": "d5131e326df94d79961cc4a2e15673da2e38b88208ace4f36ad2c9bdd30078a5",
+    "audio/u4e2d.wav": "bd2904ad6271612ec00b95629a02d230c5cdb457e94d5d528bd0261951db0caa",
+    "audio/u4e5d.wav": "41b665224cfb5cfc86880cf35200a24b24b51c4e6fc3acd04d695e1d9bb9a709",
+    "audio/u4e8c.wav": "967154a6e89b7dccf9743bbc9f5ca3728a048901e565baaa7d6cca7e0fc6bb4e",
+    "audio/u4e94.wav": "32def4bc9a65a6a3dea8c775b64133dfa8bdcdf1ccccccd1e9001dc5006174b4",
+    "audio/u4eba.wav": "a94e1482f6f72f9dbfc614beb47ae66cb7dbe2c3abaf7ca7ecb7949c0c5ab3fb",
+    "audio/u4f60.wav": "987a29cf9ff3aa71f55c357264a06b1fb112efa07592eadff6b9f717aae15f78",
+    "audio/u516b.wav": "b20e31b76148377ff29574687953ae27b0ea8a1e0da9ced72e573475667371cf",
+    "audio/u516d.wav": "2bc34bf7eff0c89175265b4fee33f5a8d40062b038e60e3b59f91a2d6b63b227",
+    "audio/u5341.wav": "9c982580832c82a479d33c5684c77dc2e8c113004ff6d126f1015a049448e2dd",
+    "audio/u53e3.wav": "3e5d95166fdc183d8cd4227fc815f7db216661813f135669024968c523bc3d1b",
+    "audio/u5403.wav": "75f7356392912082c894dfe882c13a5b5881f199487c008a988aea133933d43c",
+    "audio/u559d.wav": "678a968f93e6123739d6b12fdf995eccb8822698a7badb9677fe98536b507dc4",
+    "audio/u56db.wav": "93fa1b63e82c37e757456b7f3987a6954ee68f1e3abdc22d734dddce22eaeda1",
+    "audio/u56fd.wav": "43fdc6d67eda6837068631754afcf8a65c586231f884f95ef2da049aeb75868e",
+    "audio/u5927.wav": "6351f66ae3b5864e1ef0fea3c14abd4c3d2bf85866e6bbb45e829ea938993d76",
+    "audio/u597d.wav": "27976b9083c3ad1d998e5d3a0668a4d68c0d68ee2d7b8f1b3315150af95fa685",
+    "audio/u5b66.wav": "4a16c1d34e5e7593a912f19e77349117d3495821d8c9b08283cb11f5bd2b57c1",
+    "audio/u5c0f.wav": "3909d556fd80bf77f13577e416f03b085db5e02f816748260285d150ed93bc73",
+    "audio/u5c71.wav": "928e745612468983f8869a0e1b4d133981c560af254e193b24440ee5f60768d1",
+    "audio/u6211.wav": "675153c3006dc98dbb5b0dd843b9bb1846e673bdfbc7374b4c24cf127a60a62e",
+    "audio/u65e5.wav": "8f1e078744cb6e07e751f10f02ba451714d7ea75f3cdf9c88bcc584881b6019b",
+    "audio/u6708.wav": "45e4325c91048dc5f8e7118283e62aa093378d1b2497bdd52a758d975328b009",
+    "audio/u6728.wav": "6ad5c2cf5ca09dc47f695f50f3e13baafd69a65fa4cebca83a06bdfc89b83070",
+    "audio/u6c34.wav": "fbe85ce9d39219e4cc044de9164bee7be1f84c27d3522a16b1cf140616ba379c",
+    "audio/u706b.wav": "9078108d0d204ec2cafb3a3ad5de90d3d952ceffab44f6567f019bb706d9830c",
+    "audio/u751f.wav": "da39fc49f8fc916fa0300166f8d3b91cb3c097b3f59de539710f6dc8882d3548",
+    "audio/u8336.wav": "7deb8517f7abbf78f7ade76440a3135cdc101f381251a19a60f74d6bf63e1f03",
+    "fonts/LearnForgeWenKaiPilot.ttf": "4f51b2d711547ead6c13ef55ff0b8083c8f1734f52fd43e4cd75355f3c3ce622",
+    "fonts/LearnForgeWenKaiPilot.woff2": "279e25e5e14e71af8efa804f310ddce1721a68aa7ffac1f65a7aa74da2e8789e",
+    "licenses/ARPHICPL.txt": "5590533436c70f10f2f524ee61456238c290175c6662fbe1c700b5f038a6d328",
+    "licenses/LXGWWenKaiGB-OFL.txt": "c94bd77679a51e99722b6824984ef17ec122a97e1c4427f86760f8400c917f95",
+    "licenses/hanzi-writer-MIT.txt": "7735d83cdf892c8db41c27103b42c89b4b63149770c1e08ae13cbbebb81da637"
+  }
+}

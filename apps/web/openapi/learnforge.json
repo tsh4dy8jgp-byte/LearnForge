@@ -1248,6 +1248,158 @@
           }
         }
       }
+    },
+    "/api/me/courses/{id}/writing": {
+      "get": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WritingSummaryDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/courses/{id}/writing/sessions": {
+      "post": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WritingStartRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WritingSessionDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/courses/{id}/writing/sessions/{sessionId}": {
+      "get": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WritingSessionDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/courses/{id}/writing/sessions/{sessionId}/result": {
+      "post": {
+        "tags": [
+          "LearnForge.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WritingResultRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WritingSessionDto"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1923,6 +2075,15 @@
                 "$ref": "#/components/schemas/FlashcardExportOptions"
               }
             ]
+          },
+          "characters": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/WritingCharacter"
+            }
           }
         }
       },
@@ -3248,6 +3409,15 @@
             "items": {
               "$ref": "#/components/schemas/FlashcardDeck"
             }
+          },
+          "characters": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/WritingCharacter"
+            }
           }
         }
       },
@@ -3269,6 +3439,10 @@
             "type": "boolean"
           },
           "flashcards": {
+            "type": "boolean",
+            "default": false
+          },
+          "writing": {
             "type": "boolean",
             "default": false
           }
@@ -3761,6 +3935,338 @@
             "items": {
               "$ref": "#/components/schemas/Diagnostic"
             }
+          }
+        }
+      },
+      "WritingCharacter": {
+        "required": [
+          "id",
+          "glyph",
+          "pinyin",
+          "meaning",
+          "lessonId",
+          "objectiveIds",
+          "components",
+          "tip",
+          "words",
+          "sentence",
+          "sentencePinyin",
+          "translation",
+          "glossary",
+          "audioUrl",
+          "audioTranscript",
+          "strokeData"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "glyph": {
+            "type": "string"
+          },
+          "pinyin": {
+            "type": "string"
+          },
+          "meaning": {
+            "type": "string"
+          },
+          "lessonId": {
+            "type": "string"
+          },
+          "objectiveIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "components": {
+            "type": "string"
+          },
+          "tip": {
+            "type": "string"
+          },
+          "words": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WritingWord"
+            }
+          },
+          "sentence": {
+            "type": "string"
+          },
+          "sentencePinyin": {
+            "type": "string"
+          },
+          "translation": {
+            "type": "string"
+          },
+          "glossary": {
+            "type": "string"
+          },
+          "audioUrl": {
+            "type": "string"
+          },
+          "audioTranscript": {
+            "type": "string"
+          },
+          "strokeData": {
+            "$ref": "#/components/schemas/WritingStrokeData"
+          },
+          "language": {
+            "type": "string",
+            "default": "zh-Hans"
+          }
+        }
+      },
+      "WritingCharacterProgressDto": {
+        "required": [
+          "characterId",
+          "assistedCompletions",
+          "independentCompletions",
+          "sequenceCompletions",
+          "stage",
+          "dueAt"
+        ],
+        "type": "object",
+        "properties": {
+          "characterId": {
+            "type": "string"
+          },
+          "assistedCompletions": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "independentCompletions": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sequenceCompletions": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dueAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "WritingMode": {
+        "enum": [
+          "watch",
+          "trace",
+          "copy",
+          "recall",
+          "sequence"
+        ]
+      },
+      "WritingResultRequest": {
+        "required": [
+          "requestId",
+          "revision",
+          "completed",
+          "mistakes",
+          "hints"
+        ],
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "maxLength": 100,
+            "type": "string"
+          },
+          "revision": {
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "completed": {
+            "type": "boolean"
+          },
+          "mistakes": {
+            "maximum": 10000,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "hints": {
+            "maximum": 10000,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "WritingSessionDto": {
+        "required": [
+          "id",
+          "packId",
+          "version",
+          "character",
+          "mode",
+          "revision",
+          "startedAt",
+          "finishedAt",
+          "completed",
+          "mistakes",
+          "hints"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "packId": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "character": {
+            "$ref": "#/components/schemas/WritingCharacter"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/WritingMode"
+          },
+          "revision": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "finishedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "completed": {
+            "type": "boolean"
+          },
+          "mistakes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hints": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "WritingStartRequest": {
+        "required": [
+          "characterId",
+          "mode",
+          "requestId",
+          "version"
+        ],
+        "type": "object",
+        "properties": {
+          "characterId": {
+            "maxLength": 100,
+            "type": "string"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/WritingMode"
+          },
+          "requestId": {
+            "maxLength": 100,
+            "type": "string"
+          },
+          "version": {
+            "maxLength": 100,
+            "type": "string"
+          }
+        }
+      },
+      "WritingStrokeData": {
+        "required": [
+          "strokes",
+          "medians"
+        ],
+        "type": "object",
+        "properties": {
+          "strokes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "medians": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number",
+                  "format": "double"
+                }
+              }
+            }
+          }
+        }
+      },
+      "WritingSummaryDto": {
+        "required": [
+          "packId",
+          "version",
+          "due",
+          "activeSessionId",
+          "characters"
+        ],
+        "type": "object",
+        "properties": {
+          "packId": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "due": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activeSessionId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "characters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WritingCharacterProgressDto"
+            }
+          }
+        }
+      },
+      "WritingWord": {
+        "required": [
+          "text",
+          "pinyin",
+          "meaning"
+        ],
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "pinyin": {
+            "type": "string"
+          },
+          "meaning": {
+            "type": "string"
           }
         }
       }

@@ -110,8 +110,9 @@ public static partial class ContentEngine
         if (string.IsNullOrWhiteSpace(p.Title) || string.IsNullOrWhiteSpace(p.License)) Error("title", "Title and license are required.");
         var features = p.Features;
         var questionsEnabled = features.Practice || features.Assessments;
+        errors.AddRange(WritingContent.Validate(p));
         if (!Enum.IsDefined(p.Profile)) Error("profile", "Profile must be course, exam, hybrid or flashcards.");
-        if (!features.Lessons && !questionsEnabled && !features.Flashcards) Error("capabilities", "Enable lessons, practice, assessments or flashcards.");
+        if (!features.Lessons && !questionsEnabled && !features.Flashcards && !features.Writing) Error("capabilities", "Enable lessons, practice, assessments or flashcards.");
         if (features.Flashcards != (p.Decks.Length > 0)) Error("flashcardDecks", "Flashcard content and the flashcards capability must agree.");
         if (p.Goal == CourseGoal.Review && !features.Flashcards) Error("goal", "A review goal requires flashcards.");
         Ids("flashcardDecks", p.Decks.Select(d => d.Id));
@@ -129,7 +130,7 @@ public static partial class ContentEngine
                 if (note.ObjectiveIds.Length == 0 || note.ObjectiveIds.Distinct().Count() != note.ObjectiveIds.Length ||
                     note.ObjectiveIds.Any(id => !p.Objectives.Any(o => o.Id == id))) Error(path, "Flashcard objectives must resolve and be distinct.");
                 if (string.IsNullOrWhiteSpace(note.Explanation)) Error(path, "A flashcard requires an explanation.");
-                if (!Flashcards.Languages.Contains(note.Language)) Error(path, "Unsupported flashcard language. Use en, ru, kk, uk, de, fr, es, it, pt, tr, nl or pl.");
+                if (!Flashcards.Languages.Contains(note.Language)) Error(path, "Unsupported flashcard language. Use en, ru, kk, uk, de, fr, es, it, pt, tr, nl, pl or zh-Hans.");
                 if ((note.Tags ?? []).Any(t => !Identifier().IsMatch(t))) Error(path, "Tags must use stable lowercase identifiers.");
                 foreach (var source in note.Sources ?? [])
                     if (string.IsNullOrWhiteSpace(source.Title) || !Uri.TryCreate(source.Url, UriKind.Absolute, out var url) || url.Scheme is not ("http" or "https"))

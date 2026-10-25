@@ -121,6 +121,11 @@
         <ng-template ngTabContent><lf-course-flashcards [course]="c" /></ng-template>
       </div>
     }
+    @if (c.capabilities.writing) {
+      <div ngTabPanel value="writing" class="tab-panel">
+        <ng-template ngTabContent><lf-course-writing [course]="c" /></ng-template>
+      </div>
+    }
     <div ngTabPanel value="sources" class="tab-panel">
       <ng-template ngTabContent>
         <div class="panel">

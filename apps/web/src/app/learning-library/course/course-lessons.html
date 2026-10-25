@@ -14,7 +14,7 @@
     }
   </nav>
   @if (current(); as l) {
-    <article class="panel reading">
+    <article class="panel reading" [class.writing-lesson]="course().capabilities.writing">
       <p class="eyebrow">BUILD YOUR UNDERSTANDING</p>
       <lf-lesson-content [lesson]="l" />
       <div class="row">

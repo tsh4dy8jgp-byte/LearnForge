@@ -13,6 +13,7 @@ import { CourseLessons } from './course-lessons';
 import { ObjectiveMap } from './objective-map';
 import { PracticeSetup } from './practice-setup';
 import { PracticeSelection } from './practice-selection';
+import { CourseWriting } from '../../writing/course-writing';
 import { CourseFlashcards } from '../../flashcards/course-flashcards';
 
 @Component({
@@ -28,6 +29,7 @@ import { CourseFlashcards } from '../../flashcards/course-flashcards';
     ObjectiveMap,
     PracticeSetup,
     CourseFlashcards,
+    CourseWriting,
   ],
   templateUrl: './course-page.html',
 })
@@ -55,6 +57,7 @@ export class CoursePage {
     return [
       ...(features?.lessons ? [{ id: 'learn', title: 'Lessons' }] : []),
       { id: 'map', title: 'Content map' },
+      ...(features?.writing ? [{ id: 'writing', title: 'Characters & writing' }] : []),
       ...(features?.flashcards ? [{ id: 'flashcards', title: 'Flashcards' }] : []),
       ...(features?.practice || features?.assessments
         ? [

@@ -1,0 +1,123 @@
+:host {
+  display: block;
+}
+.writing-layout {
+  display: grid;
+  grid-template-columns: minmax(14rem, 0.8fr) minmax(0, 2fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+.character-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-block: 1rem;
+}
+.character-grid button {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--white);
+  color: var(--ink);
+  padding: 0.6rem 0.2rem;
+  min-height: 44px;
+}
+.character-grid button.selected {
+  border: 2px solid var(--green);
+  background: var(--lime);
+}
+.character-grid small {
+  display: block;
+}
+.hanzi {
+  font-family: 'LearnForge WenKai', serif;
+  font-size: 2.5rem;
+  line-height: 1.4;
+}
+.hanzi.large {
+  font-size: 6rem;
+}
+.hanzi.word {
+  font-size: 1.7rem;
+}
+.hanzi.sentence {
+  font-size: 2rem;
+}
+.character-heading {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+.character-heading h3 {
+  margin-bottom: 0;
+}
+.mode-picker,
+.session-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-block: 1rem;
+}
+.mode-picker [aria-pressed='true'] {
+  background: var(--green);
+  color: var(--on-primary);
+}
+audio {
+  width: 100%;
+  max-width: 28rem;
+}
+.recall-hidden {
+  visibility: hidden;
+}
+.writing-print {
+  display: none;
+}
+@media (max-width: 800px) {
+  .writing-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .character-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .character-library.recall-hidden {
+    display: none;
+  }
+}
+@media (max-width: 380px) {
+  .character-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media print {
+  .writing-course {
+    display: none;
+  }
+  .writing-print {
+    display: block;
+    color: #000;
+    background: #fff;
+    font-family: 'LearnForge WenKai', serif;
+  }
+  .writing-print article {
+    break-inside: avoid;
+    margin-block: 1.5rem;
+  }
+  .print-boxes {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+  }
+  .print-boxes > div {
+    border: 1px solid #777;
+    aspect-ratio: 1;
+    background-image:
+      linear-gradient(transparent 49.5%, #ddd 50%, transparent 50.5%),
+      linear-gradient(90deg, transparent 49.5%, #ddd 50%, transparent 50.5%);
+  }
+  .print-boxes svg {
+    width: 100%;
+    height: 100%;
+    fill: #000;
+  }
+  .print-boxes svg.trace {
+    fill: #aaa;
+  }
+}

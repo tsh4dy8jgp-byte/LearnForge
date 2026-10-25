@@ -1,0 +1,222 @@
+<section class="writing-course" aria-label="Characters and writing">
+  <div class="page-heading writing-heading">
+    <div>
+      <p class="eyebrow">ONE STROKE AT A TIME</p>
+      <h2>Characters & writing</h2>
+      <p class="muted">Meet it, watch it, trace it, then try it from memory. There is no timer.</p>
+    </div>
+    <button class="button secondary" (click)="print()" [disabled]="active()">
+      Print writing sheets
+    </button>
+  </div>
+  @if (summary.error(); as e) {
+    <p class="alert error" role="alert">{{ errorText(e) }}</p>
+  }
+  @if (error()) {
+    <p class="alert error" role="alert">{{ error() }}</p>
+  }
+  @if (notice()) {
+    <p role="status" class="alert success">{{ notice() }}</p>
+  }
+  @if (pending()) {
+    <button class="button" [disabled]="busy()" (click)="save()">Retry saving result</button>
+  }
+  @if (summary.value()?.activeSessionId && !current()) {
+    <div class="panel">
+      <p>You have saved practice to resume.</p>
+      <button class="button" [disabled]="busy()" (click)="resume()">Resume practice</button>
+    </div>
+  }
+  <div class="writing-layout">
+    <aside class="panel character-library" [class.recall-hidden]="hideModel()">
+      <h3>Character library</h3>
+      <label
+        >Lesson
+        <select
+          [ngModel]="lessonFilter()"
+          (ngModelChange)="lessonFilter.set($event)"
+          [disabled]="active()"
+        >
+          <option value="">All lessons</option>
+          @for (lesson of writingLessons(); track lesson.id) {
+            <option [value]="lesson.id">{{ lesson.title }}</option>
+          }
+        </select></label
+      >
+      @if (summary.hasValue()) {
+        <label
+          ><input
+            type="checkbox"
+            [ngModel]="dueOnly()"
+            (ngModelChange)="dueOnly.set($event)"
+            [disabled]="active()"
+          />
+          Due for writing review ({{ summary.value().due }})</label
+        >
+      }
+      <div class="character-grid">
+        @for (c of characters(); track c.id) {
+          <button
+            [class.selected]="character()?.id === c.id"
+            [attr.aria-pressed]="character()?.id === c.id"
+            [attr.aria-label]="c.glyph + ', ' + c.pinyin + ', ' + c.meaning"
+            [disabled]="active() || busy()"
+            (click)="select(c.id)"
+          >
+            <span class="hanzi" lang="zh-Hans">{{ c.glyph }}</span
+            ><small>{{ c.pinyin }}</small>
+            @if (isDue(c.id)) {
+              <small>Review due</small>
+            }
+          </button>
+        } @empty {
+          <p class="muted">No characters match. Change the lesson or review filter.</p>
+        }
+      </div>
+      <p class="small muted">
+        Recognition reviews live in Flashcards. Writing recall has its own schedule.
+      </p>
+    </aside>
+    @if (character(); as c) {
+      <article class="panel character-detail">
+        <div class="character-heading">
+          @if (!hideModel()) {
+            <span class="hanzi large" lang="zh-Hans">{{ c.glyph }}</span>
+          }
+          <div>
+            <h3>{{ c.meaning }}</h3>
+            <p>
+              {{ c.pinyin }} · {{ c.strokeData.strokes.length }}
+              {{ c.strokeData.strokes.length === 1 ? 'stroke' : 'strokes' }}
+            </p>
+          </div>
+        </div>
+        @if (!hideModel()) {
+          <audio
+            controls
+            preload="none"
+            [src]="c.audioUrl"
+            aria-label="Mandarin character pronunciation"
+            (error)="
+              error.set(
+                'Pronunciation audio could not load. Use the transcript and retry after checking your connection.'
+              )
+            "
+          ></audio>
+          <p class="small muted">
+            Audio transcript: {{ c.audioTranscript }} · Synthetic Mandarin voice
+          </p>
+        }
+        @if (progress(); as p) {
+          <p class="small">
+            {{ p.assistedCompletions }} guided · {{ p.independentCompletions }} independent recalls
+            · {{ p.sequenceCompletions }} stroke-choice completions
+            @if (p.dueAt) {
+              · Writing review {{ p.dueAt | date: 'mediumDate' }}
+            }
+          </p>
+        }
+        <div class="mode-picker" role="group" aria-label="Practice mode">
+          @for (m of modes; track m.id) {
+            <button
+              class="button secondary"
+              [attr.aria-pressed]="practiceMode() === m.id"
+              [disabled]="active() || busy()"
+              [title]="m.description"
+              (click)="changeMode(m.id)"
+            >
+              {{ m.title }}
+            </button>
+          }
+        </div>
+        @if (preview() || !account.user() || practiceMode() === 'watch' || active()) {
+          <lf-character-trainer
+            [character]="c"
+            [mode]="practiceMode()"
+            (finished)="completed($event)"
+          />
+        }
+        <div class="row session-controls">
+          @if (active()) {
+            <button
+              class="button secondary"
+              [disabled]="busy() || !!pending()"
+              (click)="finishEarly()"
+            >
+              Finish session
+            </button>
+          } @else if (account.user() && !preview() && !summary.value()?.activeSessionId) {
+            <button
+              class="button"
+              [disabled]="busy() || summary.isLoading() || !!summary.error()"
+              (click)="start()"
+            >
+              {{ current()?.finishedAt ? 'Practise again' : 'Start saved practice' }}
+            </button>
+          } @else if (!account.user() && !preview()) {
+            <a routerLink="/sign-in" class="text-link">Sign in to save writing progress →</a>
+          }
+        </div>
+        @if (!hideModel()) {
+          <details open>
+            <summary>Meaning, components & use</summary>
+            <p>{{ c.components }}</p>
+            <p><strong>Writing tip:</strong> {{ c.tip }}</p>
+            @for (w of c.words; track w.text) {
+              <p>
+                <span class="hanzi word" lang="zh-Hans">{{ w.text }}</span> · {{ w.pinyin }} ·
+                {{ w.meaning }}
+              </p>
+            }
+            <p class="hanzi sentence" lang="zh-Hans">{{ c.sentence }}</p>
+            <p>{{ c.sentencePinyin }}<br />{{ c.translation }}</p>
+            <p class="small muted">{{ c.glossary }}</p>
+            <a
+              [routerLink]="['/courses', course().id]"
+              [queryParams]="{ tab: 'learn', lesson: c.lessonId }"
+              class="text-link"
+              >Open the teaching lesson →</a
+            >
+          </details>
+        }
+        <p class="small muted">
+          The stroke model is the writing target; printed font shapes may differ slightly. Practice
+          feedback does not count toward assessment mastery.
+        </p>
+      </article>
+    }
+  </div>
+</section>
+<section class="writing-print" aria-label="Printable character practice sheets">
+  <h1>{{ course().title }} — writing practice</h1>
+  <p>
+    Trace the light models, copy them, then cover the model and write from memory. Print at 100%
+    scale.
+  </p>
+  @for (c of course().characters ?? []; track c.id) {
+    <article>
+      <h2>{{ c.glyph }} · {{ c.pinyin }} · {{ c.meaning }}</h2>
+      <p>{{ c.tip }}</p>
+      <div class="print-boxes">
+        @for (slot of [0, 1, 2, 3, 4, 5]; track slot) {
+          <div>
+            @if (slot < 3) {
+              <svg viewBox="0 0 1024 1024" [class.trace]="slot > 0" aria-hidden="true">
+                <g transform="translate(0 900) scale(1 -1)">
+                  @for (path of c.strokeData.strokes; track $index) {
+                    <path [attr.d]="path" />
+                  }
+                </g>
+              </svg>
+            }
+          </div>
+        }
+      </div>
+      <p>{{ c.sentence }} · {{ c.sentencePinyin }} · {{ c.translation }}</p>
+    </article>
+  }
+  <p>
+    Teaching text: CC BY 4.0 · Stroke data: Hanzi Writer Data 2.0.1 / Make Me a Hanzi, Arphic Public
+    License. See /writing/licenses/ARPHICPL.txt.
+  </p>
+</section>

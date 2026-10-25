@@ -6,6 +6,9 @@
     <p class="muted small">
       {{ catalog.profile }} · {{ catalog.goal }} goal · {{ catalog.license }}
     </p>
+    @if (catalog.capabilities.writing) {
+      <lf-course-writing [course]="catalog" [preview]="true" />
+    }
     @if (catalog.capabilities.flashcards) {
       <h3>Flashcard previews</h3>
       @for (card of catalog.flashcards ?? []; track card.id) {

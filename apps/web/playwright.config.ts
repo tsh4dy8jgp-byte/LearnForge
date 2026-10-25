@@ -7,6 +7,7 @@ export default defineConfig({
   use: {
     baseURL: process.env['LEARNFORGE_WEB_URL'] || 'http://127.0.0.1:4300',
     trace: 'retain-on-failure',
+    channel: process.env['LEARNFORGE_BROWSER_CHANNEL'],
     screenshot: 'only-on-failure',
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],

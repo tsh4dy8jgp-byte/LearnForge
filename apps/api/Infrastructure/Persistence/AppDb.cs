@@ -18,6 +18,9 @@ public class AppDb(DbContextOptions options) : IdentityDbContext<User>(options)
     public DbSet<FlashcardSession> FlashcardSessions => Set<FlashcardSession>();
     public DbSet<FlashcardEvent> FlashcardEvents => Set<FlashcardEvent>();
 
+    public DbSet<WritingState> WritingStates => Set<WritingState>();
+    public DbSet<WritingSession> WritingSessions => Set<WritingSession>();
+
     protected override void ConfigureConventions(ModelConfigurationBuilder builder)
     {
         // Every stored time is UTC. SQLite reads it back without a kind, which would serialize without "Z".
@@ -28,6 +31,15 @@ public class AppDb(DbContextOptions options) : IdentityDbContext<User>(options)
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        builder.Entity<WritingState>().HasKey(x => new { x.UserId, x.PackId, x.CharacterId });
+        builder.Entity<WritingState>().Property(x => x.Revision).IsConcurrencyToken();
+        builder.Entity<WritingState>().HasOne<User>().WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<WritingSession>().HasIndex(x => new { x.UserId, x.PackId, x.StartKey }).IsUnique();
+        builder.Entity<WritingSession>().HasIndex(x => x.ActiveKey).IsUnique();
+        builder.Entity<WritingSession>().Property(x => x.Revision).IsConcurrencyToken();
+        builder.Entity<WritingSession>().Property(x => x.Mode).HasConversion<string>();
+        builder.Entity<WritingSession>().HasOne<User>().WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<WritingSession>().HasOne<PackRelease>().WithMany().HasForeignKey(x => x.ReleaseId).OnDelete(DeleteBehavior.Restrict);
         builder.Entity<FlashcardState>().HasKey(x => new { x.UserId, x.PackId, x.UnitId });
         builder.Entity<FlashcardState>().Property(x => x.Revision).IsConcurrencyToken();
         builder.Entity<FlashcardState>().HasOne<User>().WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);

@@ -1396,3 +1396,22 @@ lf-mastery-badge {
 // Load shell variants after the responsive base styles.
 @include meta.load-css('layouts');
 @include meta.load-css('appearance');
+
+@media print {
+  body:has(lf-course-writing) .sidebar,
+  body:has(lf-course-writing) .topbar,
+  body:has(lf-course-writing) .breadcrumb,
+  body:has(lf-course-writing) .page-heading,
+  body:has(lf-course-writing) .tabs,
+  body:has(lf-course-writing) .skip,
+  body:has(lf-course-writing) lf-next-steps { display: none !important; }
+  body:has(lf-course-writing) .shell { display: block; }
+  body:has(lf-course-writing) main { margin: 0; padding: 0; }
+}
+
+@font-face {
+  font-family: 'LearnForge WenKai';
+  src: url('/writing/fonts/LearnForgeWenKaiPilot.woff2') format('woff2');
+  font-display: swap;
+}
+:lang(zh-Hans), .writing-lesson .content-block p { font-family: 'LearnForge WenKai', serif; }
