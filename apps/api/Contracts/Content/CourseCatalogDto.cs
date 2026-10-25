@@ -18,10 +18,11 @@ public sealed record CourseCatalogDto(
     PackCapabilities Capabilities,
     FlashcardDeck[]? FlashcardDecks = null,
     FlashcardUnit[]? Flashcards = null,
-    FlashcardExportOptions? FlashcardExportDefaults = null)
+    FlashcardExportOptions? FlashcardExportDefaults = null,
+    WritingCharacter[]? Characters = null)
 {
     public static CourseCatalogDto From(Pack pack) => new(pack.Id, pack.Title, pack.Description, pack.Version,
         pack.License, pack.Objectives, pack.Lessons, pack.Blueprints, pack.Sources, pack.Readiness ?? new(),
         pack.Goal, pack.Questions.Length, pack.Profile, pack.Features, pack.Decks, LearnForge.Core.Flashcards.Expand(pack),
-        pack.Features.Flashcards ? new() : null);
+        pack.Features.Flashcards ? new() : null, pack.WritingCharacters);
 }

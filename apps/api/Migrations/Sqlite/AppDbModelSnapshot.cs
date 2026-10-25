@@ -565,6 +565,115 @@ namespace LearnForge.Api.Migrations.Sqlite
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("LearnForge.Api.WritingSession", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ActiveKey")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CharacterJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Completed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("FinishedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Hints")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Mistakes")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Mode")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PackId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ReleaseId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ResultHash")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ResultKey")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Revision")
+                        .IsConcurrencyToken()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("StartKey")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActiveKey")
+                        .IsUnique();
+
+                    b.HasIndex("ReleaseId");
+
+                    b.HasIndex("UserId", "PackId", "StartKey")
+                        .IsUnique();
+
+                    b.ToTable("WritingSessions");
+                });
+
+            modelBuilder.Entity("LearnForge.Api.WritingState", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PackId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CharacterId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("AssistedCompletions")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ContentHash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DueAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("IndependentCompletions")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Revision")
+                        .IsConcurrencyToken()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SequenceCompletions")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Stage")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("UserId", "PackId", "CharacterId");
+
+                    b.ToTable("WritingStates");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -794,6 +903,30 @@ namespace LearnForge.Api.Migrations.Sqlite
                     b.HasOne("LearnForge.Api.Attempt", null)
                         .WithMany()
                         .HasForeignKey("AttemptId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LearnForge.Api.WritingSession", b =>
+                {
+                    b.HasOne("LearnForge.Api.PackRelease", null)
+                        .WithMany()
+                        .HasForeignKey("ReleaseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LearnForge.Api.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LearnForge.Api.WritingState", b =>
+                {
+                    b.HasOne("LearnForge.Api.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

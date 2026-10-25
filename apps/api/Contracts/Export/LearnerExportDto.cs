@@ -8,4 +8,5 @@ public sealed record LearnerExportDto(
     LessonProgressExportDto[] LessonProgress,
     EvidenceExportDto[] Evidence,
     DraftDto[] Drafts,
-    FlashcardHistoryDto? Flashcards = null);
+    FlashcardHistoryDto? Flashcards = null,
+    WritingHistoryDto? Writing = null);

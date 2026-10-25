@@ -10,6 +10,7 @@ import subprocess
 import tempfile
 import time
 import unittest
+from unittest.mock import patch
 import zipfile
 
 from pypdf import PdfReader
@@ -123,6 +124,29 @@ class ExportTests(unittest.TestCase):
                                 self.assertEqual(1, len(b))
                                 self.assertAlmostEqual(f[0].y0, b[0].y0, delta=0.5)
                                 self.assertAlmostEqual(abs(f[0].x0 - b[0].x0), 93 * 72 / 25.4, delta=0.5)
+
+    def test_chinese_exports_embed_font_license_and_preserve_tone_marked_text(self):
+        pack = json.loads((ROOT / 'packs/chinese-writing-pilot.json').read_text())
+        notes = pack['flashcardDecks'][0]['notes']
+        units = [dict(id='recognition/' + n['id'] + '/forward', front=n['front'], back=n['back'],
+                      explanation=n['explanation'], language=n['language'], sources=[]) for n in notes]
+        payload = {**self.payload, 'id': pack['id'], 'title': pack['title'], 'decks': pack['flashcardDecks'], 'units': units}
+        font = ROOT / 'apps/web/public/writing/fonts/LearnForgeWenKaiPilot.ttf'
+        with patch.object(export, 'cjk_font', return_value=font), patch.dict(os.environ, {'LEARNFORGE_CARD_FONT': ''}):
+            pdf = self.directory / 'chinese.pdf'
+            export.export_pdf(payload, pdf)
+            text = '\n'.join(page.extract_text() for page in PdfReader(pdf).pages)
+            self.assertIn('一', text); self.assertIn('茶', text); self.assertIn('yī', text)
+            deck = self.directory / 'chinese.apkg'; export.export_apkg(payload, deck)
+        with zipfile.ZipFile(deck) as archive:
+            media = json.loads(archive.read('media'))
+            self.assertIn('_LearnForgeWenKaiPilot.ttf', media.values())
+            self.assertIn('_LearnForgeWenKai-OFL.txt', media.values())
+            database = self.directory / 'chinese-anki.db'; database.write_bytes(archive.read('collection.anki2'))
+        with sqlite3.connect(database) as db:
+            self.assertEqual(30, db.execute('select count(*) from notes').fetchone()[0])
+            models = json.loads(db.execute('select models from col').fetchone()[0])
+            self.assertTrue(all('_LearnForgeWenKaiPilot.ttf' in model['css'] for model in models.values()))
 
     def test_short_edge_mapping_and_overflow(self):
         self.assertEqual([6, 7, 4, 5, 2, 3, 0, 1], [export.back_slot(i, 'short') for i in range(8)])

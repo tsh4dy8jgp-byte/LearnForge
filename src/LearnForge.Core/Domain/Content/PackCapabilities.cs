@@ -5,7 +5,8 @@ public sealed record PackCapabilities(
     bool Lessons,
     bool Practice,
     bool Assessments,
-    bool Flashcards = false)
+    bool Flashcards = false,
+    bool Writing = false)
 {
     public static PackCapabilities For(ProductProfile profile) => profile switch
     {

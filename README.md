@@ -57,6 +57,8 @@ Open **http://127.0.0.1:8088**. The first build downloads dependencies. Inspect 
 
 Compose is configured for **local development**, bound to loopback. Its sample password and Development environment are local defaults. Follow the [operations guide](docs/operations.md) before public hosting. `docker compose down` retains data; `down -v` intentionally destroys database and key volumes.
 
+The Simplified Chinese [Characters & Writing pilot](docs/characters-and-writing.md) adds 30 characters, stroke animations, touch/mouse/stylus practice, and separate writing review.
+
 ## Features implemented
 
 | Area | Available now |

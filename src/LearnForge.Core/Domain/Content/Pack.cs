@@ -20,6 +20,7 @@ public sealed record Pack(
     ProductProfile Profile = ProductProfile.Hybrid,
     PackCapabilities? Capabilities = null,
     FlashcardDeck[]? FlashcardDecks = null,
+    WritingCharacter[]? Characters = null,
     // Opt-in: keeps fixed-paper questions out of composed and focused practice until the learner has seen them.
     // Omitted from JSON when false, so earlier releases and attempt snapshots serialize exactly as before.
     [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)] bool ReserveFixedPapers = false)
@@ -28,5 +29,7 @@ public sealed record Pack(
     public FlashcardDeck[] Decks => FlashcardDecks ?? [];
     // Older immutable releases have no profile/capabilities and retain all existing features.
     [System.Text.Json.Serialization.JsonIgnore]
-    public PackCapabilities Features => Capabilities ?? (PackCapabilities.For(Profile) with { Flashcards = Decks.Length > 0 });
+    public WritingCharacter[] WritingCharacters => Characters ?? [];
+    [System.Text.Json.Serialization.JsonIgnore]
+    public PackCapabilities Features => Capabilities ?? (PackCapabilities.For(Profile) with { Flashcards = Decks.Length > 0, Writing = WritingCharacters.Length > 0 });
 }

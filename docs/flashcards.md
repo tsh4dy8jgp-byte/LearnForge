@@ -23,7 +23,7 @@ See [the complete example](examples/flashcards-sample.json). Full packs and comp
 
 Notes require ID, kind, objective IDs, and explanation. Basic/reversible use `front` and `back`; cloze uses `text` with `{{c1::answer}}` or `{{c1::answer::hint}}`. Repeated numbers hide deletions together; different numbers create separate cards. Nested deletions are unsupported. Reverse directions must make sense independently. Text is plain text with line breaks, not executable HTML.
 
-Supported languages: en, ru, kk, uk, de, fr, es, it, pt, tr, nl, pl. PDF font coverage is checked. Packs allow 2 MB of source, 2,000 notes, and 5,000 expanded cards. IDs/tags use lowercase letters, numbers, dots, underscores and hyphens; source links require titles and HTTP(S) URLs.
+Supported languages: en, ru, kk, uk, de, fr, es, it, pt, tr, nl, pl, zh-Hans. PDF font coverage is checked. Chinese PDF and Anki exports use the bundled pilot font; additional Chinese content may require a broader configured font. Packs allow 2 MB of source, 2,000 notes, and 5,000 expanded cards. IDs/tags use lowercase letters, numbers, dots, underscores and hyphens; source links require titles and HTTP(S) URLs.
 
 Preserve deck/note IDs and cloze numbers for corrections; use new IDs for new targets or changed note kinds. Edited card content, including explanation/metadata, becomes new in LearnForge. Removed cards disappear from queues while history remains. Anki does not automatically delete previously imported notes absent from a later export.
 
@@ -39,7 +39,7 @@ Stages: 1, 3, 7, 14, 30, 60, 120 days. Good advances one stage; Easy two. Hard k
 
 - **Anki deck:** `.apkg` with fixed LearnForge v1 note types, stable GUIDs, objective tags, explanations and sources. Import using Anki Desktop File > Import or a compatible mobile app. Cards start new; LearnForge personal history is excluded. Re-import updates compatible notes according to Anki settings. Keep note-type fields/templates stable for updates.
 - **Text backup:** ZIP with UTF-8 tab-separated `.txt` files by note type, `note-types.json`, and instructions. Install types by importing the `.apkg` first or create them from the specifications. Keep LearnForgeId as the first field, match by note type, and enable HTML for escaped text/line breaks.
-- **PDF:** portrait A4/US Letter; 90 × 60 mm cards at 11-point text. Duplex sheets hold eight cards with matching backs; choose long/short binding. Foldable sheets hold four 180 × 60 mm pairs with cut marks and dashed fold lines. Partial sheets retain blank matching positions.
+- **PDF:** portrait A4/US Letter; 90 × 60 mm cards at 11-point text (single-character Chinese fronts use a centred 48-point teaching glyph). Duplex sheets hold eight cards with matching backs; choose long/short binding. Foldable sheets hold four 180 × 60 mm pairs with cut marks and dashed fold lines. Partial sheets retain blank matching positions.
 
 Print instructions/calibration pages 1–2 separately. Card footers specify the card-page range; explanations/references follow in an appendix. Print at **Actual size / 100%**. Try one sheet, check matching IDs and measure calibration before printing the deck. Back offsets accept -5 to +5 mm. Physical printer calibration is a manual check.
 

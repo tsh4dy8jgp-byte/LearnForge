@@ -1,6 +1,10 @@
 // All API types are generated from the OpenAPI document (`make api-types`); never edit generated/.
 export type {
   SiteSettings,
+  WritingCharacter,
+  WritingMode,
+  WritingSessionDto,
+  WritingSummaryDto,
   FlashcardNote,
   FlashcardDeck,
   FlashcardUnit,

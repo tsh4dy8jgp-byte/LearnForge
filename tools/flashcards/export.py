@@ -5,6 +5,7 @@ import html
 import io
 import json
 import os
+import shutil
 from pathlib import Path
 import sys
 import tempfile
@@ -18,7 +19,15 @@ def escaped(text):
     return html.escape(text or "").replace("\n", "<br/>")
 
 
-def models():
+def cjk_font():
+    return Path(__file__).resolve().parent.parent / "writing" / "fonts" / "LearnForgeWenKaiPilot.ttf"
+
+
+def chinese(payload):
+    return any(n.get("language") == "zh-Hans" for d in payload["decks"] for n in d["notes"])
+
+
+def models(cjk=False):
     import genanki
     result = {}
     for kind, identifier in MODEL_IDS.items():
@@ -29,7 +38,7 @@ def models():
         if kind == "reversible":
             templates.append({"name": "Reverse", "qfmt": "{{Back}}", "afmt": "{{FrontSide}}<hr id=answer>{{Front}}<hr><div class=extra>{{Extra}}<br>{{Sources}}</div>"})
         result[kind] = genanki.Model(identifier, "LearnForge " + kind.title() + " v1", fields=[{"name": f} for f in fields],
-                                     templates=templates, css=CSS, model_type=genanki.Model.CLOZE if cloze else genanki.Model.FRONT_BACK)
+                                     templates=templates, css=CSS + (' @font-face {font-family: LearnForgeWenKai; src: url("_LearnForgeWenKaiPilot.ttf");} .card {font-family: LearnForgeWenKai, sans-serif;}' if cjk else ''), model_type=genanki.Model.CLOZE if cloze else genanki.Model.FRONT_BACK)
     return result
 
 
@@ -44,7 +53,7 @@ def note_data(payload, deck, note):
 
 def export_apkg(payload, destination, timestamp=None):
     import genanki
-    types = models()
+    types = models(chinese(payload))
     decks = []
     for deck in payload["decks"]:
         # 53-bit positive IDs remain exact in JavaScript consumers of the Anki database.
@@ -59,7 +68,15 @@ def export_apkg(payload, destination, timestamp=None):
     with tempfile.TemporaryDirectory(prefix='anki-', dir=destination.parent) as scratch:
         try:
             tempfile.tempdir = scratch
-            genanki.Package(decks).write_to_file(str(destination), timestamp=timestamp)
+            package = genanki.Package(decks)
+            if chinese(payload):
+                # Anki preserves underscore-prefixed support media during unused-media cleanup.
+                font = Path(scratch) / "_LearnForgeWenKaiPilot.ttf"
+                license_file = Path(scratch) / "_LearnForgeWenKai-OFL.txt"
+                shutil.copyfile(cjk_font(), font)
+                shutil.copyfile(cjk_font().parent.parent / "licenses" / "LXGWWenKaiGB-OFL.txt", license_file)
+                package.media_files = [str(font), str(license_file)]
+            package.write_to_file(str(destination), timestamp=timestamp)
         finally:
             tempfile.tempdir = previous_tempdir
 
@@ -107,12 +124,14 @@ def export_pdf(payload, destination):
     from reportlab.pdfgen import canvas
     from reportlab.platypus import Paragraph
 
-    candidates = [os.environ.get("LEARNFORGE_CARD_FONT", ""), "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", "/Library/Fonts/Roboto-Regular.ttf"]
+    candidates = [os.environ.get("LEARNFORGE_CARD_FONT", ""), str(cjk_font()) if chinese(payload) else "", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", "/Library/Fonts/Roboto-Regular.ttf"]
     font_path = next((p for p in candidates if p and Path(p).is_file()), None)
     if not font_path:
         raise ValueError("No card font found. Install DejaVu Sans or set LEARNFORGE_CARD_FONT to a Unicode .ttf file.")
-    pdfmetrics.registerFont(TTFont("Cards", font_path))
-    widths = pdfmetrics.getFont("Cards").face.charWidths
+    # ReportLab keeps dynamic font registrations for the process lifetime.
+    font_name = "Cards-" + hashlib.sha256(Path(font_path).read_bytes()).hexdigest()[:12]
+    pdfmetrics.registerFont(TTFont(font_name, font_path))
+    widths = pdfmetrics.getFont(font_name).face.charWidths
     if any(ord(c) not in widths for c in payload["title"] if not c.isspace()):
         raise ValueError("The subject title contains glyphs unsupported by the configured font.")
     for unit in payload["units"]:
@@ -122,11 +141,13 @@ def export_pdf(payload, destination):
     options = payload["options"]
     width, height = A4 if options["paper"] == "a4" else letter
     card_w, card_h, gap = 90 * mm, 60 * mm, 3 * mm
-    style = ParagraphStyle("card", fontName="Cards", fontSize=11, leading=14, spaceAfter=0, splitLongWords=True)
-    body_style = ParagraphStyle("body", fontName="Cards", fontSize=10, leading=14)
+    style = ParagraphStyle("card", fontName=font_name, fontSize=11, leading=14, spaceAfter=0, splitLongWords=True)
+    body_style = ParagraphStyle("body", fontName=font_name, fontSize=10, leading=14)
 
-    def paragraph(text, w, max_h, identity):
-        p = Paragraph(escaped(text), style)
+    character_style = ParagraphStyle("hanzi", parent=style, fontSize=48, leading=60, alignment=1)
+
+    def paragraph(text, w, max_h, identity, text_style=None):
+        p = Paragraph(escaped(text), text_style or style)
         _, h = p.wrap(w, max_h)
         if h > max_h:
             raise ValueError("Card " + identity + " does not fit at 11 pt. Shorten or split its front/back text.")
@@ -137,14 +158,14 @@ def export_pdf(payload, destination):
         paragraph(unit["front"], card_w - 10 * mm, card_h - 16 * mm, unit["id"])
         paragraph(unit["back"], card_w - 10 * mm, card_h - 16 * mm, unit["id"])
         # Learners match fronts to backs by this ID, so it must stay on its card.
-        if pdfmetrics.stringWidth(unit["id"], "Cards", 7) > card_w - 10 * mm:
+        if pdfmetrics.stringWidth(unit["id"], font_name, 7) > card_w - 10 * mm:
             raise ValueError("Card " + unit["id"] + " has an ID too long to print. Shorten its deck or note ID.")
     c = canvas.Canvas(str(destination), pagesize=(width, height), pageCompression=1)
     c.setTitle(payload["title"] + " - printable flashcards " + payload["version"])
     c.setAuthor("LearnForge")
 
     def heading(text):
-        c.setFont("Cards", 15); c.drawString(12 * mm, height - 18 * mm, text)
+        c.setFont(font_name, 15); c.drawString(12 * mm, height - 18 * mm, text)
 
     def body(text, y):
         p = Paragraph(escaped(text), body_style); _, h = p.wrap(width - 24 * mm, height)
@@ -166,9 +187,10 @@ def export_pdf(payload, destination):
     c.showPage()
 
     def card(unit, field, x, y):
-        p, h = paragraph(unit[field], card_w - 10 * mm, card_h - 16 * mm, unit["id"])
-        p.drawOn(c, x + 5 * mm, y + card_h - 8 * mm - h)
-        c.setFont("Cards", 7)
+        single_character = unit.get("language") == "zh-Hans" and field == "front" and len(unit[field]) == 1
+        p, h = paragraph(unit[field], card_w - 10 * mm, card_h - 16 * mm, unit["id"], character_style if single_character else style)
+        p.drawOn(c, x + 5 * mm, y + (card_h - h) / 2 if single_character else y + card_h - 8 * mm - h)
+        c.setFont(font_name, 7)
         c.drawString(x + 5 * mm, y + 4 * mm, unit["id"])
 
     def crops(x, y, w, h):
@@ -179,7 +201,7 @@ def export_pdf(payload, destination):
                 c.line(px, py - 1 * mm, px, py + 1 * mm)
 
     def footer(text):
-        c.setFont("Cards", 7); c.drawString(12 * mm, 5 * mm, text)
+        c.setFont(font_name, 7); c.drawString(12 * mm, 5 * mm, text)
 
     per_sheet = 8 if options["mode"] == "duplex" else 4
     sheets = (len(payload["units"]) + per_sheet - 1) // per_sheet

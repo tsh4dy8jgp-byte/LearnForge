@@ -46,7 +46,7 @@ public static class AuthoringEndpoints
             });
             authoring.MapPost("/preview", (JsonElement source) =>
             {
-                var result = ContentEngine.Compile(source.GetRawText());
+                var result = WritingAssetValidator.Check(ContentEngine.Compile(source.GetRawText()));
                 var pack = result.Success ? result.Pack : null;
                 return new AuthoringPreviewDto(result.Success, result.Hash, result.Diagnostics,
                     pack is null ? null : CourseCatalogDto.From(pack),
@@ -55,13 +55,13 @@ public static class AuthoringEndpoints
             });
             authoring.MapPost("/validate", (JsonElement source) =>
             {
-                var result = ContentEngine.Compile(source.GetRawText());
+                var result = WritingAssetValidator.Check(ContentEngine.Compile(source.GetRawText()));
                 return new ValidationResponseDto(result.Success, result.Hash, result.Diagnostics, result.Pack?.Questions.Length, result.Pack?.Lessons.Length,
                     result.Success ? ContentLinter.Lint(result.Pack!) : []);
             });
             authoring.MapPost("/publish", async (JsonElement source, AppDb db, ClaimsPrincipal user) =>
             {
-                var result = ContentEngine.Compile(source.GetRawText());
+                var result = WritingAssetValidator.Check(ContentEngine.Compile(source.GetRawText()));
                 if (!result.Success) return Results.BadRequest(new ApiErrorResponse("Content validation failed."));
                 var p = result.Pack!;
                 if (await db.Packs.AnyAsync(r => r.PackId == p.Id && r.Version == p.Version)) return Results.Conflict(new ApiErrorResponse("This release already exists. Publish a new version."));
