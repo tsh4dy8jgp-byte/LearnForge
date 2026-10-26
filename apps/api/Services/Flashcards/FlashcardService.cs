@@ -36,7 +36,10 @@ public sealed class FlashcardService(AppDb db, ReleaseCache releases, LearningRe
 
     public async Task<FlashcardSessionDto> Start(string user, string packId, FlashcardStartRequest request)
     {
-        var filterHash = ContentHash.Of(new[] { request.Deck, request.Objective, request.Tag });
+        // Preserve filter identities for existing sessions; a bounded study is a distinct request.
+        var filterHash = request.Limit is null
+            ? ContentHash.Of(new[] { request.Deck, request.Objective, request.Tag })
+            : ContentHash.Of(new { request.Deck, request.Objective, request.Tag, request.Limit });
         var previous = await db.FlashcardSessions.SingleOrDefaultAsync(s => s.UserId == user && s.PackId == packId && s.StartKey == request.RequestId);
         if (previous is not null)
         {
@@ -56,9 +59,10 @@ public sealed class FlashcardService(AppDb db, ReleaseCache releases, LearningRe
             (request.Tag is null || u.Tags.Contains(request.Tag))).ToArray();
         var siblings = new HashSet<string>();
         bool FirstSibling(FlashcardUnit u) => siblings.Add(u.DeckId + "/" + u.NoteId);
+        var limit = request.Limit ?? 20;
         var due = units.Where(u => status[u.Id].Introduced && status[u.Id].DueAt <= Now)
-            .OrderBy(u => status[u.Id].DueAt).ThenBy(u => u.Id, StringComparer.Ordinal).Where(FirstSibling).Take(20).ToArray();
-        var fresh = units.Where(u => !status[u.Id].Introduced).Where(FirstSibling).Take(Math.Min(10, 20 - due.Length)).ToArray();
+            .OrderBy(u => status[u.Id].DueAt).ThenBy(u => u.Id, StringComparer.Ordinal).Where(FirstSibling).Take(limit).ToArray();
+        var fresh = units.Where(u => !status[u.Id].Introduced).Where(FirstSibling).Take(Math.Min(10, limit - due.Length)).ToArray();
         var selected = due.Concat(fresh).ToArray();
         if (selected.Length == 0) throw new DomainError(400, "No new or due cards match your filters. Review is up to date.");
         var session = new FlashcardSession { UserId = user, PackId = packId, ReleaseId = release.ReleaseId,

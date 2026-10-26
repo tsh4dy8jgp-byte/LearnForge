@@ -6,7 +6,8 @@ public sealed record Pack(int SchemaVersion, string Id, string Version, string T
     Blueprint[] Blueprints, SourceReference[] Sources, ReadinessPolicy? Readiness = null,
     CourseGoal Goal = CourseGoal.Readiness, MasteryPolicy? Mastery = null,
     ProductProfile Profile = ProductProfile.Hybrid, PackCapabilities? Capabilities = null,
-    FlashcardDeck[]? FlashcardDecks = null, WritingCharacter[]? Characters = null)
+    FlashcardDeck[]? FlashcardDecks = null, WritingCharacter[]? Characters = null,
+    CharacterStudy? CharacterStudy = null)
 {
     [System.Text.Json.Serialization.JsonIgnore]
     public FlashcardDeck[] Decks => FlashcardDecks ?? [];

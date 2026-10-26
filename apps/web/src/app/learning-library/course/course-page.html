@@ -76,6 +76,11 @@
         <button type="button" ngTab [value]="t.id">{{ t.title }}</button>
       }
     </div>
+    @if (c.characterStudy) {
+      <div ngTabPanel value="study" class="tab-panel">
+        <ng-template ngTabContent><lf-course-character-study [course]="c" /></ng-template>
+      </div>
+    }
     @if (c.capabilities.lessons) {
       <div ngTabPanel value="learn" class="tab-panel">
         <ng-template ngTabContent>

@@ -1,6 +1,29 @@
 # Characters & Writing
 
-The Simplified Chinese pilot contains 30 writing targets, a foundations introduction, six themed lessons, 30 recognition flashcards and 30 meaning questions. It is an introductory course contributing toward beginner learning, not a complete A1–A2 course or an official language qualification.
+The Simplified Chinese pilot contains 30 writing targets, a foundations introduction, six themed lessons, 30 recognition flashcards, 10 contrast flashcards, six short readings and 30 meaning questions. It is an introductory course contributing toward beginner learning, not a complete A1–A2 course or an official language qualification.
+
+## Today's study
+
+The pilot opens on **Today's study**. A signed-in learner starts a short sequence: up to three recognition cards, up to two similar-character choices, then a supported reading. Each review activity selects due cards before new ones and honors suspended cards. Up-to-date activities are skipped. The five-minute estimate is guidance; there is no timer.
+
+Recognition ratings use the existing flashcard scheduler. In comparison practice, choose one of two characters, inspect the answer and distinguishing feature, then **Save and continue**: a correct choice uses Good; an incorrect choice uses Again and is due in about ten minutes. Each pair can also be practised from the overview. The comparison cards are available in the normal Flashcards view and exports.
+
+Review actions save on the server with request replay protection. Failed transport/server saves offer a retry of the same action. A reload offers **Resume saved review**, including reviews begun in Flashcards. A revealed comparison resumed after a reload uses self-rating because the browser's original selection is not stored. The overall sequence and reading check-in are per visit; only review ratings and existing handwriting progress persist. Finishing early preserves completed ratings and leaves unrated cards unchanged.
+
+Reading suggestions use recognition introductions and completed guided/independent handwriting practice. This signals exposure, not mastery. A reading is recommended when all its target characters have been introduced; otherwise it is clearly offered as a preview with help. Any reading can be previewed, including while signed out. Tap a word for Pinyin and meaning, reveal/hide pronunciation and translation independently, and expand the reading tip or extra-vocabulary glossary. Reading check-ins do not create assessment evidence or change review dates. A writing reminder links to the separate writing schedule.
+
+## Authoring study activities
+
+Packs opt in with an optional `characterStudy` object and both writing and flashcard capabilities. Older packs remain unchanged. The pilot release is now `1.1.0`; the existing character records and recognition notes retain their IDs and content, preserving their schedules.
+
+- `recognitionDeckId`: a basic recognition deck with one note per writing character; each note ID matches the character ID and its front is the glyph.
+- `confusionDeckId`: a separate deck of basic contrast notes.
+- `contrasts`: stable `id`, two `characterIds`, two corresponding `noteIds`, and an `explanation`. Each referenced note is tagged with the contrast ID, has exactly the corresponding glyph as its answer, and supplies its prompt/explanation. This explicit mapping supports pinned session answers without guessing from teaching prose.
+- `readings`: stable `id`, `title`, distinct `requiredCharacterIds`, 1–12 translated `lines`, a teaching `note`, and `supportWords`. Each line has `words` (text/Pinyin/meaning tokens) and `translation`; punctuation tokens may have empty Pinyin/meaning. Every hanzi must be covered by a prerequisite or an explicitly glossed support word, and every prerequisite must occur in the text.
+
+The compiler validates references, answer mappings, limits and reading coverage. Content remains versioned plain text; it cannot provide executable markup or remote assets. New teaching text, like the original pilot notes, still needs native-speaking teacher review. The feature adds no database tables, AI service or third-party runtime dependency.
+
+`POST /api/me/courses/{id}/flashcards/sessions` accepts optional `limit` (1–20). Omitting it retains the existing 20-card limit and 10-new-card cap. A supplied limit participates in request/filter identity; changing it on replay is rejected.
 
 ## Learning
 

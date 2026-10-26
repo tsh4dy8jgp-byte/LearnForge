@@ -129,6 +129,34 @@ export type ChangePasswordRequest = {
     newPassword: string;
 };
 
+export type CharacterContrast = {
+    id: string;
+    characterIds: Array<string>;
+    noteIds: Array<string>;
+    explanation: string;
+};
+
+export type CharacterReading = {
+    id: string;
+    title: string;
+    requiredCharacterIds: Array<string>;
+    lines: Array<CharacterReadingLine>;
+    note: string;
+    supportWords: Array<WritingWord>;
+};
+
+export type CharacterReadingLine = {
+    words: Array<WritingWord>;
+    translation: string;
+};
+
+export type CharacterStudy = {
+    recognitionDeckId: string;
+    confusionDeckId: string;
+    contrasts: Array<CharacterContrast>;
+    readings: Array<CharacterReading>;
+};
+
 export type CodeSample = {
     language: string;
     source: string;
@@ -161,6 +189,7 @@ export type CourseCatalogDto = {
     flashcards?: null | Array<FlashcardUnit>;
     flashcardExportDefaults?: null | FlashcardExportOptions;
     characters?: null | Array<WritingCharacter>;
+    characterStudy?: null | CharacterStudy;
 };
 
 export type CourseGoal = 'readiness' | 'mastery' | 'completion' | 'review';
@@ -330,6 +359,7 @@ export type FlashcardStartRequest = {
     deck?: null | string;
     objective?: null | string;
     tag?: null | string;
+    limit?: null | number;
 };
 
 export type FlashcardStatusDto = {
@@ -474,6 +504,7 @@ export type Pack = {
     capabilities?: null | PackCapabilities;
     flashcardDecks?: null | Array<FlashcardDeck>;
     characters?: null | Array<WritingCharacter>;
+    characterStudy?: null | CharacterStudy;
 };
 
 export type PackCapabilities = {

@@ -59,6 +59,8 @@ Compose is configured for **local development**, bound to loopback. Its sample p
 
 The Simplified Chinese [Characters & Writing pilot](docs/characters-and-writing.md) adds 30 characters, stroke animations, touch/mouse/stylus practice, and separate writing review.
 
+Its **Today's study** view combines a short spaced review, similar-character comparisons and a supported reading. The pilot includes five contrast pairs and six readings with word lookup and optional pronunciation/translation.
+
 ## Features implemented
 
 | Area | Available now |

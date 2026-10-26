@@ -1,0 +1,220 @@
+:host {
+  display: block;
+}
+.study-intro {
+  background: var(--subtle);
+}
+.study-intro > p,
+.study-intro > h2 {
+  max-width: 48rem;
+}
+.study-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  margin: 1.5rem 0;
+}
+.study-steps li {
+  counter-increment: step;
+  border-top: 2px solid var(--border-strong);
+  padding-top: 0.75rem;
+}
+.study-steps strong::before {
+  content: counter(step) '. ';
+  color: var(--green);
+}
+.study-steps span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.plan-reason {
+  color: var(--green);
+}
+.contrast-grid,
+.reading-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.contrast-card,
+.reading-card {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.contrast-card .button,
+.reading-card .button {
+  margin-top: auto;
+}
+.writing-reminder {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.writing-reminder p {
+  margin: 0;
+}
+.hanzi {
+  font-family: 'LearnForge WenKai', serif;
+  font-size: 2.5rem;
+  line-height: 1.5;
+}
+.hanzi.pair {
+  word-spacing: 1rem;
+  margin: 0 0 0.6rem;
+  font-size: 3rem;
+  font-weight: 400;
+}
+.hanzi.inline {
+  font-size: 1.3rem;
+}
+.study-activity {
+  max-width: 52rem;
+  margin-inline: auto;
+}
+.review-question {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.review-question.hanzi {
+  font-size: 5rem;
+  font-weight: 400;
+}
+.character-choices {
+  display: flex;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  flex-wrap: wrap;
+}
+.character-choice {
+  border: 2px solid var(--border-strong);
+  background: var(--white);
+  color: var(--ink);
+  border-radius: 12px;
+  padding: 1rem 2rem;
+}
+.character-choice:hover {
+  background: var(--lime);
+  border-color: var(--green);
+}
+.character-choice .hanzi {
+  display: block;
+  font-size: 4rem;
+}
+.review-answer {
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+  margin-block: 1.5rem;
+}
+.comparison-feedback {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-block: 1rem;
+}
+.comparison-feedback > div {
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  padding: 1rem;
+  overflow-wrap: anywhere;
+}
+.comparison-feedback .correct-choice {
+  border: 2px solid var(--green);
+  background: var(--subtle);
+}
+.comparison-feedback .hanzi {
+  font-size: 4rem;
+}
+.comparison-feedback p {
+  margin: 0.25rem 0;
+}
+.answer-text {
+  white-space: pre-wrap;
+}
+.study-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  margin-block: 1rem;
+}
+.reading-controls {
+  margin-block: 1.5rem;
+}
+.reading-words {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+}
+.reading-word {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: start;
+  border: 1px solid transparent;
+  border-bottom: 1px dashed var(--border-strong);
+  color: var(--ink);
+  background: transparent;
+  padding: 0.3rem 0.4rem;
+  border-radius: 6px;
+  min-height: 44px;
+  max-width: 100%;
+}
+.reading-word:hover,
+.reading-word[aria-expanded='true'] {
+  background: var(--lime);
+  border-color: var(--green);
+}
+.pinyin {
+  font-size: 0.9rem;
+}
+.word-help {
+  display: block;
+  max-width: 14rem;
+  overflow-wrap: anywhere;
+  font-size: 0.9rem;
+}
+.punctuation {
+  padding-block: 0.3rem;
+}
+.reading-line {
+  margin-block: 1.5rem;
+}
+.translation {
+  margin-top: 0.75rem;
+  color: var(--muted);
+}
+details {
+  margin-block: 1rem;
+}
+summary {
+  cursor: pointer;
+  min-height: 44px;
+}
+details p {
+  margin-top: 0.5rem;
+}
+fieldset {
+  min-width: 0;
+}
+@media (max-width: 520px) {
+  .study-steps {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+  .study-steps li {
+    padding-top: 0.4rem;
+  }
+  .character-choice {
+    padding: 0.75rem 1.5rem;
+  }
+}

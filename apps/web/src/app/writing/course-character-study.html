@@ -1,0 +1,397 @@
+<section class="character-study" aria-label="Today's character study">
+  @if (error()) {
+    <p class="alert error" role="alert">{{ error() }}</p>
+    @if (pending()) {
+      <button class="button secondary" [disabled]="busy()" (click)="retry()">
+        Retry saving this action
+      </button>
+    } @else {
+      <button class="button secondary" [disabled]="busy()" (click)="overview()">
+        Refresh study plan
+      </button>
+    }
+  }
+  @if (phase() === 'overview') {
+    <div class="panel study-intro">
+      <p class="eyebrow">A LITTLE EVERY DAY</p>
+      <h2 #activityHeading tabindex="-1">From characters to something you can read</h2>
+      <p>
+        A short review, a closer look at similar characters, then a reading. About five minutes, at
+        your own pace.
+      </p>
+      <ol class="study-steps">
+        <li><strong>Recall</strong><span>Up to 3 character cards</span></li>
+        <li><strong>Compare</strong><span>Up to 2 character choices</span></li>
+        <li><strong>Read</strong><span>One supported reading</span></li>
+      </ol>
+      @if (account.user()) {
+        @if (summary.error(); as e) {
+          <p class="alert error" role="alert">{{ errorText(e) }}</p>
+          <button
+            class="button secondary"
+            (click)="summary.reload()"
+            [disabled]="summary.isLoading()"
+          >
+            Reload review progress
+          </button>
+        } @else if (summary.isLoading()) {
+          <p role="status">Finding your next activities…</p>
+        } @else if (summary.hasValue()) {
+          @if (summary.value().activeSessionId) {
+            <p>You have a review in progress. Pick up where you left off.</p>
+            <button class="button" [disabled]="busy() || !!pending()" (click)="resume()">
+              Resume saved review
+            </button>
+          } @else {
+            <p class="plan-reason">
+              @if (availability().recognition.due + availability().confusion.due > 0) {
+                {{ availability().recognition.due + availability().confusion.due }} cards are due.
+                Due cards come first in each activity.
+              } @else if (availability().recognition.fresh + availability().confusion.fresh > 0) {
+                Your reviews are up to date. Meet a few new characters and comparisons.
+              } @else {
+                Your reviews are up to date. Enjoy a short reading.
+              }
+            </p>
+            <button class="button" [disabled]="busy() || !!pending()" (click)="start()">
+              Start today's study
+            </button>
+          }
+        }
+      } @else {
+        <a routerLink="/sign-in" class="button">Sign in to start today's study</a>
+        <p class="small muted">Explore the comparisons and preview a reading below.</p>
+      }
+    </div>
+    @if (writing.error()) {
+      <p class="alert" role="status">
+        Writing progress could not load. Reading suggestions use your recognition reviews.
+      </p>
+      <button class="button secondary" (click)="writing.reload()" [disabled]="writing.isLoading()">
+        Reload writing progress
+      </button>
+    } @else if (writing.hasValue() && (writing.value().due || writing.value().activeSessionId)) {
+      <div class="panel writing-reminder">
+        <p>
+          {{
+            writing.value().activeSessionId
+              ? 'You have writing practice to resume.'
+              : writing.value().due + ' characters are due for writing recall.'
+          }}
+        </p>
+        <a
+          [routerLink]="['/courses', course().id]"
+          [queryParams]="{ tab: 'writing' }"
+          class="text-link"
+          >Open writing practice →</a
+        >
+      </div>
+    }
+    <div class="section-heading">
+      <div>
+        <h3>Tell similar characters apart</h3>
+        <p class="muted">Look for the small detail that changes the character.</p>
+      </div>
+    </div>
+    <div class="contrast-grid">
+      @for (pair of config().contrasts; track pair.id) {
+        <article class="panel contrast-card">
+          <h4 class="hanzi pair" lang="zh-Hans">{{ glyphs(pair.characterIds) }}</h4>
+          <p>{{ pair.explanation }}</p>
+          @if (account.user()) {
+            <button
+              class="button secondary"
+              [disabled]="
+                busy() ||
+                !!pending() ||
+                progressUnavailable() ||
+                !!summaryData()?.activeSessionId ||
+                !pairAvailable(pair.id)
+              "
+              (click)="start(pair.id)"
+            >
+              Practise this pair
+            </button>
+            @if (!progressUnavailable() && !pairAvailable(pair.id)) {
+              <p class="small muted">Up to date, or paused in Flashcards.</p>
+            }
+          }
+        </article>
+      }
+    </div>
+    <div class="section-heading">
+      <div>
+        <h3>Read with what you know</h3>
+        <p class="muted">
+          Tap a word for pronunciation and meaning. You can preview any reading with help.
+        </p>
+      </div>
+    </div>
+    <div class="reading-grid">
+      @for (r of config().readings; track r.id) {
+        <article class="panel reading-card">
+          <h4>{{ r.title }}</h4>
+          @if (account.user() && !missing(r).length) {
+            <p class="small">
+              All {{ r.requiredCharacterIds.length }} target characters introduced.
+            </p>
+          } @else {
+            <p class="small muted">
+              {{ account.user() && summaryData() ? 'Still to meet: ' : 'Target characters: '
+              }}<span lang="zh-Hans" class="hanzi inline">{{
+                glyphs(account.user() && summaryData() ? missing(r) : r.requiredCharacterIds)
+              }}</span>
+            </p>
+          }
+          <button
+            class="button secondary"
+            [disabled]="busy() || !!pending()"
+            (click)="openReading(r)"
+          >
+            {{ account.user() && !missing(r).length ? 'Read this' : 'Preview with help' }}
+          </button>
+        </article>
+      }
+    </div>
+  } @else if (phase() === 'review') {
+    <div class="panel study-activity" aria-label="Guided character review">
+      <p class="eyebrow">
+        {{ step()?.kind === 'confusion' ? 'NOTICE THE DIFFERENCE' : 'RECALL BEFORE REVEALING' }}
+      </p>
+      <h2 #activityHeading tabindex="-1">
+        {{ step()?.kind === 'confusion' ? 'Tell them apart' : 'Character recall' }}
+      </h2>
+      <p class="small muted">
+        Activity {{ stepIndex() + 1 }} of {{ steps().length + 1 }} · Reading comes next
+      </p>
+      @if (review(); as current) {
+        @if (current.card; as card) {
+          <p role="status">Card {{ current.position + 1 }} of {{ current.count }}</p>
+          <h3
+            class="review-question"
+            [class.hanzi]="step()?.kind === 'recognition'"
+            [lang]="step()?.kind === 'recognition' ? card.language : 'en'"
+          >
+            {{ card.front }}
+          </h3>
+          @if (contrast() && !current.revealed) {
+            <div class="character-choices" role="group" aria-label="Choose a character">
+              @for (c of choices(); track c.id; let i = $index) {
+                <button
+                  class="character-choice"
+                  [disabled]="busy() || !!pending()"
+                  (click)="choose(c.glyph)"
+                  [attr.aria-label]="'Option ' + (i + 1) + ': ' + c.glyph"
+                >
+                  <span class="hanzi" lang="zh-Hans">{{ c.glyph }}</span
+                  ><small>Option {{ i + 1 }}</small>
+                </button>
+              }
+            </div>
+          }
+          @if (current.revealed) {
+            <div class="review-answer">
+              <h4 #answerHeading tabindex="-1">
+                {{
+                  checkedChoice() === true
+                    ? 'You spotted it'
+                    : checkedChoice() === false
+                      ? 'Look at the difference'
+                      : 'Answer'
+                }}
+              </h4>
+              @if (contrast()) {
+                <div class="comparison-feedback">
+                  @for (c of choices(); track c.id) {
+                    <div [class.correct-choice]="c.glyph === card.back?.trim()">
+                      <span class="hanzi" lang="zh-Hans">{{ c.glyph }}</span>
+                      <p>{{ c.pinyin }} · {{ c.meaning }}</p>
+                      <strong>{{
+                        c.glyph === card.back?.trim()
+                          ? 'Answer'
+                          : c.glyph === chosen()
+                            ? 'Your choice'
+                            : 'Other character'
+                      }}</strong>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <p class="answer-text" [lang]="card.language">{{ card.back }}</p>
+              }
+              <p>{{ card.explanation }}</p>
+              @if (checkedChoice() !== null) {
+                <p class="small muted">
+                  {{
+                    checkedChoice()
+                      ? 'Saved as Good when you continue.'
+                      : 'This card will return in about 10 minutes when you continue.'
+                  }}
+                </p>
+                <button
+                  class="button"
+                  [disabled]="busy() || !!pending()"
+                  (click)="mutate('rate', checkedChoice() ? 'good' : 'again')"
+                >
+                  Save and continue
+                </button>
+              } @else {
+                <fieldset [disabled]="busy() || !!pending()">
+                  <legend>How well did you recall it?</legend>
+                  <div class="study-actions">
+                    <button class="button secondary" (click)="mutate('rate', 'again')">
+                      Again · 10 minutes
+                    </button>
+                    <button class="button secondary" (click)="mutate('rate', 'hard')">Hard</button>
+                    <button class="button" (click)="mutate('rate', 'good')">Good</button>
+                    <button class="button secondary" (click)="mutate('rate', 'easy')">Easy</button>
+                  </div>
+                </fieldset>
+              }
+            </div>
+          } @else if (!contrast()) {
+            <p class="muted">Try the pronunciation and meaning before revealing.</p>
+            <button class="button" [disabled]="busy() || !!pending()" (click)="mutate('reveal')">
+              Reveal answer
+            </button>
+          }
+          <p>
+            <button
+              class="text-button"
+              [disabled]="busy() || !!pending()"
+              (click)="mutate('finish')"
+            >
+              Finish this review early
+            </button>
+          </p>
+        } @else {
+          <p role="status">Review saved. Your completed ratings are recorded.</p>
+          <button class="button" [disabled]="busy() || !!pending()" (click)="next()">
+            {{
+              stepIndex() + 1 < steps().length ? 'Continue to comparisons' : 'Continue to reading'
+            }}
+          </button>
+        }
+      } @else if (busy()) {
+        <p role="status">Preparing your cards…</p>
+      }
+      <p class="small muted">
+        {{ savedCount() }} ratings saved in this visit. Recognition and writing have separate review
+        schedules.
+      </p>
+      <button class="text-button" [disabled]="busy() || !!pending()" (click)="overview()">
+        Back to study plan
+      </button>
+    </div>
+  } @else if (phase() === 'reading') {
+    @if (reading(); as r) {
+      <article class="panel study-activity" aria-label="Supported reading">
+        <p class="eyebrow">PUT THE CHARACTERS TO USE</p>
+        <h2 #activityHeading tabindex="-1">{{ r.title }}</h2>
+        @if (!account.user() || progressUnavailable()) {
+          <p class="alert">Preview with help. Tap any word for its pronunciation and meaning.</p>
+        } @else if (missing(r).length) {
+          <p class="alert">
+            Preview with help:
+            <span lang="zh-Hans" class="hanzi inline">{{ glyphs(missing(r)) }}</span>
+            {{ missing(r).length === 1 ? 'has' : 'have' }} not been introduced in your saved
+            practice. Tap any word for help.
+          </p>
+        }
+        <p class="muted">
+          Read once before revealing help. Tap a word to see its pronunciation and meaning.
+        </p>
+        <div class="study-actions reading-controls">
+          <button
+            class="button secondary"
+            [attr.aria-pressed]="showPinyin()"
+            (click)="showPinyin.set(!showPinyin())"
+          >
+            {{ showPinyin() ? 'Hide pronunciation' : 'Show pronunciation' }}
+          </button>
+          <button
+            class="button secondary"
+            [attr.aria-pressed]="showTranslation()"
+            (click)="showTranslation.set(!showTranslation())"
+          >
+            {{ showTranslation() ? 'Hide translation' : 'Show translation' }}
+          </button>
+        </div>
+        @for (line of r.lines; track $index; let li = $index) {
+          <div class="reading-line">
+            <div class="reading-words" lang="zh-Hans">
+              @for (word of line.words; track $index; let wi = $index) {
+                @let key = li + '-' + wi;
+                @if (word.pinyin) {
+                  <button
+                    class="reading-word"
+                    [attr.aria-expanded]="activeWord() === key"
+                    (click)="activeWord.set(activeWord() === key ? '' : key)"
+                  >
+                    <span class="hanzi">{{ word.text }}</span>
+                    @if (showPinyin()) {
+                      <span class="pinyin">{{ word.pinyin }}</span>
+                    }
+                    @if (activeWord() === key) {
+                      <span class="word-help" lang="en"
+                        >{{ word.pinyin }} · {{ word.meaning }}</span
+                      >
+                    }
+                  </button>
+                } @else {
+                  <span class="hanzi punctuation">{{ word.text }}</span>
+                }
+              }
+            </div>
+            @if (showTranslation()) {
+              <p class="translation">{{ line.translation }}</p>
+            }
+          </div>
+        }
+        @if (r.supportWords.length) {
+          <details>
+            <summary>Extra vocabulary for this reading</summary>
+            @for (w of r.supportWords; track w.text) {
+              <p>
+                <span class="hanzi inline" lang="zh-Hans">{{ w.text }}</span> · {{ w.pinyin }} ·
+                {{ w.meaning }}
+              </p>
+            }
+          </details>
+        }
+        <details>
+          <summary>Reading tip</summary>
+          <p>{{ r.note }}</p>
+        </details>
+        <div class="study-actions">
+          <button class="button" (click)="finishReading()">Finish reading</button>
+          <button class="button secondary" (click)="overview()">Back to study plan</button>
+        </div>
+      </article>
+    }
+  } @else {
+    <div class="panel study-activity">
+      <p class="eyebrow">ONE STEP FURTHER</p>
+      <h2 #activityHeading tabindex="-1">
+        {{ readingOnly() ? 'Reading complete' : 'Study complete' }}
+      </h2>
+      <p>
+        You read “{{ reading()?.title }}”.
+        {{ !readingOnly() ? savedCount() + ' review ratings were saved during this visit.' : '' }}
+      </p>
+      <p class="muted">
+        Reading completion is a practice check-in for this visit. Your review ratings set the next
+        review dates.
+      </p>
+      <div class="study-actions">
+        <button class="button" (click)="overview()">Back to study plan</button>
+        <a
+          class="button secondary"
+          [routerLink]="['/courses', course().id]"
+          [queryParams]="{ tab: 'writing' }"
+          >Try writing practice</a
+        >
+      </div>
+    </div>
+  }
+</section>

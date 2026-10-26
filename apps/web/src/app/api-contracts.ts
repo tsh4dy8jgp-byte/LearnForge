@@ -2,6 +2,9 @@
 export type {
   SiteSettings,
   WritingCharacter,
+  CharacterStudy,
+  CharacterContrast,
+  CharacterReading,
   WritingMode,
   WritingSessionDto,
   WritingSummaryDto,
