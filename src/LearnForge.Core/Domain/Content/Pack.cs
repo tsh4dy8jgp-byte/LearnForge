@@ -21,6 +21,7 @@ public sealed record Pack(
     PackCapabilities? Capabilities = null,
     FlashcardDeck[]? FlashcardDecks = null,
     WritingCharacter[]? Characters = null,
+    CharacterStudy? CharacterStudy = null,
     // Opt-in: keeps fixed-paper questions out of composed and focused practice until the learner has seen them.
     // Omitted from JSON when false, so earlier releases and attempt snapshots serialize exactly as before.
     [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)] bool ReserveFixedPapers = false)

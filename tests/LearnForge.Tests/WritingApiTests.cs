@@ -74,14 +74,14 @@ public class WritingApiTests(ApiFactory factory) : IClassFixture<ApiFactory>
     {
         var (client, pack) = await Course(); var session = await Start(client, pack);
         Assert.Equal(TestApi.Id(session), (await Summary(client, pack)).GetProperty("activeSessionId").GetString());
-        var revised = pack with { Version = "1.0.1", Characters = pack.WritingCharacters.Select(c => c with { Tip = c.Tip + " Updated." }).ToArray() };
+        var revised = pack with { Version = "1.1.1", Characters = pack.WritingCharacters.Select(c => c with { Tip = c.Tip + " Updated." }).ToArray() };
         (await client.PostAsJsonAsync("/api/authoring/publish", revised)).EnsureSuccessStatusCode();
         var resumed = await client.GetFromJsonAsync<JsonElement>(Base(pack.Id) + $"/sessions/{TestApi.Id(session)}");
-        Assert.Equal("1.0.0", resumed.GetProperty("version").GetString());
+        Assert.Equal(pack.Version, resumed.GetProperty("version").GetString());
         await Finish(client, pack, session);
         Assert.Equal(0, (await Summary(client, revised)).GetProperty("characters")[0].GetProperty("independentCompletions").GetInt32());
         Assert.Equal(HttpStatusCode.Conflict, (await client.PostAsJsonAsync(Base(pack.Id) + "/sessions", new {
-            characterId = pack.WritingCharacters[0].Id, mode = "recall", requestId = "stale-version", version = "1.0.0" })).StatusCode);
+            characterId = pack.WritingCharacters[0].Id, mode = "recall", requestId = "stale-version", version = pack.Version })).StatusCode);
     }
     [Fact] public async Task Invalid_results_active_session_conflicts_and_account_deletion_are_handled()
     {
@@ -100,7 +100,7 @@ public class WritingApiTests(ApiFactory factory) : IClassFixture<ApiFactory>
     [Fact] public async Task Publishing_rejects_missing_audio_assets()
     {
         var (client, pack) = await Course();
-        var invalid = pack with { Version = "1.0.1", Characters = [pack.WritingCharacters[0] with { AudioUrl = "/writing/audio/missing.wav" }] };
+        var invalid = pack with { Version = "1.1.1", Characters = pack.WritingCharacters.Select((c, i) => i == 0 ? c with { AudioUrl = "/writing/audio/missing.wav" } : c).ToArray() };
         Assert.Equal(HttpStatusCode.BadRequest, (await client.PostAsJsonAsync("/api/authoring/publish", invalid)).StatusCode);
     }
 }

@@ -20,7 +20,7 @@ public class WritingTests
             Assert.Equal(c.StrokeData.Strokes.Length, c.StrokeData.Medians.Length);
             Assert.Contains(c.Glyph, c.Sentence + string.Concat(c.Words.Select(w => w.Text)));
         });
-        Assert.Equal(30, Flashcards.Expand(pack).Length);
+        Assert.Equal(40, Flashcards.Expand(pack).Length);
         Assert.Equal(10, ExamComposer.Compose(pack, pack.Blueprints[0], [], "writing-pilot").Length);
         Assert.False(pack.Features.Assessments);
     }
@@ -32,7 +32,7 @@ public class WritingTests
     }
     [Fact] public void Writing_validation_rejects_bad_references_remote_audio_and_unsafe_geometry()
     {
-        var p = Pilot(); var c = p.WritingCharacters[0];
+        var p = Pilot() with { CharacterStudy = null }; var c = p.WritingCharacters[0];
         foreach (var invalid in new[] {
             c with { LessonId = "missing" }, c with { ObjectiveIds = ["unknown"] },
             c with { AudioUrl = "https://external.invalid/clip.wav" },

@@ -111,6 +111,7 @@ public static partial class ContentEngine
         var features = p.Features;
         var questionsEnabled = features.Practice || features.Assessments;
         errors.AddRange(WritingContent.Validate(p));
+        errors.AddRange(CharacterStudyContent.Validate(p));
         if (!Enum.IsDefined(p.Profile)) Error("profile", "Profile must be course, exam, hybrid or flashcards.");
         if (!features.Lessons && !questionsEnabled && !features.Flashcards && !features.Writing) Error("capabilities", "Enable lessons, practice, assessments or flashcards.");
         if (features.Flashcards != (p.Decks.Length > 0)) Error("flashcardDecks", "Flashcard content and the flashcards capability must agree.");

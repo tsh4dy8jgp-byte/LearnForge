@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "id": "chinese-writing-pilot",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Chinese Characters & Writing",
-  "description": "Start writing Simplified Chinese: 30 characters, short lessons, stroke animations and gentle practice. An introductory pilot toward beginner learning.",
+  "description": "Learn 30 Simplified Chinese characters through short daily study, similar-character practice, supported readings and gentle handwriting exercises.",
   "license": "CC-BY-4.0 (original teaching text); bundled assets have separate notices",
   "profile": "course",
   "goal": "completion",
@@ -1647,6 +1647,162 @@
           "tags": [
             "recognition",
             "daily-life"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "character-confusions",
+      "title": "Tell similar characters apart",
+      "notes": [
+        {
+          "id": "two-three-a",
+          "kind": "basic",
+          "objectiveIds": [
+            "numbers-one"
+          ],
+          "front": "Choose the character for “two” (èr).",
+          "back": "二",
+          "explanation": "Count the horizontal strokes: 二 has two; 三 has three. In both characters the bottom stroke is the longest.",
+          "language": "zh-Hans",
+          "tags": [
+            "confusion",
+            "two-three"
+          ]
+        },
+        {
+          "id": "two-three-b",
+          "kind": "basic",
+          "objectiveIds": [
+            "numbers-one"
+          ],
+          "front": "Choose the character for “three” (sān).",
+          "back": "三",
+          "explanation": "Count the horizontal strokes: 二 has two; 三 has three. In both characters the bottom stroke is the longest.",
+          "language": "zh-Hans",
+          "tags": [
+            "confusion",
+            "two-three"
+          ]
+        },
+        {
+          "id": "person-big-a",
+          "kind": "basic",
+          "objectiveIds": [
+            "people"
+          ],
+          "front": "Choose the character for “person; people” (rén).",
+          "back": "人",
+          "explanation": "大 adds a horizontal stroke across the upper part. 人 has only the two falling strokes.",
+          "language": "zh-Hans",
+          "tags": [
+            "confusion",
+            "person-big"
+          ]
+        },
+        {
+          "id": "person-big-b",
+          "kind": "basic",
+          "objectiveIds": [
+            "people"
+          ],
+          "front": "Choose the character for “big” (dà).",
+          "back": "大",
+          "explanation": "大 adds a horizontal stroke across the upper part. 人 has only the two falling strokes.",
+          "language": "zh-Hans",
+          "tags": [
+            "confusion",
+            "person-big"
+          ]
+        },
+        {
+          "id": "mouth-day-a",
+          "kind": "basic",
+          "objectiveIds": [
+            "people"
+          ],
+          "front": "Choose the character for “mouth; opening” (kǒu).",
+          "back": "口",
+          "explanation": "日 has a horizontal stroke inside the frame. The inside of 口 is empty.",
+          "language": "zh-Hans",
+          "tags": [
+            "confusion",
+            "mouth-day"
+          ]
+        },
+        {
+          "id": "mouth-day-b",
+          "kind": "basic",
+          "objectiveIds": [
+            "people"
+          ],
+          "front": "Choose the character for “sun; day” (rì).",
+          "back": "日",
+          "explanation": "日 has a horizontal stroke inside the frame. The inside of 口 is empty.",
+          "language": "zh-Hans",
+          "tags": [
+            "confusion",
+            "mouth-day"
+          ]
+        },
+        {
+          "id": "wood-big-a",
+          "kind": "basic",
+          "objectiveIds": [
+            "nature"
+          ],
+          "front": "Choose the character for “wood; tree component” (mù).",
+          "back": "木",
+          "explanation": "木 has a central vertical stroke running through the horizontal. 大 has a horizontal and two falling strokes.",
+          "language": "zh-Hans",
+          "tags": [
+            "confusion",
+            "wood-big"
+          ]
+        },
+        {
+          "id": "wood-big-b",
+          "kind": "basic",
+          "objectiveIds": [
+            "people"
+          ],
+          "front": "Choose the character for “big” (dà).",
+          "back": "大",
+          "explanation": "木 has a central vertical stroke running through the horizontal. 大 has a horizontal and two falling strokes.",
+          "language": "zh-Hans",
+          "tags": [
+            "confusion",
+            "wood-big"
+          ]
+        },
+        {
+          "id": "day-month-a",
+          "kind": "basic",
+          "objectiveIds": [
+            "people"
+          ],
+          "front": "Choose the character for “sun; day” (rì).",
+          "back": "日",
+          "explanation": "日 is a closed rectangle with one inner horizontal. 月 has a hooked right side and two inner horizontals.",
+          "language": "zh-Hans",
+          "tags": [
+            "confusion",
+            "day-month"
+          ]
+        },
+        {
+          "id": "day-month-b",
+          "kind": "basic",
+          "objectiveIds": [
+            "nature"
+          ],
+          "front": "Choose the character for “moon; month” (yuè).",
+          "back": "月",
+          "explanation": "日 is a closed rectangle with one inner horizontal. 月 has a hooked right side and two inner horizontals.",
+          "language": "zh-Hans",
+          "tags": [
+            "confusion",
+            "day-month"
           ]
         }
       ]
@@ -6488,5 +6644,385 @@
       },
       "language": "zh-Hans"
     }
-  ]
+  ],
+  "characterStudy": {
+    "recognitionDeckId": "recognition",
+    "confusionDeckId": "character-confusions",
+    "contrasts": [
+      {
+        "id": "two-three",
+        "characterIds": [
+          "u4e8c",
+          "u4e09"
+        ],
+        "noteIds": [
+          "two-three-a",
+          "two-three-b"
+        ],
+        "explanation": "Count the horizontal strokes: 二 has two; 三 has three. In both characters the bottom stroke is the longest."
+      },
+      {
+        "id": "person-big",
+        "characterIds": [
+          "u4eba",
+          "u5927"
+        ],
+        "noteIds": [
+          "person-big-a",
+          "person-big-b"
+        ],
+        "explanation": "大 adds a horizontal stroke across the upper part. 人 has only the two falling strokes."
+      },
+      {
+        "id": "mouth-day",
+        "characterIds": [
+          "u53e3",
+          "u65e5"
+        ],
+        "noteIds": [
+          "mouth-day-a",
+          "mouth-day-b"
+        ],
+        "explanation": "日 has a horizontal stroke inside the frame. The inside of 口 is empty."
+      },
+      {
+        "id": "wood-big",
+        "characterIds": [
+          "u6728",
+          "u5927"
+        ],
+        "noteIds": [
+          "wood-big-a",
+          "wood-big-b"
+        ],
+        "explanation": "木 has a central vertical stroke running through the horizontal. 大 has a horizontal and two falling strokes."
+      },
+      {
+        "id": "day-month",
+        "characterIds": [
+          "u65e5",
+          "u6708"
+        ],
+        "noteIds": [
+          "day-month-a",
+          "day-month-b"
+        ],
+        "explanation": "日 is a closed rectangle with one inner horizontal. 月 has a hooked right side and two inner horizontals."
+      }
+    ],
+    "readings": [
+      {
+        "id": "count-to-three",
+        "title": "Count to three",
+        "requiredCharacterIds": [
+          "u4e00",
+          "u4e8c",
+          "u4e09"
+        ],
+        "lines": [
+          {
+            "words": [
+              {
+                "text": "一",
+                "pinyin": "yī",
+                "meaning": "one"
+              },
+              {
+                "text": "、",
+                "pinyin": "",
+                "meaning": ""
+              },
+              {
+                "text": "二",
+                "pinyin": "èr",
+                "meaning": "two"
+              },
+              {
+                "text": "、",
+                "pinyin": "",
+                "meaning": ""
+              },
+              {
+                "text": "三",
+                "pinyin": "sān",
+                "meaning": "three"
+              },
+              {
+                "text": "。",
+                "pinyin": "",
+                "meaning": ""
+              }
+            ],
+            "translation": "One, two, three."
+          }
+        ],
+        "note": "Read the three numbers in order, then try again with the pronunciation hidden.",
+        "supportWords": []
+      },
+      {
+        "id": "say-hello",
+        "title": "Say hello",
+        "requiredCharacterIds": [
+          "u4f60",
+          "u597d"
+        ],
+        "lines": [
+          {
+            "words": [
+              {
+                "text": "你好",
+                "pinyin": "nǐ hǎo",
+                "meaning": "hello"
+              },
+              {
+                "text": "！",
+                "pinyin": "",
+                "meaning": ""
+              }
+            ],
+            "translation": "Hello!"
+          }
+        ],
+        "note": "你好 is a greeting. In connected speech, the first third tone is normally pronounced with a rising tone: ní hǎo. The written Pinyin here keeps the dictionary tones.",
+        "supportWords": []
+      },
+      {
+        "id": "months",
+        "title": "Read a calendar",
+        "requiredCharacterIds": [
+          "u4e00",
+          "u4e09",
+          "u6708"
+        ],
+        "lines": [
+          {
+            "words": [
+              {
+                "text": "一月",
+                "pinyin": "yī yuè",
+                "meaning": "January"
+              },
+              {
+                "text": "。",
+                "pinyin": "",
+                "meaning": ""
+              }
+            ],
+            "translation": "January."
+          },
+          {
+            "words": [
+              {
+                "text": "三月",
+                "pinyin": "sān yuè",
+                "meaning": "March"
+              },
+              {
+                "text": "。",
+                "pinyin": "",
+                "meaning": ""
+              }
+            ],
+            "translation": "March."
+          }
+        ],
+        "note": "A number followed by 月 names a month. Compare 一月 (January) with 三月 (March).",
+        "supportWords": []
+      },
+      {
+        "id": "mountains",
+        "title": "Mountains around you",
+        "requiredCharacterIds": [
+          "u706b",
+          "u5c71",
+          "u5927",
+          "u5c0f"
+        ],
+        "lines": [
+          {
+            "words": [
+              {
+                "text": "火山",
+                "pinyin": "huǒshān",
+                "meaning": "volcano"
+              },
+              {
+                "text": "。",
+                "pinyin": "",
+                "meaning": ""
+              }
+            ],
+            "translation": "A volcano."
+          },
+          {
+            "words": [
+              {
+                "text": "大山",
+                "pinyin": "dà shān",
+                "meaning": "big mountain"
+              },
+              {
+                "text": "。",
+                "pinyin": "",
+                "meaning": ""
+              }
+            ],
+            "translation": "A big mountain."
+          },
+          {
+            "words": [
+              {
+                "text": "小山",
+                "pinyin": "xiǎo shān",
+                "meaning": "small mountain; hill"
+              },
+              {
+                "text": "。",
+                "pinyin": "",
+                "meaning": ""
+              }
+            ],
+            "translation": "A small mountain; a hill."
+          }
+        ],
+        "note": "These are short labels, like captions under pictures. 火山 combines fire and mountain to mean volcano.",
+        "supportWords": []
+      },
+      {
+        "id": "student",
+        "title": "Introduce a student",
+        "requiredCharacterIds": [
+          "u6211",
+          "u4f60",
+          "u5b66",
+          "u751f"
+        ],
+        "lines": [
+          {
+            "words": [
+              {
+                "text": "我",
+                "pinyin": "wǒ",
+                "meaning": "I; me"
+              },
+              {
+                "text": "是",
+                "pinyin": "shì",
+                "meaning": "am; is; are"
+              },
+              {
+                "text": "学生",
+                "pinyin": "xuésheng",
+                "meaning": "student"
+              },
+              {
+                "text": "。",
+                "pinyin": "",
+                "meaning": ""
+              }
+            ],
+            "translation": "I am a student."
+          },
+          {
+            "words": [
+              {
+                "text": "你",
+                "pinyin": "nǐ",
+                "meaning": "you"
+              },
+              {
+                "text": "是",
+                "pinyin": "shì",
+                "meaning": "am; is; are"
+              },
+              {
+                "text": "学生",
+                "pinyin": "xuésheng",
+                "meaning": "student"
+              },
+              {
+                "text": "。",
+                "pinyin": "",
+                "meaning": ""
+              }
+            ],
+            "translation": "You are a student."
+          }
+        ],
+        "note": "是 links a person to a noun here. 学生 is one word; its second syllable is normally neutral in Mandarin.",
+        "supportWords": [
+          {
+            "text": "是",
+            "pinyin": "shì",
+            "meaning": "am; is; are"
+          }
+        ]
+      },
+      {
+        "id": "drinks",
+        "title": "Water or tea?",
+        "requiredCharacterIds": [
+          "u6211",
+          "u559d",
+          "u6c34",
+          "u4f60",
+          "u8336"
+        ],
+        "lines": [
+          {
+            "words": [
+              {
+                "text": "我",
+                "pinyin": "wǒ",
+                "meaning": "I; me"
+              },
+              {
+                "text": "喝",
+                "pinyin": "hē",
+                "meaning": "drink"
+              },
+              {
+                "text": "水",
+                "pinyin": "shuǐ",
+                "meaning": "water"
+              },
+              {
+                "text": "。",
+                "pinyin": "",
+                "meaning": ""
+              }
+            ],
+            "translation": "I drink water."
+          },
+          {
+            "words": [
+              {
+                "text": "你",
+                "pinyin": "nǐ",
+                "meaning": "you"
+              },
+              {
+                "text": "喝",
+                "pinyin": "hē",
+                "meaning": "drink"
+              },
+              {
+                "text": "茶",
+                "pinyin": "chá",
+                "meaning": "tea"
+              },
+              {
+                "text": "。",
+                "pinyin": "",
+                "meaning": ""
+              }
+            ],
+            "translation": "You drink tea."
+          }
+        ],
+        "note": "The order here is person + action + drink. Change 水 to 茶 to talk about drinking tea.",
+        "supportWords": []
+      }
+    ]
+  }
 }
