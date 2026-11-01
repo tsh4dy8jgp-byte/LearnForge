@@ -1,3 +1,7 @@
 namespace LearnForge.Core;
 
-public enum AssessmentMode { Mock, Learn }
+public enum AssessmentMode
+{
+    Mock,
+    Learn
+}

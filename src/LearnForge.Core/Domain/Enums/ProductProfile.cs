@@ -1,3 +1,9 @@
 namespace LearnForge.Core;
 
-public enum ProductProfile { Course, Exam, Hybrid, Flashcards }
+public enum ProductProfile
+{
+    Course,
+    Exam,
+    Hybrid,
+    Flashcards
+}
