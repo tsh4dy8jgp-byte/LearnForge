@@ -86,8 +86,15 @@ public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache re
         catch (InvalidOperationException) { throw new DomainError(409, "This session could not be assembled. Start again; if it keeps failing, contact the course publisher."); }
     }
 
-    private sealed record EvidenceRow(long Id, string QuestionId, string FamilyId, string[] ObjectiveIds,
-        EvidenceSource Source, bool Answered, bool FullyCorrect, DateTime At);
+    private sealed record EvidenceRow(
+        long Id,
+        string QuestionId,
+        string FamilyId,
+        string[] ObjectiveIds,
+        EvidenceSource Source,
+        bool Answered,
+        bool FullyCorrect,
+        DateTime At);
 
     private Question[] Focused(Pack pack, Blueprint blueprint, StartRequest request, PracticeFocus focus, List<EvidenceRow> history, HashSet<string> seen)
     {

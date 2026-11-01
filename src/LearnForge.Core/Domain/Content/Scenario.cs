@@ -1,3 +1,6 @@
 namespace LearnForge.Core;
 
-public sealed record Scenario(string Id, string Title, string Background);
+public sealed record Scenario(
+    string Id,
+    string Title,
+    string Background);

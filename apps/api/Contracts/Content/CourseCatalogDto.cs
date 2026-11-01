@@ -1,10 +1,25 @@
 namespace LearnForge.Api.Contracts.Content;
 
 // Public course data only; personal progress lives under /api/me/courses/{id}.
-public sealed record CourseCatalogDto(string Id, string Title, string Description, string Version, string License,
-    Objective[] Objectives, Lesson[] Lessons, Blueprint[] Blueprints, SourceReference[] Sources,
-    ReadinessPolicy Readiness, CourseGoal Goal, int QuestionCount, ProductProfile Profile, PackCapabilities Capabilities,
-    FlashcardDeck[]? FlashcardDecks = null, FlashcardUnit[]? Flashcards = null, FlashcardExportOptions? FlashcardExportDefaults = null, WritingCharacter[]? Characters = null,
+public sealed record CourseCatalogDto(
+    string Id,
+    string Title,
+    string Description,
+    string Version,
+    string License,
+    Objective[] Objectives,
+    Lesson[] Lessons,
+    Blueprint[] Blueprints,
+    SourceReference[] Sources,
+    ReadinessPolicy Readiness,
+    CourseGoal Goal,
+    int QuestionCount,
+    ProductProfile Profile,
+    PackCapabilities Capabilities,
+    FlashcardDeck[]? FlashcardDecks = null,
+    FlashcardUnit[]? Flashcards = null,
+    FlashcardExportOptions? FlashcardExportDefaults = null,
+    WritingCharacter[]? Characters = null,
     CharacterStudy? CharacterStudy = null)
 {
     public static CourseCatalogDto From(Pack pack) => new(pack.Id, pack.Title, pack.Description, pack.Version,

@@ -1,3 +1,6 @@
 namespace LearnForge.Core;
 
-public sealed record FlashcardDeck(string Id, string Title, FlashcardNote[] Notes);
+public sealed record FlashcardDeck(
+    string Id,
+    string Title,
+    FlashcardNote[] Notes);

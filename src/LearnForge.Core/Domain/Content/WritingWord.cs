@@ -1,3 +1,6 @@
 namespace LearnForge.Core;
 
-public sealed record WritingWord(string Text, string Pinyin, string Meaning);
+public sealed record WritingWord(
+    string Text,
+    string Pinyin,
+    string Meaning);

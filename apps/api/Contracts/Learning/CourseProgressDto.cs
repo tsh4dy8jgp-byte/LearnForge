@@ -12,4 +12,5 @@ public sealed record CourseProgressDto(
     NextStepDto[] NextSteps,
     CourseGoalStatusDto Goal,
     DateTime? LastActivityAt,
-    PackCapabilities Capabilities, FlashcardSummaryDto? Flashcards = null);
+    PackCapabilities Capabilities,
+    FlashcardSummaryDto? Flashcards = null);
