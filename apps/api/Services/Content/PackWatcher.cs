@@ -8,7 +8,9 @@ namespace LearnForge.Api.Services.Content;
 public sealed class PackWatcher(IServiceScopeFactory scopes, IConfiguration configuration, IHostEnvironment environment,
     ILogger<PackWatcher> logger) : BackgroundService
 {
-    private readonly record struct Stamp(long Length, DateTime Written);
+    private readonly record struct Stamp(
+        long Length,
+        DateTime Written);
 
     private readonly Dictionary<string, Stamp> processed = new(StringComparer.Ordinal);
     private readonly HashSet<string> missing = new(StringComparer.Ordinal);
