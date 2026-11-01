@@ -1,3 +1,7 @@
 namespace LearnForge.Core;
 
-public enum EnrollmentStatus { Active, Archived }
+public enum EnrollmentStatus
+{
+    Active,
+    Archived
+}

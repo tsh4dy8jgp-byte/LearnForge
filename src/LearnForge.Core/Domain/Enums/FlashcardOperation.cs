@@ -1,3 +1,8 @@
 namespace LearnForge.Core;
 
-public enum FlashcardOperation { Reveal, Rate, Finish }
+public enum FlashcardOperation
+{
+    Reveal,
+    Rate,
+    Finish
+}

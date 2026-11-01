@@ -1,3 +1,7 @@
 namespace LearnForge.Core;
 
-public enum ScoringPolicy { Exact, Partial }
+public enum ScoringPolicy
+{
+    Exact,
+    Partial
+}

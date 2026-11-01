@@ -1,3 +1,7 @@
 namespace LearnForge.Core;
 
-public enum AttemptStatus { InProgress, Completed }
+public enum AttemptStatus
+{
+    InProgress,
+    Completed
+}
