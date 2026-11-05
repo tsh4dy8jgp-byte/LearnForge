@@ -9,7 +9,7 @@ test('practical AI course supports saved reading, capstone review and graded mas
   const catalog = await (await page.request.get(`/api/catalog/${pack.id}`)).json();
   expect(catalog.questions).toBeUndefined();
   expect(JSON.stringify(catalog)).not.toContain('grading');
-  expect(catalog.capabilities).toEqual({ lessons: true, practice: true, assessments: false });
+  expect(catalog.capabilities).toEqual({ lessons: true, practice: true, assessments: false, flashcards: false });
   expect(catalog.blueprints[0].count).toBe(16);
 
   await page.goto('/sign-in');
