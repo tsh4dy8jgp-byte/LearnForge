@@ -13,7 +13,9 @@ import { CourseLessons } from './course-lessons';
 import { ObjectiveMap } from './objective-map';
 import { PracticeSetup } from './practice-setup';
 import { PracticeSelection } from './practice-selection';
+import { CourseWriting } from '../../writing/course-writing';
 import { CourseFlashcards } from '../../flashcards/course-flashcards';
+import { CourseCharacterStudy } from '../../writing/course-character-study';
 
 @Component({
   imports: [
@@ -28,6 +30,8 @@ import { CourseFlashcards } from '../../flashcards/course-flashcards';
     ObjectiveMap,
     PracticeSetup,
     CourseFlashcards,
+    CourseWriting,
+    CourseCharacterStudy,
   ],
   templateUrl: './course-page.html',
 })
@@ -53,8 +57,10 @@ export class CoursePage {
   protected readonly tabs = computed(() => {
     const features = this.course()?.capabilities;
     return [
+      ...(this.course()?.characterStudy ? [{ id: 'study', title: "Today's study" }] : []),
       ...(features?.lessons ? [{ id: 'learn', title: 'Lessons' }] : []),
       { id: 'map', title: 'Content map' },
+      ...(features?.writing ? [{ id: 'writing', title: 'Characters & writing' }] : []),
       ...(features?.flashcards ? [{ id: 'flashcards', title: 'Flashcards' }] : []),
       ...(features?.practice || features?.assessments
         ? [
@@ -77,13 +83,15 @@ export class CoursePage {
     const requested = this.tab();
     return requested && this.tabs().some((t) => t.id === requested)
       ? requested
-      : this.course()?.capabilities.lessons
-        ? 'learn'
-        : this.tabs().some((t) => t.id === 'practice')
-          ? 'practice'
-          : this.course()?.capabilities.flashcards
-            ? 'flashcards'
-            : 'map';
+      : this.course()?.characterStudy
+        ? 'study'
+        : this.course()?.capabilities.lessons
+          ? 'learn'
+          : this.tabs().some((t) => t.id === 'practice')
+            ? 'practice'
+            : this.course()?.capabilities.flashcards
+              ? 'flashcards'
+              : 'map';
   });
   protected readonly lessonId = linkedSignal(() => this.lesson() ?? '');
   protected readonly course = computed(() =>

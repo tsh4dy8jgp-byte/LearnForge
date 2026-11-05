@@ -1,3 +1,4 @@
 namespace LearnForge.Api.Contracts.Common;
 
-public sealed record HealthResponse(string Status);
+public sealed record HealthResponse(
+    string Status);

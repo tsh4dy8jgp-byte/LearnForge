@@ -5,7 +5,7 @@ namespace LearnForge.Core;
 
 public static partial class Flashcards
 {
-    public static readonly string[] Languages = ["en", "ru", "kk", "uk", "de", "fr", "es", "it", "pt", "tr", "nl", "pl"];
+    public static readonly string[] Languages = ["en", "ru", "kk", "uk", "de", "fr", "es", "it", "pt", "tr", "nl", "pl", "zh-Hans"];
     // Intentionally excludes nested deletions and braces in answers/hints.
     [GeneratedRegex(@"\{\{c([1-9][0-9]?)::([^{}]+?)\}\}", RegexOptions.Singleline)]
     private static partial Regex Deletion();

@@ -1,0 +1,30 @@
+LearnForge Characters & Writing pilot
+
+Teaching text and original examples: LearnForge contributors, 2026, CC BY 4.0.
+https://creativecommons.org/licenses/by/4.0/
+Original material is an introductory pilot, not an official language-exam syllabus.
+
+Stroke rendering and matching: Hanzi Writer 3.7.3 by David Chanin, MIT.
+https://github.com/chanind/hanzi-writer
+Full license: licenses/hanzi-writer-MIT.txt
+
+Stroke outlines and medians embedded in the content pack: unmodified entries
+from hanzi-writer-data 2.0.1, derived from Make Me a Hanzi and Arphic fonts.
+https://github.com/chanind/hanzi-writer-data
+https://github.com/skishore/makemeahanzi
+Arphic Public License: licenses/ARPHICPL.txt
+
+Teaching font: LXGW WenKai GB Regular v1.521, SIL Open Font License 1.1.
+https://github.com/lxgw/LxgwWenkaiGB
+Full license and upstream copyright: licenses/LXGWWenKaiGB-OFL.txt
+The bundled LearnForge WenKai Pilot font is a renamed subset covering this
+pilot's text, derived on 2026-10-25. Outlines are unchanged. Font updates must
+preserve this notice and the full upstream license. Other packs may require
+an expanded font or an explicitly configured export font.
+
+Pronunciation clips: locally generated synthetic Mandarin audio using the
+macOS Tingting voice, at 120 words per minute, converted to mono PCM WAV
+22,050 Hz. Each clip speaks the corresponding character in isolation.
+Pinyin and audio transcripts are included in the character records. Connected
+speech and tone changes are described in the learning notes. These are
+synthetic examples and have not been reviewed by a native-speaking teacher.

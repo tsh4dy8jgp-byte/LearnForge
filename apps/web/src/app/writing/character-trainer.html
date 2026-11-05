@@ -1,0 +1,158 @@
+<div class="trainer">
+  @if (mode() === 'copy' || modelShown()) {
+    <div class="copy-model" aria-label="Character model">
+      <svg viewBox="0 0 1024 1024" role="img" [attr.aria-label]="character().glyph">
+        <g transform="translate(0 900) scale(1 -1)">
+          @for (path of character().strokeData.strokes; track $index) {
+            <path [attr.d]="path" />
+          }
+        </g>
+      </svg>
+      <span class="small muted">Copy this model</span>
+    </div>
+  }
+  @if (mode() === 'sequence') {
+    <p>Which stroke comes next? {{ stroke() }} / {{ character().strokeData.strokes.length }}</p>
+    <div class="stroke-choices" role="group" aria-label="Choose the next stroke">
+      @for (index of choices(); track index; let option = $index) {
+        <button
+          type="button"
+          [disabled]="done()"
+          (click)="choose(index)"
+          [attr.aria-label]="'Stroke shape option ' + (option + 1)"
+        >
+          <svg viewBox="0 0 1024 1024" aria-hidden="true">
+            <g transform="translate(0 900) scale(1 -1)">
+              <path [attr.d]="character().strokeData.strokes[staticHint()!]" />
+            </g>
+          </svg>
+          <span>Option {{ option + 1 }}</span>
+        </button>
+      }
+    </div>
+  } @else {
+    <div
+      class="writing-board"
+      [class.cross]="grid() !== 'none'"
+      [class.rice]="grid() === 'rice'"
+      [class.drawing]="mode() !== 'watch'"
+    >
+      @if (mode() === 'watch' && reduced()) {
+        <svg
+          class="static-model"
+          viewBox="0 0 1024 1024"
+          role="img"
+          [attr.aria-label]="'Stroke model, showing ' + stroke() + ' strokes'"
+        >
+          <g transform="translate(0 900) scale(1 -1)">
+            @for (path of character().strokeData.strokes; track $index) {
+              @if ($index < stroke()) {
+                <path [attr.d]="path" />
+              }
+            }
+          </g>
+        </svg>
+      } @else {
+        <div
+          #canvas
+          class="writing-canvas"
+          role="group"
+          [attr.aria-label]="
+            mode() === 'watch' ? 'Animated stroke model' : 'Draw the character here'
+          "
+          (pointercancel)="reset()"
+        ></div>
+      }
+      @if (staticHint() !== null) {
+        <svg
+          class="static-hint"
+          viewBox="0 0 1024 1024"
+          role="img"
+          aria-label="Next stroke; the circle marks its beginning"
+        >
+          <g transform="translate(0 900) scale(1 -1)">
+            <path [attr.d]="character().strokeData.strokes[staticHint()!]" />
+            <circle
+              [attr.cx]="character().strokeData.medians[staticHint()!][0][0]"
+              [attr.cy]="character().strokeData.medians[staticHint()!][0][1]"
+              r="22"
+            />
+          </g>
+        </svg>
+      }
+      @if (numbers() && mode() !== 'recall') {
+        <svg class="stroke-numbers" viewBox="0 0 1024 1024" aria-hidden="true">
+          @for (median of character().strokeData.medians; track $index) {
+            <text [attr.x]="median[0][0]" [attr.y]="900 - median[0][1]">{{ $index + 1 }}</text>
+          }
+        </svg>
+      }
+    </div>
+  }
+  <p class="practice-feedback" aria-live="polite" role="status">{{ feedback() }}</p>
+  <div class="row controls">
+    @if (mode() === 'watch') {
+      @if (!reduced()) {
+        <button class="button" [disabled]="playing()" (click)="play()">Play stroke order</button>
+        <button class="button secondary" [disabled]="!playing()" (click)="pause()">
+          {{ paused() ? 'Resume' : 'Pause' }}
+        </button>
+      }
+      <label
+        >Playback speed
+        <select [ngModel]="speed()" (ngModelChange)="speed.set(+$event)">
+          <option [value]="0.5">Slow</option>
+          <option [value]="1">Normal</option>
+          <option [value]="1.8">Fast</option>
+        </select></label
+      >
+    } @else if (mode() !== 'sequence') {
+      <button class="button secondary" [disabled]="done()" (click)="hint()">
+        Hint: next stroke
+      </button>
+      @if (mode() === 'recall' && !modelShown()) {
+        <button class="button secondary" [disabled]="done()" (click)="showModel()">
+          Show model (hint)
+        </button>
+      }
+    }
+    <button class="button secondary" [disabled]="done() && mode() !== 'watch'" (click)="reset()">
+      Clear / retry
+    </button>
+  </div>
+  @if (mode() === 'watch') {
+    <div class="row stroke-steps" role="group" aria-label="Step through stroke order">
+      @for (path of character().strokeData.strokes; track $index) {
+        <button class="button secondary" (click)="step($index)">Stroke {{ $index + 1 }}</button>
+      }
+    </div>
+  }
+  <div class="row controls">
+    <label
+      >Grid
+      <select [ngModel]="grid()" (ngModelChange)="grid.set($event)">
+        <option value="cross">Crosshair</option>
+        <option value="rice">米字格</option>
+        <option value="none">Square only</option>
+      </select></label
+    >
+    @if (mode() !== 'recall') {
+      <label
+        ><input type="checkbox" [ngModel]="numbers()" (ngModelChange)="numbers.set($event)" />
+        Number strokes</label
+      >
+    }
+    @if (mode() === 'watch') {
+      <label
+        ><input type="checkbox" [ngModel]="reduced()" (ngModelChange)="reduced.set($event)" />
+        Static stroke steps</label
+      >
+    }
+  </div>
+  @if (mode() !== 'watch') {
+    <p class="small muted">
+      {{ mistakes() }} retries · {{ hints() }} hints · {{ stroke() }} /
+      {{ character().strokeData.strokes.length }} strokes. Practice feedback is approximate.
+    </p>
+  }
+</div>

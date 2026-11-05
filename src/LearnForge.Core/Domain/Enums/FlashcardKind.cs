@@ -1,3 +1,8 @@
 namespace LearnForge.Core;
 
-public enum FlashcardKind { Basic, Reversible, Cloze }
+public enum FlashcardKind
+{
+    Basic,
+    Reversible,
+    Cloze
+}

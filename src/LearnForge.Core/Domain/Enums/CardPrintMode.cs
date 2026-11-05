@@ -1,2 +1,6 @@
 namespace LearnForge.Core;
-public enum CardPrintMode { Duplex, Foldable }
+public enum CardPrintMode
+{
+    Duplex,
+    Foldable
+}

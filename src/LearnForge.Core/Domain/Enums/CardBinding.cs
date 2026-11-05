@@ -1,2 +1,6 @@
 namespace LearnForge.Core;
-public enum CardBinding { Long, Short }
+public enum CardBinding
+{
+    Long,
+    Short
+}

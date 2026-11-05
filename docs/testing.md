@@ -2,6 +2,8 @@
 
 Flashcard checks cover content compatibility/validation, card expansion, review intervals, ownership, reveal rules, request replay and stale revisions, session selection limits, suspension, revised content, account export/deletion, export validation and per-client export limits. `make test-flashcard-exports` covers Anki archives and printable geometry. Actual application import and printer calibration are manual checks.
 
+Character-study checks cover bounded due-first sessions, limit/replay validation, contrast answer mappings, complete reading prerequisites and support vocabulary, suspended cards, progress-load recovery, save retries, resumed comparisons, and reading previews that create no progress mutations. `e2e/character-study.spec.ts` exercises the complete saved sequence, reload/resume, wrong-choice scheduling, keyboard word lookup/focus, and mobile reflow. Browser screenshots are written to `apps/web/test-results/`. These checks do not replace native-speaking content review or assistive-technology testing.
+
 Accessibility acceptance is defined in the [WCAG 2.2 AA verification plan](accessibility/verification.md), with [criterion traceability](accessibility/conformance-matrix.md) and complete learner/publisher journeys. It requires manual keyboard, assistive-technology and content evaluation as well as planned automated scans. The commands below run existing tests; they are not evidence of full WCAG conformance.
 
 Run the native suite:

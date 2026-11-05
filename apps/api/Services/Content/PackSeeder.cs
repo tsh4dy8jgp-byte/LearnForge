@@ -31,7 +31,7 @@ public static class PackSeeder
                 // A file larger than the compiler's limit (plus a byte-order mark) cannot compile, so do not read it into memory.
                 compiled = new FileInfo(path).Length > ContentEngine.MaxSourceBytes + 3
                     ? new(null, [new("LF001", "$", "Pack source exceeds 2 MB.")], "")
-                    : ContentEngine.Compile(await File.ReadAllTextAsync(path, cancellationToken));
+                    : WritingAssetValidator.Check(ContentEngine.Compile(await File.ReadAllTextAsync(path, cancellationToken)));
             }
             catch (Exception e) when (!strict && e is IOException or UnauthorizedAccessException)
             {

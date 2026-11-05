@@ -2,6 +2,7 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 COPY global.json Directory.Build.props ./
 COPY src/ src/
+COPY apps/web/public/writing/ apps/web/public/writing/
 COPY tools/flashcards/ tools/flashcards/
 COPY apps/api/ apps/api/
 COPY packs/ packs/

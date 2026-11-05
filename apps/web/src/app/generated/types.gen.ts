@@ -133,6 +133,34 @@ export type ChangePasswordRequest = {
     newPassword: string;
 };
 
+export type CharacterContrast = {
+    id: string;
+    characterIds: Array<string>;
+    noteIds: Array<string>;
+    explanation: string;
+};
+
+export type CharacterReading = {
+    id: string;
+    title: string;
+    requiredCharacterIds: Array<string>;
+    lines: Array<CharacterReadingLine>;
+    note: string;
+    supportWords: Array<WritingWord>;
+};
+
+export type CharacterReadingLine = {
+    words: Array<WritingWord>;
+    translation: string;
+};
+
+export type CharacterStudy = {
+    recognitionDeckId: string;
+    confusionDeckId: string;
+    contrasts: Array<CharacterContrast>;
+    readings: Array<CharacterReading>;
+};
+
 export type CodeSample = {
     language: string;
     source: string;
@@ -164,6 +192,8 @@ export type CourseCatalogDto = {
     flashcardDecks?: null | Array<FlashcardDeck>;
     flashcards?: null | Array<FlashcardUnit>;
     flashcardExportDefaults?: null | FlashcardExportOptions;
+    characters?: null | Array<WritingCharacter>;
+    characterStudy?: null | CharacterStudy;
 };
 
 export type CourseGoal = 'readiness' | 'mastery' | 'completion' | 'review';
@@ -333,6 +363,7 @@ export type FlashcardStartRequest = {
     deck?: null | string;
     objective?: null | string;
     tag?: null | string;
+    limit?: null | number;
 };
 
 export type FlashcardStatusDto = {
@@ -478,6 +509,8 @@ export type Pack = {
     profile?: ProductProfile;
     capabilities?: null | PackCapabilities;
     flashcardDecks?: null | Array<FlashcardDeck>;
+    characters?: null | Array<WritingCharacter>;
+    characterStudy?: null | CharacterStudy;
 };
 
 export type PackCapabilities = {
@@ -485,6 +518,7 @@ export type PackCapabilities = {
     practice: boolean;
     assessments: boolean;
     flashcards?: boolean;
+    writing?: boolean;
 };
 
 export type PracticeFocus = 'mistakes' | 'weak' | 'objective';
@@ -611,6 +645,85 @@ export type ValidationResponseDto = {
     questionCount: null | number;
     lessonCount: null | number;
     warnings: Array<Diagnostic>;
+};
+
+export type WritingCharacter = {
+    id: string;
+    glyph: string;
+    pinyin: string;
+    meaning: string;
+    lessonId: string;
+    objectiveIds: Array<string>;
+    components: string;
+    tip: string;
+    words: Array<WritingWord>;
+    sentence: string;
+    sentencePinyin: string;
+    translation: string;
+    glossary: string;
+    audioUrl: string;
+    audioTranscript: string;
+    strokeData: WritingStrokeData;
+    language?: string;
+};
+
+export type WritingCharacterProgressDto = {
+    characterId: string;
+    assistedCompletions: number;
+    independentCompletions: number;
+    sequenceCompletions: number;
+    stage: number;
+    dueAt: null | string;
+};
+
+export type WritingMode = 'watch' | 'trace' | 'copy' | 'recall' | 'sequence';
+
+export type WritingResultRequest = {
+    requestId: string;
+    revision: number;
+    completed: boolean;
+    mistakes: number;
+    hints: number;
+};
+
+export type WritingSessionDto = {
+    id: string;
+    packId: string;
+    version: string;
+    character: WritingCharacter;
+    mode: WritingMode;
+    revision: number;
+    startedAt: string;
+    finishedAt: null | string;
+    completed: boolean;
+    mistakes: number;
+    hints: number;
+};
+
+export type WritingStartRequest = {
+    characterId: string;
+    mode: WritingMode;
+    requestId: string;
+    version: string;
+};
+
+export type WritingStrokeData = {
+    strokes: Array<string>;
+    medians: Array<Array<Array<number>>>;
+};
+
+export type WritingSummaryDto = {
+    packId: string;
+    version: string;
+    due: number;
+    activeSessionId: null | string;
+    characters: Array<WritingCharacterProgressDto>;
+};
+
+export type WritingWord = {
+    text: string;
+    pinyin: string;
+    meaning: string;
 };
 
 export type GetHealthData = {
@@ -1283,3 +1396,77 @@ export type PutApiMeCoursesByIdFlashcardsSuspensionResponses = {
 };
 
 export type PutApiMeCoursesByIdFlashcardsSuspensionResponse = PutApiMeCoursesByIdFlashcardsSuspensionResponses[keyof PutApiMeCoursesByIdFlashcardsSuspensionResponses];
+
+export type GetApiMeCoursesByIdWritingData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/me/courses/{id}/writing';
+};
+
+export type GetApiMeCoursesByIdWritingResponses = {
+    /**
+     * OK
+     */
+    200: WritingSummaryDto;
+};
+
+export type GetApiMeCoursesByIdWritingResponse = GetApiMeCoursesByIdWritingResponses[keyof GetApiMeCoursesByIdWritingResponses];
+
+export type PostApiMeCoursesByIdWritingSessionsData = {
+    body: WritingStartRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/me/courses/{id}/writing/sessions';
+};
+
+export type PostApiMeCoursesByIdWritingSessionsResponses = {
+    /**
+     * OK
+     */
+    200: WritingSessionDto;
+};
+
+export type PostApiMeCoursesByIdWritingSessionsResponse = PostApiMeCoursesByIdWritingSessionsResponses[keyof PostApiMeCoursesByIdWritingSessionsResponses];
+
+export type GetApiMeCoursesByIdWritingSessionsBySessionIdData = {
+    body?: never;
+    path: {
+        id: string;
+        sessionId: string;
+    };
+    query?: never;
+    url: '/api/me/courses/{id}/writing/sessions/{sessionId}';
+};
+
+export type GetApiMeCoursesByIdWritingSessionsBySessionIdResponses = {
+    /**
+     * OK
+     */
+    200: WritingSessionDto;
+};
+
+export type GetApiMeCoursesByIdWritingSessionsBySessionIdResponse = GetApiMeCoursesByIdWritingSessionsBySessionIdResponses[keyof GetApiMeCoursesByIdWritingSessionsBySessionIdResponses];
+
+export type PostApiMeCoursesByIdWritingSessionsBySessionIdResultData = {
+    body: WritingResultRequest;
+    path: {
+        id: string;
+        sessionId: string;
+    };
+    query?: never;
+    url: '/api/me/courses/{id}/writing/sessions/{sessionId}/result';
+};
+
+export type PostApiMeCoursesByIdWritingSessionsBySessionIdResultResponses = {
+    /**
+     * OK
+     */
+    200: WritingSessionDto;
+};
+
+export type PostApiMeCoursesByIdWritingSessionsBySessionIdResultResponse = PostApiMeCoursesByIdWritingSessionsBySessionIdResultResponses[keyof PostApiMeCoursesByIdWritingSessionsBySessionIdResultResponses];

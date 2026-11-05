@@ -21,6 +21,8 @@ build:
 	dotnet build LearnForge.slnx -c Release
 	npm run build --prefix apps/web
 check-content:
+	python3 scripts/check-writing-assets.py
+	dotnet run --project tools/cli -- check packs/chinese-writing-pilot.json
 	dotnet run --project tools/cli -- check packs/reasoning-foundations.json
 	dotnet run --project tools/cli -- check packs/evidence-lab.json
 	dotnet run --project tools/cli -- check packs/recall-foundations.json
