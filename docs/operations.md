@@ -1,5 +1,7 @@
 # Operations
 
+The FlashcardReview migrations add review state/history for both providers. Deploy the export Python environment and Unicode fonts with the API; Docker supplies them. Back up personal review records with the database. Exports run in temporary directories, with two processes per replica, 120-second timeout and 50 MB output cap. Monitor export 422/429 failures and latency. Older binaries cannot read newly published flashcard packs; rollback requires compatible releases and a pre-upgrade backup.
+
 ## Configuration
 
 Use environment variables or a secret store:

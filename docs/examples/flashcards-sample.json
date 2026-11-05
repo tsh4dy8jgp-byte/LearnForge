@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "recall-foundations",
+  "version": "1.0.0",
+  "title": "Recall foundations",
+  "description": "An original demonstration of basic, reversible and cloze flashcards for study skills.",
+  "license": "CC0-1.0",
+  "profile": "flashcards",
+  "goal": "review",
+  "objectives": [{"id": "recall", "title": "Use purposeful recall practice", "prerequisites": []}],
+  "lessons": [], "questions": [], "scenarios": [], "blueprints": [], "sources": [],
+  "flashcardDecks": [{
+    "id": "study", "title": "Study skills",
+    "notes": [
+      {"id": "recall-first", "kind": "basic", "objectiveIds": ["recall"], "front": "What should you try before revealing a flashcard's answer?", "back": "Recall the answer from memory.", "explanation": "Attempting recall helps distinguish what you remember from what looks familiar.", "tags": ["habits"], "language": "en"},
+      {"id": "term", "kind": "reversible", "objectiveIds": ["recall"], "front": "Retrieval practice", "back": "Attempting to recall information from memory.", "explanation": "This term-definition pair is meaningful in both directions.", "tags": ["terms"], "language": "en"},
+      {"id": "spacing", "kind": "cloze", "objectiveIds": ["recall"], "text": "Distribute review across {{c1::separate study sessions::when}} rather than only {{c2::one long session}}.", "explanation": "Use the review queue to spread practice over time. Interval settings are scheduling rules, not a guarantee of learning.", "tags": ["habits"], "language": "en"},
+      {"id": "atomic", "kind": "basic", "objectiveIds": ["recall"], "front": "How many main recall targets should a basic flashcard contain?", "back": "One clear recall target.", "explanation": "Split a dense card into focused prompts so a rating reflects a clear target.", "tags": ["authoring"], "language": "en"},
+      {"id": "context", "kind": "basic", "objectiveIds": ["recall"], "front": "Why should a recall prompt include enough context?", "back": "To make the intended answer unambiguous.", "explanation": "A card should remain understandable when reviewed outside the original lesson.", "tags": ["authoring"], "language": "en"},
+      {"id": "application", "kind": "basic", "objectiveIds": ["recall"], "front": "What should complement flashcards when learning a practical skill?", "back": "Independent application in realistic tasks.", "explanation": "Remembering facts and applying a skill are different forms of evidence.", "tags": ["habits"], "language": "en"},
+      {"id": "honesty", "kind": "basic", "objectiveIds": ["recall"], "front": "When should you choose Again?", "back": "When you could not recall the answer before revealing it.", "explanation": "Choose your rating based on recall, not familiarity after looking at the answer.", "tags": ["habits"], "language": "en"},
+      {"id": "sources", "kind": "basic", "objectiveIds": ["recall"], "front": "Where should an author record the reference for a version-sensitive fact?", "back": "In the note's sources, with the relevant version and context.", "explanation": "Check authoritative references when a fact can change; update the subject release when necessary.", "tags": ["authoring"], "language": "en"},
+      {"id": "privacy", "kind": "basic", "objectiveIds": ["recall"], "front": "Does exporting a LearnForge deck transfer your personal review schedule to Anki?", "back": "No. The exported cards start as new in Anki.", "explanation": "LearnForge and Anki maintain independent review schedules.", "tags": ["tools"], "language": "en"}
+    ]
+  }]
+}

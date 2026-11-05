@@ -873,6 +873,8 @@ td {
   font-weight: 500;
 }
 .timer small {
+  display: inline-block;
+  min-inline-size: 19ch;
   font-size: 0.7rem;
   color: var(--muted);
 }

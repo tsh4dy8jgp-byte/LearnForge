@@ -264,6 +264,156 @@ namespace LearnForge.Api.Migrations.Sqlite
                     b.ToTable("Evidence");
                 });
 
+            modelBuilder.Entity("LearnForge.Api.FlashcardEvent", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("At")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Fingerprint")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Operation")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Rating")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RequestId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SessionId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UnitId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ViewJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("SessionId", "RequestId")
+                        .IsUnique();
+
+                    b.ToTable("FlashcardEvents");
+                });
+
+            modelBuilder.Entity("LearnForge.Api.FlashcardSession", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ActiveKey")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FilterHash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PackId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ReleaseId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Revealed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Revision")
+                        .IsConcurrencyToken()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("StartKey")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UnitsJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActiveKey")
+                        .IsUnique();
+
+                    b.HasIndex("ReleaseId");
+
+                    b.HasIndex("UserId", "PackId", "StartKey")
+                        .IsUnique();
+
+                    b.ToTable("FlashcardSessions");
+                });
+
+            modelBuilder.Entity("LearnForge.Api.FlashcardState", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PackId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UnitId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ContentHash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DueAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Introduced")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Revision")
+                        .IsConcurrencyToken()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SchedulerVersion")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Stage")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Suspended")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("UserId", "PackId", "UnitId");
+
+                    b.ToTable("FlashcardStates");
+                });
+
             modelBuilder.Entity("LearnForge.Api.LessonProgress", b =>
                 {
                     b.Property<string>("UserId")
@@ -584,6 +734,45 @@ namespace LearnForge.Api.Migrations.Sqlite
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("LearnForge.Api.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LearnForge.Api.FlashcardEvent", b =>
+                {
+                    b.HasOne("LearnForge.Api.FlashcardSession", null)
+                        .WithMany()
+                        .HasForeignKey("SessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LearnForge.Api.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LearnForge.Api.FlashcardSession", b =>
+                {
+                    b.HasOne("LearnForge.Api.PackRelease", null)
+                        .WithMany()
+                        .HasForeignKey("ReleaseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LearnForge.Api.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LearnForge.Api.FlashcardState", b =>
+                {
                     b.HasOne("LearnForge.Api.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")

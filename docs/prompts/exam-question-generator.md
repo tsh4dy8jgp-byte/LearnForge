@@ -349,11 +349,11 @@ Fix anything the audit reveals before moving on. Keep a running count per domain
 
 Assemble the complete file: header fields, domains, mocks, readiness, caseStudies, sources and every question. Never truncate it or replace questions with "…". If it cannot fit in one message, deliver it in clearly labelled consecutive parts that concatenate into valid JSON.
 
-If you can run commands in a LearnForge checkout, save the file as packs/<pack-id>.json and run:
-- dotnet run --project tools/cli -- check packs/<pack-id>.json
-- dotnet run --project tools/cli -- lint packs/<pack-id>.json --json
+If you can run commands in a LearnForge checkout, save the file outside packs/ first, for example as output/<pack-id>.json (git ignores output/), and run:
+- dotnet run --project tools/cli -- check output/<pack-id>.json
+- dotnet run --project tools/cli -- lint output/<pack-id>.json --json
 
-Fix every error. Fix every warning, or justify it in the handoff.
+Fix every error. Fix every warning, or justify it in the handoff. Copy the file to packs/<pack-id>.json only after check passes: a running API publishes the first version it compiles there as an immutable release, and an invalid file in packs/ stops the API from starting.
 
 Finish with a short handoff:
 - Question counts per domain and per format, and the case-study list.
@@ -361,6 +361,16 @@ Finish with a short handoff:
 - Any remaining lint warnings, each with its justification.
 - The exam outline version you used and when you verified it.
 - How to load the file: see "Loading the result" in the guide this prompt came from.
+
+
+FLASHCARD DELIVERABLES
+Include objective-linked flashcards as a companion unless I decline them; allow a card-only subject. Default to five notes per objective/domain, adjusted to meaningful recall targets and workload. Record quantity, language, sources, Anki use, paper size and printing preferences in the brief. Default paper: A4; deliver both duplex long-edge and foldable PDFs.
+
+Read docs/flashcards.md and docs/examples/flashcards-sample.json before authoring. Use the actual flashcardDecks contract in full packs or exam/1. Each deck has id, title, notes. Each note requires stable id, kind (basic/reversible/cloze), objectiveIds matching subject objectives or exam domains, explanation, language, optional tags and HTTP(S) sources. Basic/reversible use front/back; cloze uses text with {{c1::answer::optional hint}}. Repeated numbers hide together; different numbers generate separate cards. No nested clozes, media, image occlusion or raw HTML. Set flashcards: true in explicit full-pack capabilities; use the flashcards starter and review goal for card-only subjects.
+
+Test one recall target per note. Keep fronts self-contained, backs concise, explanations useful and references verified for current claims. Reverse pairs must work both ways. Remove duplicates, vague prompts and answer cues. Preserve deck/note IDs and cloze numbers across corrections; use new IDs for new targets or changes of note kind. Keep independent summative questions separate. Card ratings are self-assessment and never create mastery, exam freshness or readiness evidence; LearnForge and Anki schedules are independent. Do not reduce the agreed assessment-bank size to make room for cards.
+
+With execution tools, validate and lint card content even when no exam questions exist. Set up the documented export Python environment. Run export-flashcards <source> --format apkg|text|pdf --out <fresh-directory> separately for .apkg, text ZIP and each PDF mode. Produce --mode duplex --binding long and --mode foldable PDFs using the selected paper. Render and inspect every card sheet: matching IDs, mirrored backs, partial sheets, glyphs, overflow and cut/fold marks. Repair long cards instead of shrinking/clipping them. Verify web reveal/rating/resume where applicable. Deliver actual file links plus Anki import and 100%-scale cutting/printing instructions. Report any unavailable Anki application import or physical calibration check accurately. Without execution tools, provide complete source and identify ungenerated artifacts; never claim files were saved or tested.
 
 START NOW
 Read my exam request. Unless it already answers everything above, restate my goal in one sentence, ask the first interview question, and wait for my reply.

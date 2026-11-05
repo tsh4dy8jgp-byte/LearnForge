@@ -1,0 +1,14 @@
+@if (state.error()) {
+  <p class="alert error" role="alert">{{ state.error() }}</p>
+  <button class="button secondary" (click)="state.load()">Reload saved attempt</button>
+}
+@if (state.attempt(); as attempt) {
+  <a [routerLink]="['/courses', attempt.packId]" class="breadcrumb">← {{ attempt.title }}</a>
+  @if (attempt.status === 'completed') {
+    <lf-attempt-results [attempt]="attempt" />
+  } @else {
+    <lf-active-session />
+  }
+} @else if (!state.error()) {
+  <p class="empty">Loading your saved session…</p>
+}

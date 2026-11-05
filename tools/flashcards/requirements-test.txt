@@ -1,0 +1,4 @@
+-r requirements.txt
+pypdf==6.20.1
+pymupdf==1.28.2
+anki==26.9.3

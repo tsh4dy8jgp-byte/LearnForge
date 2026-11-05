@@ -1,6 +1,6 @@
 # Migration guide
 
-The University and AI-103/AB-100 repositories were reviewed as design references and remain unchanged. Their content was not bulk copied.
+Use this process to import courses, certification practice, or other learning materials from any source. Map subject content into versioned packs rather than adding subject-specific application code.
 
 | Existing material | LearnForge |
 | --- | --- |

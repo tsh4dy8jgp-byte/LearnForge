@@ -1,0 +1,46 @@
+<div class="lesson-layout">
+  <nav class="panel lesson-nav" aria-label="Course lessons">
+    @for (l of course().lessons; track l.id; let i = $index) {
+      <button [class.active]="current()?.id === l.id" (click)="selectLesson.emit(l.id)">
+        <span>{{ completed().has(l.id) ? '✓' : (i + 1).toString().padStart(2, '0') }}</span>
+        <div>
+          <strong>{{ l.title }}</strong
+          ><small>{{ l.summary }}</small>
+          @if (revised().has(l.id)) {
+            <small class="pill subtle">Updated since you read it</small>
+          }
+        </div>
+      </button>
+    }
+  </nav>
+  @if (current(); as l) {
+    <article class="panel reading">
+      <p class="eyebrow">BUILD YOUR UNDERSTANDING</p>
+      <lf-lesson-content [lesson]="l" />
+      <div class="row">
+        @if (course().capabilities.practice || course().capabilities.assessments) {
+          <span class="muted small"
+            >Reading completion is separate from assessment performance.</span
+          >
+        }
+        @if (signedIn()) {
+          @if (revised().has(l.id)) {
+            <button class="button" [disabled]="busy()" (click)="completeLesson.emit(l.id)">
+              Mark as re-read
+            </button>
+          } @else {
+            <button
+              class="button"
+              [disabled]="busy() || completed().has(l.id)"
+              (click)="completeLesson.emit(l.id)"
+            >
+              {{ completed().has(l.id) ? 'Lesson completed ✓' : 'Mark as complete' }}
+            </button>
+          }
+        } @else {
+          <a routerLink="/sign-in" class="button">Sign in to save progress</a>
+        }
+      </div>
+    </article>
+  }
+</div>

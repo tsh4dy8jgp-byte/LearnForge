@@ -1,3 +1,3 @@
 namespace LearnForge.Core;
 
-public enum NextStepReason { StartObjective, ContinueReading, NeedsEvidence, BelowProficient, ReviewDue, ReadyForMock, AssessmentAvailable }
+public enum NextStepReason { StartObjective, ContinueReading, NeedsEvidence, BelowProficient, ReviewDue, ReadyForMock, AssessmentAvailable, CardsDue, NewCards }

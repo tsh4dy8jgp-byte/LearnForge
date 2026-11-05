@@ -13,4 +13,7 @@ build/
 *.db-shm
 *.db-wal
 /references
+/output/
+/.venv-flashcards/
+**/__pycache__/
 /.learnforge/

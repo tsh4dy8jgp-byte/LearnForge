@@ -50,7 +50,8 @@ internal static class ExamSourceAdapter
             : [Mock("short", "Short mock exam", source.Mocks.Short, AssessmentSize.Short)];
         return new Pack(1, source.Id, source.Version, source.Title, source.Description, source.License,
             source.Domains.Select(d => new Objective(d.Id, d.Title, d.Prerequisites ?? [])).ToArray(), [], questions.ToArray(),
-            source.CaseStudies ?? [], blueprints, source.Sources ?? [], source.Readiness, source.Goal, source.Mastery, ProductProfile.Exam);
+            source.CaseStudies ?? [], blueprints, source.Sources ?? [], source.Readiness, source.Goal, source.Mastery, ProductProfile.Exam,
+            FlashcardDecks: source.FlashcardDecks);
     }
 
     private static Question? Convert(ExamQuestion q, Action<string> error)

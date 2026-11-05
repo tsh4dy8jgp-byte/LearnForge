@@ -5,6 +5,8 @@ global using LearnForge.Api.Contracts.Common;
 global using LearnForge.Api.Contracts.Content;
 global using LearnForge.Api.Contracts.Export;
 global using LearnForge.Api.Contracts.Learning;
+global using LearnForge.Api.Contracts.Flashcards;
+global using LearnForge.Api.Services.Flashcards;
 global using LearnForge.Api.Services.Attempts;
 global using LearnForge.Api.Services.Analytics;
 global using LearnForge.Api.Services.Content;

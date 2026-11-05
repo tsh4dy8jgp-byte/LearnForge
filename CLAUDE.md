@@ -4,18 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-LearnForge: an education and exam-practice framework. ASP.NET Core 10 API + Angular 22 SPA, modular monolith with one database. Subjects are versioned JSON "packs" (`packs/*.json`), not code. `docs/` holds detailed guides; `docs/architecture-proposal.md` and `docs/content-proposal.md` are historical and describe features that may not exist.
+LearnForge: an education and exam-practice framework. ASP.NET Core 10 API + Angular 22 SPA, modular monolith with one database. Subjects are versioned JSON "packs" (`packs/*.json`), not code. `docs/` holds current guides and a clearly separated roadmap. Bundled packs are generic examples; application code must remain independent of their IDs.
 
 ## Commands
 
 ```sh
-make setup                      # dotnet restore LearnForge.slnx + npm ci --prefix apps/web
-make dev                        # API on 127.0.0.1:5080 + Angular on 127.0.0.1:4300 (checks ports first)
+make setup                      # scripts/install.sh --install-only: tools if missing, restore/build API + CLI, npm ci, validate packs
+make dev                        # existing tools, no browser: API near 127.0.0.1:5080 + Angular near 127.0.0.1:4300
 dotnet test LearnForge.slnx     # all xUnit tests (Core + HTTP integration)
 dotnet test LearnForge.slnx --filter "FullyQualifiedName~CoreTests.Readiness"   # single test / class
 dotnet build LearnForge.slnx -c Release
 npm run build --prefix apps/web
-make check-content              # compile both bundled packs and the exam/1 sample (sample also linted --strict)
+make check-content              # compile the bundled packs plus the exam/1 and flashcard samples (exam sample also linted --strict)
 npm test --prefix apps/web      # Angular unit tests (Vitest via @angular/build:unit-test)
 cd apps/web && npx playwright test   # or npm run test:e2e; requires API and web dev servers already running
 make api-types                  # regenerate apps/web/openapi/learnforge.json and src/app/generated types
@@ -36,7 +36,7 @@ docker compose up --build -d    # Postgres + API + nginx web on 127.0.0.1:8088
 - **`apps/api`**: minimal-API endpoint modules in `Endpoints/*` (C# 14 extension members on `IEndpointRouteBuilder`), composed by `Program.cs` (groups `/api/auth`, `/api/me` with auth required, `/api/authoring` with the Publisher role); request records are validated by `AddValidation()`. `Program.cs` configures Identity cookies, antiforgery (`X-CSRF-TOKEN` header from `/api/auth/csrf`), rate limits and security headers. `Services/Attempts/AttemptService` is the attempt state machine: ownership, deterministic selection, idempotent writes by request ID, revision checks, section locks, deadlines, sanitized views. `ExpiryWorker` finalizes overdue mocks.
 - `Services/Learning/LearningRecordService` derives enrollment, lesson progress, mastery (`MasteryEvaluator`), next steps (`NextStepPlanner`) and goal status on read. `Services/Content/ReleaseCache` keeps each immutable release deserialized once.
 - `Startup/DatabaseInitializer` migrates, backfills the evidence ledger (`EvidenceBackfill`), seeds packs via `Services/Content/PackSeeder` (strict) and handles `--grant-publisher`. `PackWatcher` (when `Content:WatchSeconds` > 0) republishes settled new pack files leniently.
-- **`apps/web`**: standalone Angular components in `src/app/pages/*`, HTTP in `api.ts` (`HttpClient` + CSRF interceptor; pages use `httpResource`), types in `models.ts` (aliases of the OpenAPI-generated `src/app/generated`, never hand-edited), question interactions in `question-input.ts`. Vitest specs next to components (`*.spec.ts`), Playwright specs in `e2e/`.
+- **`apps/web`**: standalone Angular components grouped by feature in `src/app`, with colocated templates/specs following the Angular style guide. `http/ApiClient` owns transport, `authentication/Session` owns identity state, and the CSRF interceptor/token are separate. Pages use `httpResource`; `api-contracts.ts` aliases the OpenAPI-generated `src/app/generated` (never hand-edit generated files). `assessment/QuestionInput` owns question interactions. Route-scoped `attempts/AttemptState` and `authoring/DraftEditorState` own persistence/timer coordination. See `apps/web/README.md` for conventions. Vitest specs next to components (`*.spec.ts`), Playwright specs in `e2e/`.
 
 ### Invariants to preserve
 

@@ -62,6 +62,7 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<AttemptService>();
 builder.Services.AddSingleton<ReleaseCache>();
 builder.Services.AddScoped<LearningRecordService>();
+builder.Services.AddScoped<FlashcardService>();
 builder.Services.AddOptions<SiteSettings>().Bind(builder.Configuration.GetSection("Site"))
     .Validate(settings => settings.IsValid(), "Invalid Site settings. Check layout, color scheme, text lengths, locale, home page, font, local logo path and primary-color contrast (4.5:1).")
     .ValidateOnStart();
@@ -78,6 +79,11 @@ builder.Services.AddRateLimiter(o =>
         _ => new FixedWindowRateLimiterOptions { PermitLimit = 300, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
     o.AddPolicy("auth", ctx => RateLimitPartition.GetFixedWindowLimiter(ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown",
         _ => new FixedWindowRateLimiterOptions { PermitLimit = 30, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
+    // The exporter has two process slots for the whole server; one client may hold at most one of them.
+    o.AddPolicy("exports", ctx => RateLimitPartition.Get(
+        ctx.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+        _ => RateLimiter.CreateChained(new ConcurrencyLimiter(new ConcurrencyLimiterOptions { PermitLimit = 1, QueueLimit = 0 }),
+            new FixedWindowRateLimiter(new FixedWindowRateLimiterOptions { PermitLimit = 12, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }))));
 });
 var app = builder.Build();
 app.Use(async (context, next) =>
@@ -119,6 +125,7 @@ app.MapCatalog();
 app.MapLearner();
 app.MapAttempts();
 app.MapAuthoring();
+app.MapFlashcards();
 
 // Build-time OpenAPI generation runs this entry point with a mock server; it must not touch a database.
 var generatingOpenApiDocument = System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";

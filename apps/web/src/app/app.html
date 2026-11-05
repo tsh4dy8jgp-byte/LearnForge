@@ -5,9 +5,13 @@
       @if (site.settings().logoPath; as logo) {
         <img class="brand-logo" [src]="logo" alt="" />
       } @else {
-        <span class="brand-mark" aria-hidden="true">{{ (site.settings().name ?? 'L').slice(0, 1) }}</span>
+        <span class="brand-mark" aria-hidden="true">{{
+          (site.settings().name ?? 'L').slice(0, 1)
+        }}</span>
       }
-      <span>{{ site.settings().name }}<small>{{ site.settings().tagline }}</small></span>
+      <span
+        >{{ site.settings().name }}<small>{{ site.settings().tagline }}</small></span
+      >
     </a>
     <div class="nav-label">YOUR WORKSPACE</div>
     <nav aria-label="Main navigation">
@@ -20,7 +24,7 @@
       <a routerLink="/attempts" routerLinkActive="active"
         ><span aria-hidden="true">◷</span> {{ site.settings().historyLabel }}</a
       >
-      @if (api.user()?.publisher) {
+      @if (session.user()?.publisher) {
         <a routerLink="/studio" routerLinkActive="active"
           ><span aria-hidden="true">✧</span> {{ site.settings().studioLabel }}</a
         >
@@ -35,7 +39,7 @@
       <div class="note-line"></div>
     </div>
     <div class="profile">
-      @if (api.user(); as user) {
+      @if (session.user(); as user) {
         <div class="avatar">{{ user.displayName.slice(0, 1).toUpperCase() }}</div>
         <div>
           <strong>{{ user.displayName }}</strong
@@ -51,14 +55,20 @@
       <span>YOUR SPACE TO GROW</span>
       <div class="topbar-actions">
         <span class="status-dot">Learning, connected.</span>
-        <a routerLink="/appearance" routerLinkActive="active" ariaCurrentWhenActive="page" class="appearance-link"><span aria-hidden="true">◐</span> Appearance</a>
+        <a
+          routerLink="/appearance"
+          routerLinkActive="active"
+          ariaCurrentWhenActive="page"
+          class="appearance-link"
+          ><span aria-hidden="true">◐</span> Appearance</a
+        >
       </div>
     </header>
     <main id="main" tabindex="-1">
       @if (site.error()) {
         <p class="alert error" role="alert">{{ site.error() }}</p>
       }
-      @if (api.unavailable()) {
+      @if (session.unavailable()) {
         <p class="alert error">The API is unavailable. Start the backend and refresh this page.</p>
       }
       @if (error()) {
@@ -66,6 +76,8 @@
       }
       <router-outlet />
     </main>
-    <footer>{{ site.settings().name }} <span>{{ site.settings().description }}</span></footer>
+    <footer>
+      {{ site.settings().name }} <span>{{ site.settings().description }}</span>
+    </footer>
   </div>
 </div>

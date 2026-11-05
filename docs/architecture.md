@@ -1,5 +1,7 @@
 # Architecture
 
+Flashcards are objective-linked pack content, expanded into stable review units by Core. Review sessions pin releases and store idempotent ratings in separate FlashcardStates, FlashcardSessions and FlashcardEvents tables, never the assessment evidence ledger. A bounded Python export process handles Anki archives and printable PDFs; see [flashcards](flashcards.md).
+
 LearnForge is a modular monolith. The API owns identity, content releases, attempts, grading and analytics; Angular owns presentation and interaction; the Core library contains subject-neutral rules.
 
 ## Runtime flow
@@ -55,3 +57,15 @@ Add a question kind in this order:
 9. Update the authoring and learner guides, and the exam question generator prompt.
 
 Keep answer IDs stable across releases when you want meaningful family analytics. Change family ID when the competency or prompt pattern changes. Importers should map external material into the pack contract and run the compiler; they should not bypass validation or write directly to release tables.
+
+## Frontend boundaries
+
+The standalone Angular client follows the [Angular style guide](https://angular.dev/style-guide). Application bootstrap lives in `src/main.ts`; routes and provider configuration stay at the application root. Feature directories own authentication, dashboard, learning library, attempts, authoring, account and appearance. Shared lesson/progress presentation lives under `learning`; question interactions and answer descriptions live under `assessment`. Component names match hyphenated filenames, templates and specs are colocated, and template-only members are protected.
+
+`http/ApiClient` owns transport and normalized errors. `authentication/Session` owns the signed-in user and initialization; a separate CSRF token and interceptor supply antiforgery headers for unsafe API requests. Session and site initialization finish before routing starts. Site settings, appearance preferences and the title strategy remain independent application services.
+
+Course pages coordinate catalog/progress resources and mutations; lesson, objective-map and practice-setup components expose explicit inputs and events. A page-scoped `AttemptState` owns response persistence, retry IDs/revisions, device recovery and the server-adjusted clock; active-session and results views render that state and released feedback. A page-scoped `DraftEditorState` coordinates revisioned draft saves and autosave cleanup; Content Studio coordinates import, validation and publication, while source-editor and learner-preview components render the experience.
+
+Public browser routes, JSON contracts, selectors, appearance preference keys and recovery storage keys remain stable. Generated OpenAPI types stay in `src/app/generated`; `api-contracts.ts` provides readable aliases without duplicating wire schemas. Themes, layouts and shared styles stay global so component extraction does not change the visual design.
+
+The bundled packs are examples and test fixtures, not application requirements. Framework behavior must be determined by pack profiles, capabilities and goals, not IDs or provider-specific assumptions. The API supports a catalog with no releases as well as course, exam and hybrid packs.

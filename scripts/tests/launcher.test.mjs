@@ -113,6 +113,35 @@ test('whole launcher synchronizes replacement ports, validates nested packs, reu
   assert.equal(await (await fetch('http://127.0.0.1:' + occupied.address().port)).text(), 'unrelated');
 });
 
+test('closing the terminal (SIGHUP) stops both servers', { skip: process.platform === 'win32', timeout: 20000 }, async t => {
+  const root = await fixture(t);
+  const running = launch(root, ['--no-install', '--no-browser', '--startup-timeout', '10']);
+  t.after(() => stop(running));
+  await until(() => running.output.includes('LearnForge is ready:') || running.exitCode !== null);
+  const record = JSON.parse(await fs.readFile(path.join(root, '.learnforge/instance.json'), 'utf8'));
+  running.child.kill('SIGHUP');
+  await running.closed;
+  assert.equal(processIdentity(record.api.pid), null);
+  assert.equal(processIdentity(record.web.pid), null);
+});
+
+test('servers left by a killed launcher are stopped by the next launch', { skip: process.platform === 'win32', timeout: 30000 }, async t => {
+  const root = await fixture(t);
+  const first = launch(root, ['--no-install', '--no-browser', '--startup-timeout', '10']);
+  await until(() => first.output.includes('LearnForge is ready:') || first.exitCode !== null);
+  const record = JSON.parse(await fs.readFile(path.join(root, '.learnforge/instance.json'), 'utf8'));
+  t.after(() => { for (const { pid } of [record.api, record.web]) try { process.kill(-pid, 'SIGKILL'); } catch { /* Gone. */ } });
+  first.child.kill('SIGKILL');
+  await first.closed;
+  assert.notEqual(processIdentity(record.api.pid), null);
+  const second = launch(root, ['--no-install', '--no-browser', '--startup-timeout', '10']);
+  t.after(() => stop(second));
+  await until(() => second.output.includes('LearnForge is ready:') || second.exitCode !== null);
+  assert.match(second.output, /left running by an earlier launcher/);
+  assert.equal(processIdentity(record.api.pid), null);
+  assert.equal(processIdentity(record.web.pid), null);
+});
+
 test('invalid nested course prevents any server from starting', { skip: process.platform === 'win32', timeout: 15000 }, async t => {
   const root = await fixture(t);
   await fs.writeFile(path.join(root, 'packs/nested/course.json'), '{bad');

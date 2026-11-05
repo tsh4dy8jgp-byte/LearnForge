@@ -1,5 +1,7 @@
 # LearnForge
 
+Flashcards now support subject authoring, saved spaced review, Anki `.apkg`/text downloads and cut-ready duplex/foldable PDFs. See the [flashcard guide](docs/flashcards.md).
+
 **A reusable education and exam-practice framework built with ASP.NET Core 10 and Angular 22.**
 
 LearnForge connects teaching materials, curriculum objectives, mixed-format practice, saved attempts and evidence-based review. Subjects live in versioned JSON packs, so changing from reasoning to university coursework or certification preparation does not require rebuilding the application.
@@ -76,7 +78,7 @@ Compose is configured for **local development**, bound to loopback. Its sample p
 | Infrastructure | SQLite and PostgreSQL migrations, Docker images, same-origin nginx proxy |
 | Verification | xUnit domain/API tests and Playwright desktop/mobile journeys |
 
-The code follows one public type per file with domain, contract, persistence and service folders. Wire-compatible string values are backed by strongly typed enums, and API dashboards/attempts use named DTOs instead of untyped object responses.
+Backend code follows one public type per file with domain, contract, persistence and service folders. The Angular frontend groups code by feature, with colocated templates and tests; see the [frontend guide](apps/web/README.md). Wire-compatible string values are backed by strongly typed enums, and API dashboards/attempts use named DTOs instead of untyped object responses.
 
 Drag/drop has click and keyboard alternatives. Text is rendered as text; content templates cannot execute code or inject HTML. Code blocks display examples; student code execution is future work.
 
@@ -138,7 +140,7 @@ There is no default administrator account or embedded administrator password. Pu
 
 Read the [authoring guide](docs/authoring.md) for templates and question contracts, and [content engine guide](docs/content-engine.md) for validation and artifact handling.
 
-## Examples and existing solutions
+## Example content
 
 | Pack | Purpose |
 | --- | --- |
@@ -152,7 +154,7 @@ Read the [authoring guide](docs/authoring.md) for templates and question contrac
 
 These original demonstration materials use CC0-1.0. They are not official certification questions or validated exams. Small banks and superficial variants cannot substantiate real readiness; production authors must create enough independent families.
 
-The existing University and AI-103/AB-100 repositories were reviewed as design references and remain unchanged. Their content has **not** been bulk imported. See [source review](docs/source-review.md) and [migration guide](docs/migration.md).
+To bring existing learning materials into LearnForge, follow the subject-neutral [migration guide](docs/migration.md). Content belongs in packs; application code must not depend on a subject, exam provider, or bundled example ID.
 
 ## Repository layout
 
@@ -199,6 +201,7 @@ See [testing](docs/testing.md) for PostgreSQL tests and container verification. 
 | [Authoring](docs/authoring.md) | Create packs, templates and questions |
 | [Learning platform prompt](docs/prompts/learning-platform-builder.md) | Interview a learner, design a program, and build a personalized learning experience |
 | [Exam question generator prompt](docs/prompts/exam-question-generator.md) | Interview a candidate, then write a 100–150-question exam/1 bank that avoids answer giveaways |
+| [Subject creation interview prompt](docs/prompts/subject-creation-interview.md) | Scope a new subject through an interview, then create lessons, practice exams or both as a LearnForge pack |
 | [Content engine](docs/content-engine.md) | Validation, artifacts and cross-validation limits |
 | [Assessment](docs/assessment.md) | Scoring, composition, timing and readiness |
 | [Architecture](docs/architecture.md) | Modules, data contracts and extension points |
@@ -207,10 +210,8 @@ See [testing](docs/testing.md) for PostgreSQL tests and container verification. 
 | [Security](docs/security.md) | Trust boundaries and deployment requirements |
 | [Operations](docs/operations.md) | Hosting, migrations, backups and upgrades |
 | [Testing](docs/testing.md) | Automated verification |
-| [Migration](docs/migration.md) | Map existing University and certification materials |
+| [Migration](docs/migration.md) | Import existing learning materials into packs |
 | [Roadmap](docs/roadmap.md) | Future capabilities |
-
-Historical [architecture](docs/architecture-proposal.md) and [content](docs/content-proposal.md) proposals are preserved for context; they are not inventories of implemented features.
 
 ## Technical baseline
 
