@@ -25,7 +25,11 @@
       <div class="stat">
         <span>FULLY CORRECT</span><strong>{{ s.correctPercent | number: '1.0-1' }}<em>%</em></strong
         ><small>{{
-          a.goal === 'readiness' ? 'Used for exam readiness' : 'Independent correct answers'
+          a.goal === 'readiness'
+            ? s.eligible
+              ? 'Used for exam readiness'
+              : 'Not counted toward readiness'
+            : 'Independent correct answers'
         }}</small>
       </div>
       <div class="stat">
@@ -46,7 +50,9 @@
                 ? 'Time expired'
                 : a.mode === 'learn'
                   ? 'Learning evidence'
-                  : 'Repeated question families'
+                  : s.freshPercent < 100
+                    ? 'Repeated question families'
+                    : 'Not counted toward readiness'
           }}</small>
         </div>
       }

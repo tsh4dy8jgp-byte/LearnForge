@@ -112,6 +112,28 @@ describe('attempt timer and mock result', () => {
     expect((await render(attempt)).querySelector('[role="status"]')).toBeNull();
   });
 
+  it('does not call a short mock readiness evidence when it is not eligible', async () => {
+    const attempt = view();
+    attempt.size = 'short';
+    attempt.status = 'completed';
+    attempt.completedAt = attempt.serverTime;
+    attempt.results = {};
+    attempt.summary = {
+      earned: 20,
+      possible: 20,
+      score: 100,
+      correctPercent: 100,
+      eligible: false,
+      freshPercent: 100,
+      passPoints: null,
+      passed: null,
+    };
+    const text = (await render(attempt)).textContent ?? '';
+    expect(text).toContain('Not counted toward readiness');
+    expect(text).not.toContain('Used for exam readiness');
+    expect(text).not.toContain('Repeated question families');
+  });
+
   it('keeps line breaks in the prompt of an active question', async () => {
     const element = await render(view());
     expect(element.querySelector('.question-card h2')?.classList).toContain('prompt-text');

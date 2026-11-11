@@ -125,11 +125,13 @@
             @case ('readiness') {
               @if (course.goal.readiness; as r) {
                 <p>{{ r.message }}</p>
-                <div class="readiness-track">
-                  <strong
-                    >{{ r.short.streak }}<small>/{{ r.short.required }}</small></strong
-                  ><span>consecutive short mocks</span>
-                </div>
+                @if (r.short.required > 0) {
+                  <div class="readiness-track">
+                    <strong
+                      >{{ r.short.streak }}<small>/{{ r.short.required }}</small></strong
+                    ><span>consecutive short mocks</span>
+                  </div>
+                }
                 <div class="readiness-track">
                   <strong
                     >{{ r.full.streak }}<small>/{{ r.full.required }}</small></strong
@@ -137,7 +139,10 @@
                 </div>
                 <p class="small muted">
                   Each result must be strictly above {{ r.threshold }}% fully correct, with fresh
-                  questions and independent work. Either streak qualifies.
+                  questions and independent work.
+                  @if (r.short.required > 0) {
+                    Either streak qualifies.
+                  }
                 </p>
               }
             }

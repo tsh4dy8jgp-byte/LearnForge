@@ -199,7 +199,8 @@ public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache re
         a.Status = AttemptStatus.Completed; a.ActiveKey = null; a.CompletedAt = completedAt; a.TimedOut = timedOut;
         a.Earned = grades.Sum(g => g.Earned); a.Possible = grades.Sum(g => g.Possible);
         a.CorrectPercent = grades.Count(g => g.FullyCorrect) * 100m / grades.Length;
-        a.Eligible = s.Goal == CourseGoal.Readiness && a.Mode == AssessmentMode.Mock && !timedOut && a.FreshPercent >= s.Readiness.MinimumFreshPercent;
+        a.Eligible = s.Goal == CourseGoal.Readiness && a.Mode == AssessmentMode.Mock && !timedOut && a.FreshPercent >= s.Readiness.MinimumFreshPercent
+            && (a.Size != AssessmentSize.Short || s.Readiness.ShortAttempts > 0);
         a.Revision++;
         db.Audit.Add(new() { ActorId = a.UserId, Action = timedOut ? "attempt.expired" : "attempt.submitted", ResourceId = a.Id });
         // Rows are saved with the transition, so the Revision concurrency token covers both.
