@@ -3598,6 +3598,10 @@
                 "$ref": "#/components/schemas/CharacterStudy"
               }
             ]
+          },
+          "reserveFixedPapers": {
+            "type": "boolean",
+            "default": false
           }
         }
       },

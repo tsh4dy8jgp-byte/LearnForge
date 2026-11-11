@@ -511,6 +511,7 @@ export type Pack = {
     flashcardDecks?: null | Array<FlashcardDeck>;
     characters?: null | Array<WritingCharacter>;
     characterStudy?: null | CharacterStudy;
+    reserveFixedPapers?: boolean;
 };
 
 export type PackCapabilities = {
