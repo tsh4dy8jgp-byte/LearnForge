@@ -18,7 +18,13 @@ public sealed record IstqbExamSpec(
     int[] LevelCounts,
     int K3Points,
     int SharedFamilyExtras,
-    (string Objectives, int Count, KnowledgeLevel Level)[] Groups)
+    (string Objectives, int Count, KnowledgeLevel Level)[] Groups,
+    // Practice floors for packs that reserve their papers: questions whose family is in no paper, per objective.
+    bool ReservesPapers = false,
+    int MinK3Independent = 0,
+    int MinOtherIndependent = 0,
+    // Chapters that must carry at least Percent% of the section and lab lesson words.
+    (int[] Chapters, int Percent)? HeavyChapters = null)
 {
     private const KnowledgeLevel K1 = KnowledgeLevel.K1, K2 = KnowledgeLevel.K2, K3 = KnowledgeLevel.K3;
 
