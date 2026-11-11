@@ -79,4 +79,39 @@ public class NextStepPlannerTests
             new NextStep(NextStepKind.Practise, NextStepReason.NeedsEvidence, "sets")
         }, steps);
     }
+
+    private static string? MockTarget(Pack pack, IReadOnlySet<string>? seen)
+    {
+        var proficient = pack.Objectives.Select(o => M(o.Id, Proficient)).ToArray();
+        var read = pack.Lessons.Select(l => l.Id).ToHashSet();
+        return NextStepPlanner.Plan(pack, proficient, read, NotReady, seenFamilies: seen).Single(s => s.Kind == NextStepKind.TakeMock).BlueprintId;
+    }
+
+    private static HashSet<string> Families(Pack pack, params string[] blueprintIds) =>
+        pack.Blueprints.Where(b => blueprintIds.Contains(b.Id)).SelectMany(b => b.QuestionIds!)
+            .Select(id => pack.Questions.Single(q => q.Id == id).FamilyId).ToHashSet();
+
+    // The demo pack with its short mock and two disjoint fixed full papers in place of its drawn full mock.
+    private static Pack WithPapers(Pack pack)
+    {
+        static Blueprint Paper(string id, params string[] ids) => new(id, id, ids.Length, 10, AssessmentSize.Full, ["sets"], [], QuestionIds: ids);
+        return pack with { Blueprints = [.. pack.Blueprints.Where(b => b.Size == AssessmentSize.Short),
+            Paper("paper-a", "sets-single-1", "sets-single-2"), Paper("paper-b", "sets-single-3", "sets-single-4")] };
+    }
+
+    [Fact] public void Take_mock_points_to_the_first_unseen_full_paper()
+    {
+        var pack = WithPapers(Demo) with { Readiness = new(ShortAttempts: 0) };
+        Assert.Equal("paper-a", MockTarget(pack, new HashSet<string>()));
+        Assert.Equal("paper-b", MockTarget(pack, Families(pack, "paper-a")));
+    }
+
+    [Fact] public void Take_mock_falls_back_to_the_first_full_paper_when_all_are_seen()
+    {
+        var pack = WithPapers(Demo) with { Readiness = new(ShortAttempts: 0) };
+        Assert.Equal("paper-a", MockTarget(pack, pack.Questions.Select(q => q.FamilyId).ToHashSet()));
+    }
+
+    [Fact] public void Take_mock_still_prefers_short_when_the_route_is_on()
+        => Assert.Equal("short", MockTarget(WithPapers(Demo), new HashSet<string>()));
 }
