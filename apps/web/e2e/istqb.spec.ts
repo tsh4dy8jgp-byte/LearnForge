@@ -123,3 +123,26 @@ for (const scenario of [
     expect(errors).toEqual([]);
   });
 }
+
+// Practice drills (matching, numeric) must fit a phone without sideways scrolling, and practice must not use paper questions.
+test('ISTQB Foundation practice drills fit a phone and leave the papers alone', async ({ page }) => {
+  await signUp(page, 'drills');
+  const csrf = await (await page.request.get('/api/auth/csrf')).json();
+  const started = await page.request.post('/api/me/attempts', {
+    headers: { 'X-CSRF-TOKEN': csrf.token },
+    data: { packId: 'istqb-ctfl-4', blueprintId: 'short', mode: 'learn', requestId: crypto.randomUUID(), focus: 'objective', objectiveId: 'fl-4.2.1' },
+  });
+  expect(started.ok()).toBeTruthy();
+  const attempt = await started.json();
+  const paperIds = new Set(pack.blueprints.flatMap((b: { questionIds?: string[] }) => b.questionIds ?? []));
+  expect(attempt.questions.some((q: { id: string }) => paperIds.has(q.id))).toBeFalsy();
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(`/attempts/${attempt.id}`);
+  for (const kind of ['matching', 'numeric']) {
+    const index = attempt.questions.findIndex((q: { kind: string }) => q.kind === kind);
+    expect(index).toBeGreaterThanOrEqual(0);
+    await page.getByRole('button', { name: new RegExp(`^Question ${index + 1}(,|$)`) }).click();
+    await expect(page.locator('lf-question-input')).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+  }
+});

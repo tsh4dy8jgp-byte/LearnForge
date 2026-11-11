@@ -105,5 +105,5 @@ public class NextStepPlannerTests
     }
 
     [Fact] public void Take_mock_still_prefers_short_when_the_route_is_on()
-        => Assert.Equal("short", MockTarget(TestApi.LoadPack("istqb-ctfl-4"), new HashSet<string>()));
+        => Assert.Equal("short", MockTarget(TestApi.LoadPack("istqb-ctfl-4") with { Readiness = new() }, new HashSet<string>()));
 }

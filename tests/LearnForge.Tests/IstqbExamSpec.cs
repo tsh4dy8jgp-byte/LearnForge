@@ -29,8 +29,8 @@ public sealed record IstqbExamSpec(
 {
     private const KnowledgeLevel K1 = KnowledgeLevel.K1, K2 = KnowledgeLevel.K2, K3 = KnowledgeLevel.K3;
 
-    public static readonly IstqbExamSpec Ctfl4 = new("istqb-ctfl-4", "fl-", 24, 366, 64, ["a", "b", "c", "d", "e", "f", "g"],
-        26, 40, [8, 6, 4, 11, 9, 2], [8, 6, 4, 11, 9, 2], [8, 24, 8], 1, 46,
+    public static readonly IstqbExamSpec Ctfl4 = new("istqb-ctfl-4", "fl-", 24, 666, 64, ["a", "b", "c", "d", "e", "f", "g"],
+        26, 40, [8, 6, 4, 11, 9, 2], [8, 6, 4, 11, 9, 2], [8, 24, 8], 1, 46, ReservesPapers: true, MinK3Independent: 20, MinOtherIndependent: 3, Groups:
     [
         ("1.1.1 1.2.2", 1, K1), ("1.5.2", 1, K1),
         ("1.1.2 1.2.1 1.2.3", 1, K2), ("1.3.1", 1, K2),
