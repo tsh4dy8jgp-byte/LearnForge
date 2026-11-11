@@ -57,7 +57,9 @@ public static class TestApi
     public static Answer Correct(Pack pack, string questionId)
     {
         var q = pack.Questions.Single(q => q.Id == questionId);
-        return new(q.Grading.Correct, q.Grading.Matches ?? []);
+        return q.Kind is QuestionKind.Numeric or QuestionKind.CodeOutput
+            ? new([], [], q.Grading.Correct[0])
+            : new(q.Grading.Correct, q.Grading.Matches ?? []);
     }
 
     // Saves one response and returns the next expected revision.
