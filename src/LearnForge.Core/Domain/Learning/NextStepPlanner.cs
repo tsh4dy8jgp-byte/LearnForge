@@ -4,7 +4,7 @@ public static class NextStepPlanner
 {
     // Suggests work on the "frontier": objectives that are not yet proficient but whose prerequisites are.
     public static NextStep[] Plan(Pack pack, IReadOnlyCollection<ObjectiveMastery> mastery, IReadOnlySet<string> completedLessons,
-        ReadinessResult? readiness, int limit = 3)
+        ReadinessResult? readiness, int limit = 3, IReadOnlySet<string>? seenFamilies = null)
     {
         var states = mastery.ToDictionary(m => m.ObjectiveId);
         bool Proficient(string id) => states.TryGetValue(id, out var m) && m.State == MasteryState.Proficient;
@@ -43,6 +43,14 @@ public static class NextStepPlanner
         if (pack.Features.Practice) steps.AddRange(pack.Objectives.Where(o => states.TryGetValue(o.Id, out var m) && m.ReviewDue)
             .Select(o => new NextStep(NextStepKind.Review, NextStepReason.ReviewDue, o.Id, BlueprintId: SessionBlueprint(o.Id))));
         var mock = pack.Blueprints.FirstOrDefault(b => b.Size == AssessmentSize.Short) ?? pack.Blueprints.FirstOrDefault();
+        // With the short route off only full mocks count, so point at a paper the learner has not touched yet.
+        if (pack.Readiness is { ShortAttempts: 0 })
+        {
+            var families = pack.Questions.ToDictionary(q => q.Id, q => q.FamilyId);
+            var full = pack.Blueprints.Where(b => b.Size == AssessmentSize.Full).ToArray();
+            mock = full.FirstOrDefault(b => b.QuestionIds is null || seenFamilies is null || !b.QuestionIds.Any(id => seenFamilies.Contains(families[id])))
+                ?? full.FirstOrDefault() ?? mock;
+        }
         if (pack.Features.Assessments && mock is not null &&
             ((!pack.Features.Practice && steps.Count == 0 && pack.Goal != CourseGoal.Completion &&
               (pack.Objectives.Any(o => !Proficient(o.Id)) || (pack.Goal == CourseGoal.Readiness && readiness is { Ready: false }))) ||

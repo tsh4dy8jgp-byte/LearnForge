@@ -97,7 +97,10 @@ public sealed class LearningRecordService(AppDb db, ReleaseCache releases, TimeP
         };
         var objectives = pack.Objectives.ToDictionary(o => o.Id);
         var lessons = pack.Lessons.ToDictionary(l => l.Id);
-        var steps = NextStepPlanner.Plan(pack, mastery, completed, readiness).Select(s => new NextStepDto(s.Kind, s.Reason,
+        IReadOnlySet<string>? seenFamilies = pack.Readiness is { ShortAttempts: 0 }
+            ? (await db.Evidence.AsNoTracking().Where(e => e.UserId == user && e.PackId == pack.Id).Select(e => e.FamilyId).Distinct().ToListAsync()).ToHashSet()
+            : null;
+        var steps = NextStepPlanner.Plan(pack, mastery, completed, readiness, seenFamilies: seenFamilies).Select(s => new NextStepDto(s.Kind, s.Reason,
             s.ObjectiveId, s.ObjectiveId is null ? null : objectives[s.ObjectiveId].Title,
             s.LessonId, s.LessonId is null ? null : lessons[s.LessonId].Title, s.BlueprintId)).ToList();
         if (flashcards is { Due: > 0 } || flashcards?.ActiveSessionId is not null)
