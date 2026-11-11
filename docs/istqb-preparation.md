@@ -77,7 +77,7 @@ Passed: 199 backend tests, 32 frontend unit tests, two Chromium browser journeys
 
 ## Local syllabus references
 
-The [reference library](../references/istqb/ctfl-4/README.md) contains the official CTFL v4.0.1 syllabus, exam rules v1.2, exam tables v1.19 and v4.0 release notes, downloaded on 2026-10-08. Its manifest records official URLs and SHA-256 checksums. The [source map](../references/istqb/ctfl-4/source-map.json) links every syllabus objective to its PDF section and page, lessons and practice questions, and records the full-paper blueprint.
+The [reference library](../references/istqb/ctfl-4/README.md) contains the official CTFL v4.0.1 syllabus, exam rules v1.2, exam tables v1.19 and v4.0 release notes, downloaded on 2026-10-08, plus exam tables v1.21 and official Sample Exams A-D (questions and answers), downloaded on 2026-11-11. The CTFL table in v1.21 is unchanged from v1.19. The samples are used only to calibrate question length and style (statistics in `calibration.md`); no official question is copied, and they stay untouched for a final rehearsal outside the app. Its manifest records official URLs and SHA-256 checksums. The [source map](../references/istqb/ctfl-4/source-map.json) links every syllabus objective to its PDF section and page, lessons and practice questions, and records the full-paper blueprint.
 
 Pack `istqb-ctfl-4@1.0.1` adds section/page references to all 22 section lessons and all 160 answer explanations, plus guidance to study the complete chapter content and keyword lists. All chapters 1-6 are examinable at K1, beyond the numbered objectives (syllabus section 0.5, p. 11). Use the downloaded documents and the library's authoring steps when maintaining lessons and exams. The verification record above applies to version 1.0.0; it does not describe validation of this reference update.
 
@@ -96,7 +96,7 @@ Both specialist exams weight K3 questions at two points. Their reference librari
 
 - [CTFL certification and exam format](https://istqb.org/certifications/certified-tester-foundation-level-ctfl-v4-0/)
 - [CTFL syllabus v4.0.1 — PDF](https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf)
-- [Exam Structures and Rules Tables v1.19 — PDF](https://istqb.org/?download_id=3832&sdm_process_download=1)
+- [Exam Structures and Rules Tables (v1.21 at the time of the last check; the pack was transcribed from v1.19) — PDF](https://istqb.org/?download_id=3832&sdm_process_download=1)
 - [ISTQB glossary](https://glossary.istqb.org/)
 
 ISTQB and the authors listed in its official syllabus own those reference documents. Original LearnForge lessons and questions are provided under CC0-1.0; that license does not apply to ISTQB's reference materials or trademark. Official sample-exam questions have not been copied into the pack.

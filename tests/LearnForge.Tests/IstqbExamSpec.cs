@@ -3,7 +3,8 @@ using LearnForge.Core;
 namespace LearnForge.Tests;
 
 // Independently transcribed from ISTQB Exam Structures and Rules Tables v1.19 (CTFL pp. 3-5, CT-AI v2.0 p. 15,
-// CT-GenAI p. 25), not inferred from the authored banks. Groups list objective numbers without the pack prefix.
+// CT-GenAI p. 25), not inferred from the authored banks. Checked on 2026-11-11 against Tables v1.21 (2026-11-09):
+// v1.20 corrected CTAL-AT and v1.21 added CTEL-TM, and the CTFL and CT-AI v2.0 tables are unchanged. Groups list objective numbers without the pack prefix.
 public sealed record IstqbExamSpec(
     string PackId,
     string Prefix,

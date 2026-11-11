@@ -32,7 +32,7 @@ CT-AI v2.0 covers testing AI-based systems, especially machine learning systems.
 | C | 40 | 44 | 60 minutes | 75 minutes | 29 points |
 | D | 40 | 44 | 60 minutes | 75 minutes | 29 points |
 
-Each paper follows the CT-AI v2.0 table on p. 15 of the Exam Structures and Rules Tables v1.19:
+Each paper follows the CT-AI v2.0 table on p. 15 of the Exam Structures and Rules Tables v1.19 (unchanged in v1.21, checked 2026-11-11):
 
 - **Knowledge levels:** 36 K2 questions worth one point and four K3 questions worth two points (AI-3.3.1, AI-4.2.2, AI-5.1.5 and AI-6.1.5).
 - **Questions (points) per chapter:** 6 (6), 3 (3), 7 (8), 7 (8), 6 (7), 9 (10), 2 (2).
