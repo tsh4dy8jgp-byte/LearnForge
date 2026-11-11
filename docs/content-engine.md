@@ -4,7 +4,7 @@ LearnForge content is strict JSON. The compiler turns a source pack into a valid
 
 ## Source shape
 
-A direct pack is a JSON object with schemaVersion, id, version, title, description, license, objectives, lessons, questions, scenarios, blueprints, readiness and sources. The CLI initializer creates a complete minimal example.
+A direct pack is a JSON object with schemaVersion, id, version, title, description, license, objectives, lessons, questions, scenarios, blueprints, readiness and sources. Optional top-level properties include `reserveFixedPapers` (default false), which keeps fixed-paper question families out of composed and focused practice until seen; any new release restarts the readiness streak. The CLI initializer creates a complete minimal example.
 
 The alternate wrapper supports reusable templates:
 

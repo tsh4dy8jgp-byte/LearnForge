@@ -34,8 +34,10 @@ public static class ExamComposer
                 throw new InvalidOperationException("Fixed papers must include complete scenario groups.");
             return paper;
         }
+        var hidden = PaperReservation.HiddenFamilies(pack, seenFamilies);
         var groups = pack.Questions.GroupBy(q => q.ScenarioId is { } id ? "case:" + id : "item:" + q.Id)
             .Select(g => g.ToArray()).Where(g => g.All(q => q.ObjectiveIds.Any(blueprint.ObjectiveIds.Contains)))
+            .Where(g => g.All(q => !hidden.Contains(q.FamilyId)))
             .Where(g => g.Select(q => q.FamilyId).Distinct().Count() == g.Length)
             .OrderBy(g => g.Count(q => seenFamilies.Contains(q.FamilyId)))
             .ThenBy(g => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(seed + g[0].Id))))

@@ -478,6 +478,7 @@ export type Pack = {
     profile?: ProductProfile;
     capabilities?: null | PackCapabilities;
     flashcardDecks?: null | Array<FlashcardDeck>;
+    reserveFixedPapers?: boolean;
 };
 
 export type PackCapabilities = {

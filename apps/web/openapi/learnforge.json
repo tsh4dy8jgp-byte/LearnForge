@@ -3285,6 +3285,10 @@
             "items": {
               "$ref": "#/components/schemas/FlashcardDeck"
             }
+          },
+          "reserveFixedPapers": {
+            "type": "boolean",
+            "default": false
           }
         }
       },

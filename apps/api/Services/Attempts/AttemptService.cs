@@ -97,7 +97,8 @@ public sealed class AttemptService(AppDb db, TimeProvider clock, ReleaseCache re
         var missed = countable.GroupBy(e => e.QuestionId)
             .Where(g => !g.OrderByDescending(e => e.At).ThenByDescending(e => e.Id).First().FullyCorrect)
             .Select(g => g.Key).ToHashSet();
-        var standalone = pack.Questions.Where(q => q.ScenarioId == null);
+        var hidden = PaperReservation.HiddenFamilies(pack, seen);
+        var standalone = pack.Questions.Where(q => q.ScenarioId == null && !hidden.Contains(q.FamilyId));
         IEnumerable<Question> pool;
         Func<Question, int> tier;
         switch (focus)
