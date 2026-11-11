@@ -62,6 +62,10 @@ const sample: DashboardDto = {
 };
 
 async function render(data: DashboardDto) {
+  return (await element(data)).textContent ?? '';
+}
+
+async function element(data: DashboardDto) {
   TestBed.configureTestingModule({
     providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
   });
@@ -70,7 +74,7 @@ async function render(data: DashboardDto) {
   TestBed.tick();
   TestBed.inject(HttpTestingController).expectOne('/api/me/dashboard').flush(data);
   await fixture.whenStable();
-  return (fixture.nativeElement as HTMLElement).textContent ?? '';
+  return fixture.nativeElement as HTMLElement;
 }
 
 describe('DashboardPage', () => {
@@ -81,6 +85,33 @@ describe('DashboardPage', () => {
     expect(text).toContain('3 of last 5 correct');
     expect(text).toContain('Keep practising "Reason about sets"');
     expect(text).toContain('0 of 3 objectives proficient');
+  });
+
+  it('hides the short mock track when its required count is 0', async () => {
+    const course = sample.courses[0];
+    const track = { required: 3, streak: 1, met: false, attemptIds: [] };
+    const page = await element({
+      ...sample,
+      courses: [
+        {
+          ...course,
+          goal: {
+            ...course.goal,
+            goal: 'readiness',
+            readiness: {
+              ready: false,
+              message: 'Build a consistent run of independent mock results.',
+              short: { ...track, size: 'short', required: 0, streak: 0 },
+              full: { ...track, size: 'full' },
+              threshold: 75,
+            },
+          },
+        },
+      ],
+    });
+    expect(page.querySelectorAll('.readiness-track').length).toBe(1);
+    expect(page.textContent).not.toContain('consecutive short mocks');
+    expect(page.textContent).not.toContain('Either streak qualifies');
   });
 
   it('invites learners without courses to the library', async () => {

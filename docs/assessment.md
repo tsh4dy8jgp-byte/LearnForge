@@ -26,6 +26,8 @@ For each size, the evaluator orders evidence by completion time and examines the
 
 The short and full rules are independent and readiness is their OR. A newer failed, expired or ineligible mock breaks that length's latest streak. There is no cherry-picking.
 
+A pack can set `readiness.shortAttempts` to 0 to switch the short route off. Full mocks are then the only readiness evidence: a short mock is still timed and scored, but it is never eligible and its results say it is not counted toward readiness.
+
 With the default policy, five short mocks at 95, 93, 91, 97 and 96 qualify. Replacing the newest with exactly 90 does not. A learning attempt with 100 is ignored. An expired mock is retained but ineligible.
 
 Readiness is a transparent practice recommendation, not a prediction or claim about an external exam.

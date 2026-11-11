@@ -262,7 +262,8 @@ public static partial class ContentEngine
         }
         if (questionsEnabled && p.Blueprints.Length == 0) Error("blueprints", "Practice or assessments require at least one session blueprint.");
         var r = p.Readiness ?? new();
-        if (r.ShortAttempts is < 1 or > 20 || r.FullAttempts is < 1 or > 20 || r.Threshold is < 0 or >= 100 || r.LookbackDays is < 1 or > 365 || r.MinimumFreshPercent is < 0 or > 100) Error("readiness", "Readiness policy is out of bounds.");
+        if (r.ShortAttempts is < 0 or > 20 || r.FullAttempts is < 1 or > 20 || r.Threshold is < 0 or >= 100 || r.LookbackDays is < 1 or > 365 || r.MinimumFreshPercent is < 0 or > 100) Error("readiness", "Readiness policy is out of bounds.");
+        if (r.ShortAttempts == 0 && !p.Blueprints.Any(b => b.Size == AssessmentSize.Full)) Error("readiness", "A readiness policy with shortAttempts 0 needs a full blueprint.");
         if (!Enum.IsDefined(p.Goal)) Error("goal", "Goal must be readiness, mastery, completion or review.");
         var m = p.Mastery ?? new();
         if (m.MinimumEvidence < 1 || m.Window < m.MinimumEvidence || m.Window > 20 || m.ProficientPercent is < 50 or > 100 || m.ReviewAfterDays is < 1 or > 365)

@@ -15,6 +15,15 @@ public static class TestApi
     public static Pack LoadPack(string packId) =>
         ContentEngine.Compile(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "packs", packId + ".json"))).Pack!;
 
+    // Adds a full-size fixed paper "paper-x" over the first standalone questions with distinct families.
+    public static Pack WithFixedPaper(Pack pack, int count = 5)
+    {
+        var chosen = pack.Questions.Where(q => q.ScenarioId is null).DistinctBy(q => q.FamilyId).Take(count).ToArray();
+        var paper = new Blueprint("paper-x", "Paper X", count, 10, AssessmentSize.Full,
+            chosen.Select(q => q.ObjectiveIds[0]).Distinct().ToArray(), [], QuestionIds: chosen.Select(q => q.Id).ToArray());
+        return pack with { Blueprints = [.. pack.Blueprints, paper] };
+    }
+
     public static async Task<HttpClient> Account(ApiFactory factory)
     {
         var client = factory.CreateClient(new() { AllowAutoRedirect = false, HandleCookies = true });

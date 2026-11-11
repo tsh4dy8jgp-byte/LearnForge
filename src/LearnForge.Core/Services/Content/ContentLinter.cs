@@ -226,8 +226,8 @@ public static partial class ContentLinter
                 var fresh = (int)Math.Ceiling(policy.MinimumFreshPercent * b.Count / 100m);
                 var need = policy.MinimumFreshPercent == 0 ? b.Count : (attempts - 1) * b.Count + fresh;
                 return (Blueprint: b, Attempts: attempts, Families: families, Need: need);
-            }).ToArray();
-            if (plans.All(p => p.Need > p.Families))
+            }).Where(p => p.Attempts > 0).ToArray(); // a route that needs 0 attempts is switched off
+            if (plans.Length > 0 && plans.All(p => p.Need > p.Families))
             {
                 var closest = plans.MinBy(p => p.Need - p.Families);
                 warn("LF222", "readiness", $"Readiness needs {closest.Need} distinct question families for {closest.Attempts} {Camel(closest.Blueprint.Size)} mocks of " +

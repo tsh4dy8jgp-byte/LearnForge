@@ -6,10 +6,10 @@ public static class ReadinessEvaluator
     {
         ReadinessTrack Track(AssessmentSize size, int required)
         {
-            // Filter only by size: a recent failure interrupts the streak.
+            // Filter only by size: a recent failure interrupts the streak. A track that requires 0 attempts is switched off, never met.
             var last = history.Where(e => e.Size == size).OrderByDescending(e => e.CompletedAt).ThenByDescending(e => e.Id).Take(required).ToArray();
             var streak = last.TakeWhile(e => e.Eligible && e.CompletedAt >= now.AddDays(-policy.LookbackDays) && e.CorrectPercent > policy.Threshold).Count();
-            return new(size, required, streak, streak == required, last.Select(e => e.Id).ToArray());
+            return new(size, required, streak, required > 0 && streak == required, last.Select(e => e.Id).ToArray());
         }
 
         var shortTrack = Track(AssessmentSize.Short, policy.ShortAttempts);
