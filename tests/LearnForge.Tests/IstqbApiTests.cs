@@ -122,4 +122,31 @@ public class IstqbApiTests(ApiFactory factory) : IClassFixture<ApiFactory>
         Assert.Equal(original.Version, result.GetProperty("version").GetString());
         Assert.Equal(26, result.GetProperty("summary").GetProperty("passPoints").GetDecimal());
     }
+
+    public static TheoryData<string, string[], int> ReservedPacks => new()
+    {
+        { "istqb-ctfl-4", ["fl-4.2.1", "fl-4.2.2", "fl-4.2.3", "fl-4.2.4", "fl-4.5.3", "fl-5.1.4", "fl-5.1.5", "fl-5.5.1"], 26 },
+    };
+
+    // The end-to-end promise of mock protection: however much a learner practises, an unopened paper stays readiness evidence.
+    [Theory, MemberData(nameof(ReservedPacks))]
+    public async Task Practice_leaves_every_paper_fresh(string packId, string[] k3Objectives, int passPoints)
+    {
+        var client = await TestApi.Account(factory);
+        var pack = TestApi.LoadPack(packId);
+        var paperIds = pack.Blueprints.Where(b => b.QuestionIds is not null).SelectMany(b => b.QuestionIds!).ToHashSet();
+        var practice = await TestApi.Start(client, "learn", pack.Id);
+        Assert.DoesNotContain(TestApi.QuestionIds(practice), paperIds.Contains);
+        await TestApi.Complete(client, practice, pack);
+        foreach (var objective in k3Objectives)
+        {
+            var focused = await TestApi.Start(client, "learn", pack.Id, focus: "objective", objectiveId: objective);
+            Assert.DoesNotContain(TestApi.QuestionIds(focused), paperIds.Contains);
+            await TestApi.Complete(client, focused, pack);
+        }
+        var summary = (await TestApi.Complete(client, await TestApi.Start(client, packId: pack.Id, blueprintId: "paper-a"), pack)).GetProperty("summary");
+        Assert.Equal(100m, summary.GetProperty("freshPercent").GetDecimal());
+        Assert.True(summary.GetProperty("eligible").GetBoolean());
+        Assert.Equal(passPoints, summary.GetProperty("passPoints").GetDecimal());
+    }
 }
