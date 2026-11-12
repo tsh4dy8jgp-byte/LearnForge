@@ -196,6 +196,20 @@ public class IstqbContentTests
     [InlineData("istqb-ctfl-4")]
     [InlineData("istqb-ct-ai-2")]
     [InlineData("istqb-ct-genai-1")]
+    public void Flashcards_cover_every_objective(string packId)
+    {
+        var pack = TestApi.LoadPack(packId);
+        if (pack.Decks.Length == 0) return;
+        var covered = pack.Decks.SelectMany(d => d.Notes).SelectMany(n => n.ObjectiveIds).ToHashSet();
+        Assert.All(pack.Objectives, o => Assert.Contains(o.Id, covered));
+        // Recall prompts, not exam items: notes carry the chapter and one syllabus objective, like questions do.
+        Assert.All(pack.Decks.SelectMany(d => d.Notes), n => Assert.Equal(2, n.ObjectiveIds.Length));
+    }
+
+    [Theory]
+    [InlineData("istqb-ctfl-4")]
+    [InlineData("istqb-ct-ai-2")]
+    [InlineData("istqb-ct-genai-1")]
     public void Heavy_chapters_get_their_share(string packId)
     {
         var spec = IstqbExamSpec.For(packId);

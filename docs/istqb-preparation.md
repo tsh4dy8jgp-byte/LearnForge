@@ -1,16 +1,30 @@
 # ISTQB Foundation 4.0 preparation
 
-The `istqb-ctfl-4` hybrid pack provides English self-study for beginners using original examples and questions. It has 24 lessons, 64 individual syllabus objectives plus six chapter objectives, 666 questions (280 in fixed papers and 386 practice questions) and seven non-overlapping 40-question papers. It aligns to the official CTFL syllabus v4.0.1, the errata revision for Foundation 4.0. It is independent material, not an official exam or accredited course.
+The `istqb-ctfl-4` hybrid pack provides English self-study for beginners using original examples and questions. It has 34 lessons (22 syllabus sections, eight skill labs, a start lesson and three revision lessons), 64 individual syllabus objectives plus six chapter objectives, 666 questions (280 in fixed papers and 386 practice questions), 202 flashcards and seven non-overlapping 40-question papers. It aligns to the official CTFL syllabus v4.0.1, the errata revision for Foundation 4.0. It is independent material, not an official exam or accredited course.
 
 ## Study route
 
-1. Read **Start here**, then study the 22 syllabus-section lessons in order. Each has detailed concepts, a worked case, an exercise, a worked solution and a **Syllabus details to know** list. Solve self-checks and exercises before reading solutions.
-2. Practise calculation and application techniques, then use the final revision checklist to explain the important distinctions in your own words.
+**Start here** contains an eight-week route (about an hour a day) and a four-week compressed route. In outline:
+
+1. Weeks 1 to 5: study the 22 syllabus-section lessons in order. Each has detailed concepts, a worked case, an exercise, a worked solution and a **Syllabus details to know** list. Work through each **Lab** on paper when you reach it. Review flashcards daily and practise what you have just read.
+2. Week 6: read **Commonly confused terms** and **Exam technique**, then use the final revision checklist to explain the important distinctions in your own words.
 3. Take paper A under timed conditions. Review wrong answers and guesses, revisit their objective lessons, then take B to G on separate occasions.
 
 **Practice no longer uses up the papers (version 1.3.0).** The pack sets `reserveFixedPapers`, so untimed learning, 20-question short sessions and objective-focused practice draw only from the 340 practice questions whose family is in no paper. You can practise as much as you like and every unopened paper stays 100% fresh. A paper question enters practice only after you have met it in a paper: its 46 practice variants appear then, and your mistakes from a paper are available in mistake practice. Starting a paper in learning mode is still possible as a deliberate choice, and it does use that paper up. Repeating a paper is useful revision but does not establish independent readiness.
 
 **A new course version restarts the readiness streak.** Readiness is counted per release, and papers you have already taken are not fresh again in a later version. You will be warned before any further Foundation version is published.
+
+## Skill labs, deeper lessons and flashcards in version 1.4.0
+
+Version 1.2.0 had about 15,000 words of lessons, with chapters 4 and 5 (20 of the 40 exam questions) holding 47% of the section text, and no flashcards.
+
+- **Eight skill labs**, one per K3 objective, placed directly after their section lesson: equivalence partitioning, boundary value analysis, decision tables, state transitions, ATDD, estimation, prioritization and defect reports. Each has the method as numbered steps, three worked examples of rising difficulty, common traps, and an exercise with a worked solution. Every number in a lab is computed by the same script that computes the practice-bank keys.
+- **Deeper section lessons.** Chapters 4 and 5 gain comparison and worked-example blocks (statement against branch coverage on one piece of code, the three experience-based techniques side by side, acceptance criteria in both formats, entry and exit criteria, the test pyramid and quadrants, risk step by step, the two test reports, configuration management in one scenario). Sections 1.4, 2.2 and 3.2 gain one summary block each. Lesson IDs are unchanged; revised lessons are flagged for learners, not reset.
+- **Two revision lessons**: *Commonly confused terms* (pairs the exam likes to swap, by chapter) and *Exam technique* (pacing, reading the stem, Select TWO, a fixed first step for each calculation skill).
+- **Start here** is rewritten for the protected-mock rules and adds the eight-week and four-week routes and the ready bar.
+- **202 flashcards** in two decks: 97 reversible keyword cards covering the syllabus keyword lists, and 105 cloze cards for lists, rules and formulas. Every learning objective has at least one card. The whole deck exports to Anki and to printable PDF.
+
+Lessons now total about 27,400 words, and chapters 4 and 5 hold 67% of the section and lab text. Content still uses only text, example and callout blocks; tables are laid out as aligned text.
 
 ## Protected mocks and practice bank in version 1.3.0
 
@@ -73,6 +87,8 @@ Each paper has chapter counts 8/6/4/11/9/2 and cognitive counts 8 K1, 24 K2 and 
 A **Mock pass** means at least 26/40 on this simulation. LearnForge's readiness rule remains separate and, from version 1.3.0, is based on full mocks only: strictly above 75% fully correct, which is 31/40 or better, on each of the latest three full mocks, each on a fresh paper and completed before expiry. One result of 30/40 or lower breaks the streak. Short sessions are timed practice and never count toward readiness. This is a practice recommendation, not a calibrated prediction of passing an external examination.
 
 ## Expansion validation
+
+Version 1.4.0 was checked on 2026-11-12. The content CLI passed with 34 lessons, 666 questions, 202 flashcard notes and 70 objectives; the linter reports only LF220. Passed: all 293 backend tests (including a new test that every objective has a flashcard and that chapters 4 and 5 hold at least 60% of section and lab text), 77 frontend unit tests, `make check-content`, and all 32 browser tests against a fresh scratch data folder, including a new journey that starts a Foundation flashcard review. The whole deck exported to Anki (`apkg`) and to duplex A4 PDF without an overlong card. An independent reviewer recomputed every number in the eight labs (all correct) and checked the new lessons and all 202 cards against the syllabus. It found one incorrect illustration (a boundary-value example in which the simpler variant would also have caught the defect) and seven wording or citation points; all were corrected before release. This is a technical review, not subject-expert accreditation.
 
 Version 1.3.0 was checked on 2026-11-12. The content CLI passed with 24 lessons, 666 questions and 70 objectives, and the linter reports only LF220. Passed: all 290 backend tests, 77 frontend unit tests, the production Angular build, `make check-content`, and all 31 browser tests on the local Chrome channel against a scratch data folder. A new browser test opens matching and numeric drills at 390×844; it exposed the 401-pixel overflow of the active-session page noted below, which is now fixed for every question kind. An independent reviewer recomputed every calculation key for the 160 K3 practice questions and checked a 10% sample of the others against the syllabus: no wrong key was found, and nine wording defects (four ambiguous prompts, three explanation errors, one arguable ordering and one giveaway) were corrected before release. This is a technical review, not subject-expert accreditation.
 
