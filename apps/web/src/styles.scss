@@ -1250,9 +1250,12 @@ td {
   .dashboard-grid,
   .practice-layout,
   .course-grid,
-  .auth-layout,
-  .exam-layout {
+  .auth-layout {
     grid-template-columns: 1fr;
+  }
+  /* minmax(0, …) lets the single column shrink below its content's minimum width on phones. */
+  .exam-layout {
+    grid-template-columns: minmax(0, 1fr);
   }
   .dashboard-grid > aside {
     display: grid;
@@ -1324,7 +1327,7 @@ td {
     grid-row: 2;
   }
   .question-grid {
-    grid-template-columns: repeat(8, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
   }
   .question-grid button {
     min-height: 36px;

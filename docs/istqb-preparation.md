@@ -1,6 +1,6 @@
 # ISTQB Foundation 4.0 preparation
 
-The `istqb-ctfl-4` hybrid pack provides English self-study for beginners using original examples and questions. It has 24 lessons, 64 individual syllabus objectives plus six chapter objectives, 366 questions (280 in fixed papers and 86 practice questions) and seven non-overlapping 40-question papers. It aligns to the official CTFL syllabus v4.0.1, the errata revision for Foundation 4.0. It is independent material, not an official exam or accredited course.
+The `istqb-ctfl-4` hybrid pack provides English self-study for beginners using original examples and questions. It has 24 lessons, 64 individual syllabus objectives plus six chapter objectives, 666 questions (280 in fixed papers and 386 practice questions) and seven non-overlapping 40-question papers. It aligns to the official CTFL syllabus v4.0.1, the errata revision for Foundation 4.0. It is independent material, not an official exam or accredited course.
 
 ## Study route
 
@@ -8,7 +8,24 @@ The `istqb-ctfl-4` hybrid pack provides English self-study for beginners using o
 2. Practise calculation and application techniques, then use the final revision checklist to explain the important distinctions in your own words.
 3. Take paper A under timed conditions. Review wrong answers and guesses, revisit their objective lessons, then take B to G on separate occasions.
 
-Untimed learning and 20-question short sessions draw from the full 366-question bank, including the 280 questions used in full papers. Practice therefore exposes questions that would otherwise be fresh. 46 practice questions are variants of a paper question and share its family, so answering a variant also uses up that paper question's freshness. Preserve at least three unopened papers if you want fresh full-mock readiness evidence. Repeating a paper is useful revision but does not establish independent readiness.
+**Practice no longer uses up the papers (version 1.3.0).** The pack sets `reserveFixedPapers`, so untimed learning, 20-question short sessions and objective-focused practice draw only from the 340 practice questions whose family is in no paper. You can practise as much as you like and every unopened paper stays 100% fresh. A paper question enters practice only after you have met it in a paper: its 46 practice variants appear then, and your mistakes from a paper are available in mistake practice. Starting a paper in learning mode is still possible as a deliberate choice, and it does use that paper up. Repeating a paper is useful revision but does not establish independent readiness.
+
+**A new course version restarts the readiness streak.** Readiness is counted per release, and papers you have already taken are not fresh again in a later version. You will be warned before any further Foundation version is published.
+
+## Protected mocks and practice bank in version 1.3.0
+
+Measured problems in 1.2.0: one 20-question short session left about half of one paper fully unseen, because practice drew from paper questions, and the calculation skills had too little independent practice (13 practice-only K3 questions across eight K3 objectives).
+
+Changes in this release:
+
+- `reserveFixedPapers: true` and `readiness: { shortAttempts: 0, fullAttempts: 3, threshold: 75 }`, as described above.
+- 300 new practice questions (IDs `bank-<section>-<nn>`), each in its own family and outside every paper. No existing question, paper or lesson changed.
+- 160 are for the eight K3 objectives, 20 each: equivalence partitioning, boundary value analysis, decision tables, state transitions, ATDD, estimation, prioritization and defect reports. At least half of each set is in exam format; the rest are numeric, matching and ordering drills. Numeric answers, coverage percentages, minimum test counts and execution orders are computed by script, and each wrong option is checked not to be a correct answer.
+- 140 are for the K1 and K2 objectives, so every objective has at least three practice questions that are independent of the papers. Chapter shares follow the exam (32, 23, 18, 24, 35 and 8 for chapters 1 to 6).
+- Numeric drills state their answer format in the prompt ("Enter a whole number only" or a number of decimal places) and tolerate rounding in the last place. Type digits only: a percent sign or a comma is not accepted as a number.
+- Median length of the new exam-format questions is 63 words (K1), 74 (K2) and 80 (K3), against official sample medians of 50, 74 and 125. The calculation items are shorter than official K3 items because their options are numbers. The papers themselves are still shorter than official questions; they are rewritten in version 1.5.0.
+
+A generator guard rejects any new question whose wording overlaps heavily with a paper question, and `IstqbContentTests` enforces the practice floors, the readiness policy and that ten short sessions leave every paper unseen.
 
 ## Gap analysis and expansion in version 1.2.0
 
@@ -53,7 +70,7 @@ Single-choice questions require one answer. Select-N questions state the require
 
 Each paper has chapter counts 8/6/4/11/9/2 and cognitive counts 8 K1, 24 K2 and 8 K3. The independently transcribed objective groups in `IstqbContentTests` check the official learning-objective distribution and distinct-objective rules, not merely the chapter totals. The short session is balanced practice with approximate chapter weights, rather than a full certification simulation.
 
-A **Mock pass** means at least 26/40 on this simulation. LearnForge's readiness rule remains separate: strictly above 90% on each of the latest three full mocks or five short mocks, with fresh families and completion before expiry. This is a practice recommendation, not a calibrated prediction of passing an external examination.
+A **Mock pass** means at least 26/40 on this simulation. LearnForge's readiness rule remains separate and, from version 1.3.0, is based on full mocks only: strictly above 75% fully correct, which is 31/40 or better, on each of the latest three full mocks, each on a fresh paper and completed before expiry. One result of 30/40 or lower breaks the streak. Short sessions are timed practice and never count toward readiness. This is a practice recommendation, not a calibrated prediction of passing an external examination.
 
 ## Expansion validation
 
@@ -63,7 +80,7 @@ Version 1.1.0 was checked on 2026-10-08. Content validation passed with 24 lesso
 
 ## Content validation and maintenance
 
-Run `make check-content` and `dotnet test LearnForge.slnx`. The content tests verify teaching/practice coverage of every objective, paper membership, group and cognitive distributions, official K levels for every question, four options for single choice and five for Select TWO, the shared-family rule, exact scoring and the 60/75-minute versions. API tests cover pass boundaries, expiry, learning-mode behavior and preservation of thresholds across releases.
+Run `make check-content` and `dotnet test LearnForge.slnx`. The content tests verify teaching/practice coverage of every objective, paper membership, group and cognitive distributions, official K levels for every question, four options for single choice and five for Select TWO, the shared-family rule, exact scoring and the 60/75-minute versions. Exam-format rules apply to every paper question and to single- and multiple-choice practice questions; practice may also use numeric, matching and ordering drills. API tests cover pass boundaries, expiry, learning-mode behavior, preservation of thresholds across releases, and that practice leaves a paper fresh and eligible.
 
 The bank intentionally retains lint warning **LF220** because the exam uses multiple-choice formats. All other quality warnings must be resolved; the content test rejects additional warning codes. The general linter is unchanged. Computational keys were checked through their worked arithmetic, and explanations describe why distractors do not satisfy the question. Structural validation is not independent subject-expert accreditation.
 
