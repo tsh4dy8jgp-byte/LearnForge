@@ -24,7 +24,9 @@ Version 1.2.0 had about 15,000 words of lessons, with chapters 4 and 5 (20 of th
 - **Start here** is rewritten for the protected-mock rules and adds the eight-week and four-week routes and the ready bar.
 - **202 flashcards** in two decks: 97 reversible keyword cards covering the syllabus keyword lists, and 105 cloze cards for lists, rules and formulas. Every learning objective has at least one card. The whole deck exports to Anki and to printable PDF.
 
-Lessons now total about 27,400 words, and chapters 4 and 5 hold 67% of the section and lab text. Content still uses only text, example and callout blocks; tables are laid out as aligned text.
+Lessons now total about 27,400 words, and chapters 4 and 5 hold 67% of the section and lab text.
+
+**Version 1.4.1** changes presentation only: the eight tables in the labs and lessons (decision tables, the state table, risk levels, the testing quadrants, test activities and rule-oriented criteria) are real table blocks, and the pseudocode listing in lesson 4.3 is a code block. In 1.4.0 they were aligned text, which does not line up in the lesson font. Questions, papers and flashcards are unchanged.
 
 ## Protected mocks and practice bank in version 1.3.0
 
@@ -102,7 +104,7 @@ Run `make check-content` and `dotnet test LearnForge.slnx`. The content tests ve
 
 The bank intentionally retains lint warning **LF220** because the exam uses multiple-choice formats. All other quality warnings must be resolved; the content test rejects additional warning codes. The general linter is unchanged. Computational keys were checked through their worked arithmetic, and explanations describe why distractors do not satisfy the question. Structural validation is not independent subject-expert accreditation.
 
-Content uses existing text, example and callout blocks. Models, boundaries and decision rules have textual descriptions; selection instructions are explicit. Browser verification covers lesson rendering, paper selection, scoring, review and a narrow-screen view. Keep question and lesson IDs stable and increment the pack version for published changes.
+Content uses text, example, callout, code and table blocks. Models, boundaries and decision rules have textual descriptions; selection instructions are explicit. Browser verification covers lesson rendering, paper selection, scoring, review and a narrow-screen view. Keep question and lesson IDs stable and increment the pack version for published changes.
 
 ### Verification record for the previous release
 
