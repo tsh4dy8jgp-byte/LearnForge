@@ -106,7 +106,7 @@ try
         ["grading.private.json"] = Json.Write(p.Questions.ToDictionary(q => q.Id, q => new { q.Grading, q.Explanation })),
         ["pack.private.json"] = Json.Write(p),
         ["validation-report.json"] = Json.Write(new { compilation.Success, compilation.Diagnostics }),
-        ["search.json"] = Json.Write(p.Lessons.Select(l => new { l.Id, l.Title, Text = string.Join("\n", l.Blocks.Select(b => b.Text)), l.ObjectiveIds }))
+        ["search.json"] = Json.Write(p.Lessons.Select(l => new { l.Id, l.Title, Text = string.Join("\n", l.Blocks.Select(b => b.Rows is null ? b.Text : string.Join("\n", b.Rows.Select(r => string.Join(" | ", r)).Append(b.Text)))), l.ObjectiveIds }))
     };
     foreach (var (name, contents) in artifacts) await File.WriteAllTextAsync(Path.Combine(destination, name), contents);
     await File.WriteAllTextAsync(Path.Combine(destination, "manifest.json"), Json.Write(new

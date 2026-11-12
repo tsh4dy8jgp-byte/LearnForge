@@ -1,3 +1,3 @@
 namespace LearnForge.Core;
 
-public enum ContentBlockKind { Text, Callout, Example, Code }
+public enum ContentBlockKind { Text, Callout, Example, Code, Table }

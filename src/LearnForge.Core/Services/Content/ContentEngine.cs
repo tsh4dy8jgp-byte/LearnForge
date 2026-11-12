@@ -184,7 +184,20 @@ public static partial class ContentEngine
         {
             References(l.Id, l.ObjectiveIds);
             if (string.IsNullOrWhiteSpace(l.Title) || l.Blocks.Length == 0) Error(l.Id, "A lesson requires a title and blocks.");
-            if (l.Blocks.Any(b => b.Kind is not (ContentBlockKind.Text or ContentBlockKind.Callout or ContentBlockKind.Example or ContentBlockKind.Code))) Error(l.Id, "Unsupported block. Use text, callout, example or code.");
+            if (l.Blocks.Any(b => !Enum.IsDefined(b.Kind))) Error(l.Id, "Unsupported block. Use text, callout, example, code or table.");
+            foreach (var b in l.Blocks)
+            {
+                if (b.Kind != ContentBlockKind.Table)
+                {
+                    if (b.Rows is not null) Error(l.Id, "Only table blocks have rows.");
+                    if (string.IsNullOrWhiteSpace(b.Text)) Error(l.Id, "A block requires text.");
+                    continue;
+                }
+                // The first row is the header. Cells are plain text; a body cell may be empty.
+                if (b.Rows is not { Length: >= 2 and <= 41 } rows || rows[0].Length is < 2 or > 12 || rows.Any(r => r is null || r.Length != rows[0].Length)
+                    || rows[0].Any(string.IsNullOrWhiteSpace) || rows.Any(r => r.Any(c => c is null || c.Length > 500)))
+                    Error(l.Id, "A table block needs a header row and 1–40 body rows of 2–12 columns, the same width in every row, with nonblank headers and cells of at most 500 characters.");
+            }
         }
         foreach (var q in p.Questions)
         {

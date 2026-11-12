@@ -14,6 +14,38 @@ import { Lesson } from '../api-contracts';
         }
         @if (block.kind === 'code') {
           <pre><code>{{ block.text }}</code></pre>
+        } @else if (block.kind === 'table' && block.rows; as rows) {
+          <!-- A wide table scrolls inside its own named, focusable region instead of widening the page. -->
+          <div class="table-wrap lesson-table" role="region" tabindex="0" [attr.aria-label]="block.title || 'Table'">
+            <table>
+              @if (block.title) {
+                <caption class="sr-only">{{ block.title }}</caption>
+              }
+              <thead>
+                <tr>
+                  @for (cell of rows[0]; track $index) {
+                    <th scope="col">{{ cell }}</th>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of rows.slice(1); track $index) {
+                  <tr>
+                    @for (cell of row; track $index) {
+                      @if ($first) {
+                        <th scope="row">{{ cell }}</th>
+                      } @else {
+                        <td>{{ cell }}</td>
+                      }
+                    }
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          @if (block.text) {
+            <p>{{ block.text }}</p>
+          }
         } @else {
           <p>{{ block.text }}</p>
         }
