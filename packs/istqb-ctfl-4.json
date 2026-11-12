@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "istqb-ctfl-4",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "title": "ISTQB Foundation 4.0 · Preparation and mock exams",
   "description": "Independent English self-study aligned to CTFL syllabus v4.0.1: 34 lessons, skill labs, 202 flashcards, all 64 learning objectives, 666 original questions and seven distinct full mock papers that practice never uses up. Includes worked exercises, section/page references, and 60- and 75-minute practice versions. Not official or accredited ISTQB material.",
   "license": "CC0-1.0",
@@ -679,9 +679,56 @@
           "text": "CTFL syllabus v4.0.1, section 1.4 (starts on p. 18). Learning objectives: FL-1.4.1 (K2), FL-1.4.2 (K2), FL-1.4.3 (K2), FL-1.4.4 (K2), FL-1.4.5 (K2). Read the full section and the chapter keyword list alongside this lesson."
         },
         {
+          "kind": "table",
+          "title": "Test activities and their work products",
+          "text": "One row per activity helps with matching questions.",
+          "rows": [
+            [
+              "Activity",
+              "What it does",
+              "Work products"
+            ],
+            [
+              "Test planning",
+              "Sets objectives and approach",
+              "Test plan, test schedule, risk register, entry and exit criteria"
+            ],
+            [
+              "Test monitoring and control",
+              "Compares progress with the plan and acts on the difference",
+              "Test progress reports, control directives, risk information"
+            ],
+            [
+              "Test analysis",
+              "Answers \"what to test?\"",
+              "Prioritised test conditions; defect reports about the test basis"
+            ],
+            [
+              "Test design",
+              "Answers \"how to test?\"",
+              "Test cases, test charters, coverage items, test data and test environment requirements"
+            ],
+            [
+              "Test implementation",
+              "Prepares everything for execution",
+              "Test procedures, manual and automated test scripts, test suites, test data, test execution schedule, environment items (stubs, drivers, simulators, service virtualisations)"
+            ],
+            [
+              "Test execution",
+              "Runs tests and compares actual with expected results",
+              "Test logs, defect reports"
+            ],
+            [
+              "Test completion",
+              "Happens at milestones",
+              "Test completion report, lessons learned, action items, change requests"
+            ]
+          ]
+        },
+        {
           "kind": "text",
-          "title": "Activities, their question and their work products",
-          "text": "One line per activity helps with matching questions.\n\nTest planning: sets objectives and approach. Produces the test plan, test schedule, risk register, entry and exit criteria.\nTest monitoring and control: compares progress with the plan and acts on the difference. Produces test progress reports, control directives and risk information.\nTest analysis: \"what to test?\" Produces prioritised test conditions, and defect reports about the test basis.\nTest design: \"how to test?\" Produces test cases, test charters, coverage items, test data requirements and test environment requirements.\nTest implementation: prepares everything for execution. Produces test procedures, manual and automated test scripts, test suites, test data, the test execution schedule and test environment items such as stubs, drivers, simulators and service virtualisations.\nTest execution: runs tests and compares actual with expected results. Produces test logs and defect reports.\nTest completion: happens at milestones. Produces the test completion report, lessons learned, action items and change requests.\n\nRoles: the test management role concentrates on planning, monitoring, control and completion. The testing role concentrates on analysis, design, implementation and execution. One person can hold both, and in Agile teams some management tasks are done by the team."
+          "title": "The two roles",
+          "text": "Roles: the test management role concentrates on planning, monitoring, control and completion. The testing role concentrates on analysis, design, implementation and execution. One person can hold both, and in Agile teams some management tasks are done by the team."
         }
       ]
     },
@@ -1330,12 +1377,141 @@
         {
           "kind": "example",
           "title": "Worked example 1: two conditions",
-          "text": "Rule: \"Members get free delivery. Non-members get free delivery only on baskets of £50 or more.\"\n\nConditions: Member? Basket ≥ £50?\nAction: Free delivery.\n\n                    R1   R2   R3   R4\nMember?             T    T    F    F\nBasket ≥ £50?       T    F    T    F\nFree delivery       X    X    X\n\nFour rules, all feasible. Four test cases give 100% coverage, for example: member with £60; member with £20; non-member with £60; non-member with £20 (expected: delivery is charged).\n\nAfter running R1 and R4 only, coverage is 2 ÷ 4 = 50%.\n\nR1 and R2 have the same action and differ only in the basket, so they can be merged into one column \"Member = T, Basket = –\". The minimised table has three columns."
+          "text": "Rule: \"Members get free delivery. Non-members get free delivery only on baskets of £50 or more.\"\n\nConditions: Member? Basket ≥ £50?\nAction: Free delivery."
+        },
+        {
+          "kind": "table",
+          "title": "Decision table: free delivery",
+          "text": "Conditions are the upper rows and actions the lower rows. Each column is one rule. X means the action occurs.",
+          "rows": [
+            [
+              "Condition or action",
+              "R1",
+              "R2",
+              "R3",
+              "R4"
+            ],
+            [
+              "Member?",
+              "T",
+              "T",
+              "F",
+              "F"
+            ],
+            [
+              "Basket ≥ £50?",
+              "T",
+              "F",
+              "T",
+              "F"
+            ],
+            [
+              "Free delivery",
+              "X",
+              "X",
+              "X",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "text",
+          "title": "Reading the table",
+          "text": "Four rules, all feasible. Four test cases give 100% coverage, for example: member with £60; member with £20; non-member with £60; non-member with £20 (expected: delivery is charged).\n\nAfter running R1 and R4 only, coverage is 2 ÷ 4 = 50%.\n\nR1 and R2 have the same action and differ only in the basket, so they can be merged into one column \"Member = T, Basket = –\". The minimised table has three columns."
         },
         {
           "kind": "example",
           "title": "Worked example 2: three conditions and a test case",
-          "text": "A bank pre-screens loans. Conditions: Income verified? Credit score ≥ 650? Existing customer?\nActions: approve if income is verified and the score is high enough; manual review if income is verified, the score is too low and the applicant is an existing customer; otherwise reject.\n\n                      R1  R2  R3  R4  R5  R6  R7  R8\nIncome verified?      T   T   T   T   F   F   F   F\nScore ≥ 650?          T   T   F   F   T   T   F   F\nExisting customer?    T   F   T   F   T   F   T   F\nApprove               X   X\nManual review                 X\nReject                            X   X   X   X   X\n\n2 × 2 × 2 = 8 rules.\n\nTest case: income verified, score 610, existing customer. Translate: T, F, T. That is R3, so the expected result is manual review.\n\nIf R1, R3 and R8 have been tested, coverage is 3 ÷ 8 = 37.5%."
+          "text": "A bank pre-screens loans. Conditions: Income verified? Credit score ≥ 650? Existing customer?\nActions: approve if income is verified and the score is high enough; manual review if income is verified, the score is too low and the applicant is an existing customer; otherwise reject."
+        },
+        {
+          "kind": "table",
+          "title": "Decision table: loan pre-screening",
+          "text": "",
+          "rows": [
+            [
+              "Condition or action",
+              "R1",
+              "R2",
+              "R3",
+              "R4",
+              "R5",
+              "R6",
+              "R7",
+              "R8"
+            ],
+            [
+              "Income verified?",
+              "T",
+              "T",
+              "T",
+              "T",
+              "F",
+              "F",
+              "F",
+              "F"
+            ],
+            [
+              "Score ≥ 650?",
+              "T",
+              "T",
+              "F",
+              "F",
+              "T",
+              "T",
+              "F",
+              "F"
+            ],
+            [
+              "Existing customer?",
+              "T",
+              "F",
+              "T",
+              "F",
+              "T",
+              "F",
+              "T",
+              "F"
+            ],
+            [
+              "Approve",
+              "X",
+              "X",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ],
+            [
+              "Manual review",
+              "",
+              "",
+              "X",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ],
+            [
+              "Reject",
+              "",
+              "",
+              "",
+              "X",
+              "X",
+              "X",
+              "X",
+              "X"
+            ]
+          ]
+        },
+        {
+          "kind": "text",
+          "title": "Using the table",
+          "text": "2 × 2 × 2 = 8 rules.\n\nTest case: income verified, score 610, existing customer. Translate: T, F, T. That is R3, so the expected result is manual review.\n\nIf R1, R3 and R8 have been tested, coverage is 3 ÷ 8 = 37.5%."
         },
         {
           "kind": "example",
@@ -1355,7 +1531,49 @@
         {
           "kind": "example",
           "title": "Worked solution",
-          "text": "a) Two conditions (Student? Before 17:00?), so 4 rules.\nb)\n                  R1   R2   R3   R4\nStudent?          T    T    F    F\nBefore 17:00?     T    F    T    F\nDiscount          X    X    X\nFree popcorn      X\n\nc) F, T is R3: discount, no popcorn.\nd) Those tests are R2 and R4: 2 ÷ 4 = 50%."
+          "text": "a) Two conditions (Student? Before 17:00?), so 4 rules.\nb) See the table below.\nc) F, T is R3: discount, no popcorn.\nd) Those tests are R2 and R4: 2 ÷ 4 = 50%."
+        },
+        {
+          "kind": "table",
+          "title": "Solution table: cinema tickets",
+          "text": "",
+          "rows": [
+            [
+              "Condition or action",
+              "R1",
+              "R2",
+              "R3",
+              "R4"
+            ],
+            [
+              "Student?",
+              "T",
+              "T",
+              "F",
+              "F"
+            ],
+            [
+              "Before 17:00?",
+              "T",
+              "F",
+              "T",
+              "F"
+            ],
+            [
+              "Discount",
+              "X",
+              "X",
+              "X",
+              ""
+            ],
+            [
+              "Free popcorn",
+              "X",
+              "",
+              "",
+              ""
+            ]
+          ]
         },
         {
           "kind": "text",
@@ -1391,7 +1609,47 @@
         {
           "kind": "example",
           "title": "Worked example 3: invalid transitions from the state table",
-          "text": "A door with a badge reader: Locked — badge → Unlocked; Unlocked — open → Open; Open — close → Unlocked; Unlocked — timeout → Locked.\n\nStates: Locked, Unlocked, Open (3). Events: badge, open, close, timeout (4).\n\n             badge      open    close      timeout\nLocked       Unlocked   –       –          –\nUnlocked     –          Open    –          Locked\nOpen         –          –       Unlocked   –\n\nThe table has 3 × 4 = 12 cells. Four hold a valid transition, so 8 cells are invalid transitions.\n\nFor 100% all transitions coverage you exercise the 4 valid transitions and attempt each of the 8 invalid ones, such as \"badge while Open\". Each invalid attempt goes in its own test case. A sensible expected result for an invalid transition is that the event is ignored or rejected and the state does not change.\n\nA sequence such as badge, close is not a valid test of valid transitions: after badge the door is Unlocked, and \"close\" has no transition from Unlocked."
+          "text": "A door with a badge reader: Locked — badge → Unlocked; Unlocked — open → Open; Open — close → Unlocked; Unlocked — timeout → Locked.\n\nStates: Locked, Unlocked, Open (3). Events: badge, open, close, timeout (4)."
+        },
+        {
+          "kind": "table",
+          "title": "State table: door with a badge reader",
+          "text": "Rows are states and columns are events. A cell holds the state reached; \"–\" marks an invalid transition.",
+          "rows": [
+            [
+              "State",
+              "badge",
+              "open",
+              "close",
+              "timeout"
+            ],
+            [
+              "Locked",
+              "Unlocked",
+              "–",
+              "–",
+              "–"
+            ],
+            [
+              "Unlocked",
+              "–",
+              "Open",
+              "–",
+              "Locked"
+            ],
+            [
+              "Open",
+              "–",
+              "–",
+              "Unlocked",
+              "–"
+            ]
+          ]
+        },
+        {
+          "kind": "text",
+          "title": "Counting from the state table",
+          "text": "The table has 3 × 4 = 12 cells. Four hold a valid transition, so 8 cells are invalid transitions.\n\nFor 100% all transitions coverage you exercise the 4 valid transitions and attempt each of the 8 invalid ones, such as \"badge while Open\". Each invalid attempt goes in its own test case. A sensible expected result for an invalid transition is that the event is ignored or rejected and the state does not change.\n\nA sequence such as badge, close is not a valid test of valid transitions: after badge the door is Unlocked, and \"close\" has no transition from Unlocked."
         },
         {
           "kind": "callout",
@@ -1477,9 +1735,14 @@
           "text": "CTFL syllabus v4.0.1, section 4.3 (starts on p. 42). Learning objectives: FL-4.3.1 (K2), FL-4.3.2 (K2), FL-4.3.3 (K2). Read the full section and the chapter keyword list alongside this lesson."
         },
         {
-          "kind": "example",
+          "kind": "code",
           "title": "Statement and branch coverage on one piece of code",
-          "text": "1  read price, member\n2  if member then\n3      price = price * 0.9\n4  end if\n5  if price > 100 then\n6      print \"free delivery\"\n7  end if\n8  print price\n\nExecutable statements: lines 1, 2, 3, 5, 6 and 8, so six. Each \"if\" has two outcomes, true and false, so there are four conditional branches. This example counts these decision outcomes, as exam questions on branch coverage normally do.\n\nTest A: price 200, member = true. Line 2 is true, so line 3 runs; the price becomes 180; line 5 is true, so line 6 runs. All six statements are executed: 100% statement coverage with a single test.\nBranches taken by test A: 2-true and 5-true. That is two of four: 50% branch coverage.\n\nTest B: price 50, member = false. Both decisions are false. Together, A and B take all four outcomes: 100% branch coverage.\n\nWhat this shows:\n- 100% statement coverage does not give 100% branch coverage. The false outcomes, which skip code, have no statements of their own.\n- 100% branch coverage always gives 100% statement coverage. Branch coverage subsumes statement coverage.\n- Even 100% branch coverage is not proof of correctness. If line 5 should read \"price ≥ 100\", tests A and B both pass, because neither uses exactly 100. Coverage tells you what was executed, not whether the right values were tried."
+          "text": "1  read price, member\n2  if member then\n3      price = price * 0.9\n4  end if\n5  if price > 100 then\n6      print \"free delivery\"\n7  end if\n8  print price"
+        },
+        {
+          "kind": "example",
+          "title": "Working out the coverage",
+          "text": "Executable statements: lines 1, 2, 3, 5, 6 and 8, so six. Each \"if\" has two outcomes, true and false, so there are four conditional branches. This example counts these decision outcomes, as exam questions on branch coverage normally do.\n\nTest A: price 200, member = true. Line 2 is true, so line 3 runs; the price becomes 180; line 5 is true, so line 6 runs. All six statements are executed: 100% statement coverage with a single test.\nBranches taken by test A: 2-true and 5-true. That is two of four: 50% branch coverage.\n\nTest B: price 50, member = false. Both decisions are false. Together, A and B take all four outcomes: 100% branch coverage.\n\nWhat this shows:\n- 100% statement coverage does not give 100% branch coverage. The false outcomes, which skip code, have no statements of their own.\n- 100% branch coverage always gives 100% statement coverage. Branch coverage subsumes statement coverage.\n- Even 100% branch coverage is not proof of correctness. If line 5 should read \"price ≥ 100\", tests A and B both pass, because neither uses exactly 100. Coverage tells you what was executed, not whether the right values were tried."
         },
         {
           "kind": "text",
@@ -1630,7 +1893,26 @@
         {
           "kind": "example",
           "title": "The same criterion in both formats",
-          "text": "Story: \"As a customer, I want free delivery on larger orders, so that I can save money.\"\n\nScenario-oriented (Given/When/Then, as in BDD):\nGiven a basket worth £60, when the customer chooses standard delivery, then the delivery charge is £0.\nGiven a basket worth £40, when the customer chooses standard delivery, then the delivery charge is £4.\n\nRule-oriented, as a table that maps input to output:\nBasket value      Delivery charge\nbelow £50         £4\n£50 or more       £0\n\nRule-oriented, as a bullet-point verification list:\n- Standard delivery is free for baskets of £50 or more.\n- Express delivery is never free.\n\nAny other format is acceptable too, as long as the criteria are well-defined and unambiguous."
+          "text": "Story: \"As a customer, I want free delivery on larger orders, so that I can save money.\"\n\nScenario-oriented (Given/When/Then, as in BDD):\nGiven a basket worth £60, when the customer chooses standard delivery, then the delivery charge is £0.\nGiven a basket worth £40, when the customer chooses standard delivery, then the delivery charge is £4.\n\nRule-oriented, as a bullet-point verification list:\n- Standard delivery is free for baskets of £50 or more.\n- Express delivery is never free.\n\nRule-oriented criteria can also be a table that maps input to output, as below. Any other format is acceptable too, as long as the criteria are well-defined and unambiguous."
+        },
+        {
+          "kind": "table",
+          "title": "Rule-oriented criteria as a table",
+          "text": "",
+          "rows": [
+            [
+              "Basket value",
+              "Standard delivery charge"
+            ],
+            [
+              "Below £50",
+              "£4"
+            ],
+            [
+              "£50 or more",
+              "£0"
+            ]
+          ]
         }
       ]
     },
@@ -1758,7 +2040,49 @@
         {
           "kind": "text",
           "title": "The test pyramid and the testing quadrants",
-          "text": "The test pyramid shows that tests have different granularity, and it supports decisions on test automation and effort allocation. Bottom layer: small, isolated, fast tests that each check a small piece of functionality, so many are needed. Top layer: complex, high-level, end-to-end tests that are slower and each check a large piece, so few are needed. The higher the layer, the lower the granularity and isolation and the longer the execution time. The original model has unit, service and UI tests; another common version has unit (component), integration and end-to-end tests.\n\nThe testing quadrants group test levels, test types, activities and work products in Agile development. Two questions define them: is the test business facing or technology facing, and does it support the team (guide development) or critique the product (measure it against expectations)?\n\nQ1, technology facing, supports the team: component tests and component integration tests. Automated, in the CI process.\nQ2, business facing, supports the team: functional tests, examples, user story tests, user experience prototypes, API testing, simulations. They check the acceptance criteria; manual or automated.\nQ3, business facing, critiques the product: exploratory testing, usability testing, user acceptance testing. User-oriented, often manual.\nQ4, technology facing, critiques the product: smoke tests and non-functional tests except usability tests. Often automated.\n\nMemory aid: the left half (Q1, Q2) supports the team; the top half in the usual drawing (Q2, Q3) is business facing."
+          "text": "The test pyramid shows that tests have different granularity, and it supports decisions on test automation and effort allocation. Bottom layer: small, isolated, fast tests that each check a small piece of functionality, so many are needed. Top layer: complex, high-level, end-to-end tests that are slower and each check a large piece, so few are needed. The higher the layer, the lower the granularity and isolation and the longer the execution time. The original model has unit, service and UI tests; another common version has unit (component), integration and end-to-end tests.\n\nThe testing quadrants group test levels, test types, activities and work products in Agile development. Two questions define them: is the test business facing or technology facing, and does it support the team (guide development) or critique the product (measure it against expectations)?\n\nThe table below lists the four quadrants. Memory aid: Q1 and Q2 support the team; Q2 and Q3 are business facing."
+        },
+        {
+          "kind": "table",
+          "title": "The four testing quadrants",
+          "text": "",
+          "rows": [
+            [
+              "Quadrant",
+              "Facing",
+              "Purpose",
+              "Contains",
+              "Typically"
+            ],
+            [
+              "Q1",
+              "Technology",
+              "Supports the team",
+              "Component tests and component integration tests",
+              "Automated, in the CI process"
+            ],
+            [
+              "Q2",
+              "Business",
+              "Supports the team",
+              "Functional tests, examples, user story tests, user experience prototypes, API testing, simulations",
+              "Manual or automated; check the acceptance criteria"
+            ],
+            [
+              "Q3",
+              "Business",
+              "Critiques the product",
+              "Exploratory testing, usability testing, user acceptance testing",
+              "User-oriented, often manual"
+            ],
+            [
+              "Q4",
+              "Technology",
+              "Critiques the product",
+              "Smoke tests and non-functional tests except usability tests",
+              "Often automated"
+            ]
+          ]
         }
       ]
     },
@@ -1830,7 +2154,49 @@
         {
           "kind": "example",
           "title": "Worked example 1: risk-based order",
-          "text": "Each test covers one risk. Risk level = likelihood × impact, both on a scale of 1 to 5.\n\nTC1: likelihood 2, impact 5 → 10\nTC2: likelihood 4, impact 4 → 16\nTC3: likelihood 3, impact 2 → 6\nTC4: likelihood 5, impact 1 → 5\n\nHighest level first: TC2, TC1, TC3, TC4.\n\nOrdering by likelihood alone would put TC4 first, although its risk level is the lowest. Ordering by impact alone would put TC1 first. Always calculate the level."
+          "text": "Each test covers one risk. Risk level = likelihood × impact, both on a scale of 1 to 5."
+        },
+        {
+          "kind": "table",
+          "title": "Risk levels",
+          "text": "",
+          "rows": [
+            [
+              "Test case",
+              "Likelihood",
+              "Impact",
+              "Risk level"
+            ],
+            [
+              "TC1",
+              "2",
+              "5",
+              "10"
+            ],
+            [
+              "TC2",
+              "4",
+              "4",
+              "16"
+            ],
+            [
+              "TC3",
+              "3",
+              "2",
+              "6"
+            ],
+            [
+              "TC4",
+              "5",
+              "1",
+              "5"
+            ]
+          ]
+        },
+        {
+          "kind": "text",
+          "title": "The order",
+          "text": "Highest level first: TC2, TC1, TC3, TC4.\n\nOrdering by likelihood alone would put TC4 first, although its risk level is the lowest. Ordering by impact alone would put TC1 first. Always calculate the level."
         },
         {
           "kind": "example",

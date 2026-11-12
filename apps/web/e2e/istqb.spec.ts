@@ -157,3 +157,15 @@ test('ISTQB Foundation flashcards start a review', async ({ page }) => {
   await review.getByRole('button', { name: 'Reveal answer', exact: true }).click();
   await expect(review.getByRole('group', { name: 'How well did you recall it?' })).toBeVisible();
 });
+
+test('ISTQB Foundation lab tables render as tables and fit a phone', async ({ page }) => {
+  await signUp(page, 'tables');
+  await page.goto('/courses/istqb-ctfl-4');
+  await page.getByRole('navigation', { name: 'Course lessons' }).getByRole('button').filter({ hasText: 'Lab · Decision tables' }).click();
+  const table = page.getByRole('region', { name: 'Decision table: loan pre-screening' });
+  await expect(table.getByRole('columnheader', { name: 'R8' })).toBeAttached();
+  await expect(table.getByRole('rowheader', { name: 'Manual review' })).toBeVisible();
+  await page.setViewportSize({ width: 390, height: 844 });
+  // The table scrolls inside its own region; the page itself must not scroll sideways.
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBe(0);
+});
