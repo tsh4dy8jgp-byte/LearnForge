@@ -26,9 +26,10 @@ for (const scenario of [
     await signUp(page, scenario.paper);
     await page.goto('/courses/istqb-ctfl-4');
     await expect(page.getByRole('heading', { name: pack.title, exact: true })).toBeVisible();
-    await expect(page.getByRole('navigation', { name: 'Course lessons' }).getByRole('button')).toHaveCount(24);
+    await expect(page.getByRole('navigation', { name: 'Course lessons' }).getByRole('button')).toHaveCount(34);
     await page.getByRole('navigation', { name: 'Course lessons' }).getByRole('button').filter({ hasText: 'Black-box techniques' }).click();
     await expect(page.locator('.reading')).toContainText('Two-value BVA');
+    await expect(page.getByRole('tab', { name: 'Flashcards' })).toBeVisible();
     await page.getByRole('tab', { name: 'Practice & exams' }).click();
     await page.getByLabel('Feedback mode').selectOption('mock');
     await page.getByLabel('Session length').selectOption(scenario.paper);
@@ -145,4 +146,14 @@ test('ISTQB Foundation practice drills fit a phone and leave the papers alone', 
     await expect(page.locator('lf-question-input')).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
   }
+});
+
+test('ISTQB Foundation flashcards start a review', async ({ page }) => {
+  await signUp(page, 'cards');
+  await page.goto('/courses/istqb-ctfl-4?tab=flashcards');
+  await expect(page.getByRole('tab', { name: 'Flashcards' })).toHaveAttribute('aria-selected', 'true');
+  await page.getByRole('button', { name: 'Start spaced review', exact: true }).click();
+  const review = page.getByRole('region', { name: 'Flashcard review' });
+  await review.getByRole('button', { name: 'Reveal answer', exact: true }).click();
+  await expect(review.getByRole('group', { name: 'How well did you recall it?' })).toBeVisible();
 });
