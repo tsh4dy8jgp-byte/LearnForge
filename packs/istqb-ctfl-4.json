@@ -17074,7 +17074,7 @@
       "id": "bank-4-2-1-12",
       "familyId": "bank-4-2-1-12",
       "kind": "numeric",
-      "prompt": "A hotel chain sets a guest's loyalty level from the nights stayed in the last year. A guest with 0 to 4 nights is \"Basic\", 5 to 19 nights \"Silver\", 20 to 49 nights \"Gold\" and 50 to 365 nights \"Platinum\". What is the minimum number of test cases needed for 100% equivalence partition coverage of the number of nights? Enter a whole number only.",
+      "prompt": "A hotel chain sets a guest's loyalty level from the nights stayed in the last year. A guest with 0 to 4 nights is \"Basic\", 5 to 19 nights \"Silver\", 20 to 49 nights \"Gold\" and 50 to 365 nights \"Platinum\". The system cannot record fewer than 0 or more than 365 nights, so there are no other partitions. What is the minimum number of test cases needed for 100% equivalence partition coverage of the number of nights? Enter a whole number only.",
       "objectiveIds": [
         "ch-4",
         "fl-4.2.1"
@@ -17166,7 +17166,7 @@
       "id": "bank-4-2-1-16",
       "familyId": "bank-4-2-1-16",
       "kind": "numeric",
-      "prompt": "A hotel chain sets a guest's loyalty level from the nights stayed in the last year. A guest with 0 to 4 nights is \"Basic\", 5 to 19 nights \"Silver\", 20 to 49 nights \"Gold\" and 50 to 365 nights \"Platinum\". Test cases have been run with these number of nights values: 2, 12, 30, 100. What percentage of equivalence partition coverage do they achieve? Enter a whole number only.",
+      "prompt": "A hotel chain sets a guest's loyalty level from the nights stayed in the last year. A guest with 0 to 4 nights is \"Basic\", 5 to 19 nights \"Silver\", 20 to 49 nights \"Gold\" and 50 to 365 nights \"Platinum\". The system cannot record fewer than 0 or more than 365 nights, so there are no other partitions. Test cases have been run with these number of nights values: 2, 12, 30, 100. What percentage of equivalence partition coverage do they achieve? Enter a whole number only.",
       "objectiveIds": [
         "ch-4",
         "fl-4.2.1"
@@ -17729,7 +17729,7 @@
       "id": "bank-4-2-2-09",
       "familyId": "bank-4-2-2-09",
       "kind": "single",
-      "prompt": "A hotel chain sets a guest's loyalty level from the nights stayed in the last year. A guest with 0 to 4 nights is \"Basic\", 5 to 19 nights \"Silver\", 20 to 49 nights \"Gold\" and 50 to 365 nights \"Platinum\". The partitions fill the whole input range, and values outside it cannot be entered. Which set contains exactly the coverage items of 2-value boundary value analysis for the number of nights?",
+      "prompt": "A hotel chain sets a guest's loyalty level from the nights stayed in the last year. A guest with 0 to 4 nights is \"Basic\", 5 to 19 nights \"Silver\", 20 to 49 nights \"Gold\" and 50 to 365 nights \"Platinum\". The system cannot record fewer than 0 or more than 365 nights, so there are no other partitions. The partitions fill the whole input range, and values outside it cannot be entered. Which set contains exactly the coverage items of 2-value boundary value analysis for the number of nights?",
       "objectiveIds": [
         "ch-4",
         "fl-4.2.2"
@@ -20078,31 +20078,31 @@
       "id": "bank-4-5-3-11",
       "familyId": "bank-4-5-3-11",
       "kind": "multiple",
-      "prompt": "A team works on this user story: \"As an accountant, I want to export the monthly invoices as a spreadsheet so that I can check them offline.\" The acceptance criteria are: (1) the export contains every invoice dated in the chosen month; (2) amounts keep two decimal places; (3) a month without invoices produces a file with headings only; (4) only users with the \"Finance\" role can export. Which TWO test cases are negative tests derived from the acceptance criteria? Select TWO options.",
+      "prompt": "A team works on this user story: \"As an accountant, I want to export the monthly invoices as a spreadsheet so that I can check them offline.\" The acceptance criteria are: (1) the export contains every invoice dated in the chosen month; (2) amounts keep two decimal places; (3) a month without invoices produces a file with headings only; (4) only users with the \"Finance\" role can export. A tester drafts five test cases. Which TWO go beyond the user story and should be removed or raised as new stories? Select TWO options.",
       "objectiveIds": [
         "ch-4",
         "fl-4.5.3"
       ],
       "options": [
         {
-          "id": "o01061006",
-          "text": "Given 20,000 invoices in one month, when the accountant exports, then the file is ready within 30 seconds"
-        },
-        {
           "id": "o1e10369f",
           "text": "Given March with 12 invoices, when the accountant exports, then the file contains 12 rows"
         },
         {
-          "id": "o563dae2b",
-          "text": "Given an invoice of 250.00, when it is exported, then the amount reads 250.00"
+          "id": "o4c59cace",
+          "text": "Given an exported file, when the accountant uploads a corrected copy, then the invoices are updated"
         },
         {
-          "id": "o57fbf9d0",
-          "text": "Given a month in which no invoice was issued, when the accountant exports, then the file has a title row only"
+          "id": "o6512c498",
+          "text": "Given an invoice of 250.00, when the accountant exports, then the amount reads 250.00"
         },
         {
-          "id": "of4e3f8c1",
-          "text": "Given a user with only the \"Sales\" role, when the user opens the export page, then the export is refused"
+          "id": "od340e198",
+          "text": "Given a user with only the \"Sales\" role, when that user tries to export, then the export is refused"
+        },
+        {
+          "id": "odbf09bd8",
+          "text": "Given March with 12 invoices, when the accountant exports, then the file is e-mailed to the auditor"
         }
       ],
       "slots": [],
@@ -20111,11 +20111,11 @@
       "grading": {
         "policy": "exact",
         "correct": [
-          "of4e3f8c1",
-          "o57fbf9d0"
+          "odbf09bd8",
+          "o4c59cace"
         ]
       },
-      "explanation": "Negative test cases check exceptions and error conditions: a user without the required role (criterion 4) and the empty month (criterion 3). The 12-invoice and two-decimal cases are positive tests, and the 20,000-invoice case checks performance efficiency, a non-functional characteristic. Syllabus reference: CTFL v4.0.1, section 4.5.3 (p. 46); FL-4.5.3 (K3).",
+      "explanation": "ATDD test cases must cover the characteristics of the story without going beyond it. Sending the file to an auditor and uploading corrections are not in the story or in any of its four acceptance criteria. The other three test cases trace to criteria 1, 2 and 4. Syllabus reference: CTFL v4.0.1, section 4.5.3 (p. 46); FL-4.5.3 (K3).",
       "weight": 1,
       "knowledgeLevel": "k3"
     },
@@ -20418,7 +20418,7 @@
       "id": "bank-4-5-3-19",
       "familyId": "bank-4-5-3-19",
       "kind": "numeric",
-      "prompt": "A team works on this user story: \"As a customer, I want to return an item online so that I get my money back.\" The acceptance criteria are: (1) an item can be returned within 30 days of delivery; (2) a return label is e-mailed to the customer; (3) an item marked \"final sale\" cannot be returned; (4) the refund goes to the original payment method. The team wants one positive test case that covers the successful return, and one negative test case for each acceptance criterion that describes a situation in which a return must be refused. How many test cases is that in total? Enter a whole number only.",
+      "prompt": "A team works on this user story: \"As a registered user, I want to reset my password by e-mail so that I can sign in again.\" The acceptance criteria are: (1) a reset link is sent to the registered e-mail address; (2) the link works once and for 30 minutes; (3) the new password must differ from the last three passwords; (4) an unknown e-mail address shows the same neutral message as a known one. The team has drafted five test cases: (a) a user requests a reset and sets a new password with a fresh link; (b) a link opened after 45 minutes is refused; (c) a link opened a second time is refused; (d) a new password equal to the previous password is rejected; (e) the reset e-mail arrives within 60 seconds. How many of these five are negative test cases? Enter a whole number only.",
       "objectiveIds": [
         "ch-4",
         "fl-4.5.3"
@@ -20433,7 +20433,7 @@
           "3"
         ]
       },
-      "explanation": "One positive test case covers the successful return with label and refund (criteria 1, 2 and 4). Two criteria describe refusals: the 30-day limit in criterion 1 and the final-sale rule in criterion 3. That gives 1 + 2 = 3 test cases. Syllabus reference: CTFL v4.0.1, section 4.5.3 (p. 46); FL-4.5.3 (K3).",
+      "explanation": "Test cases (b), (c) and (d) check error conditions: an expired link, a reused link and a repeated password. Test case (a) is the positive case and (e) checks performance efficiency, a non-functional characteristic. So three of the five are negative test cases. Syllabus reference: CTFL v4.0.1, section 4.5.3 (p. 46); FL-4.5.3 (K3).",
       "weight": 1,
       "knowledgeLevel": "k3"
     },
@@ -20852,7 +20852,7 @@
           "oac626ce1"
         ]
       },
-      "explanation": "The measured rate is 45 / 60 = 0.8 person-days per item. 140 requirements remain, so the remaining effort is 105 person-days. 150 person-days would be the effort for all 200 requirements, including the work already done. Syllabus reference: CTFL v4.0.1, section 5.1.4 (p. 49); FL-5.1.4 (K3).",
+      "explanation": "The measured rate is 45 person-days for 60 requirements. 140 requirements remain, so the remaining effort is 45 ÷ 60 × 140 = 105 person-days. 150 person-days would be the effort for all 200 requirements, including the work already done. Syllabus reference: CTFL v4.0.1, section 5.1.4 (p. 49); FL-5.1.4 (K3).",
       "weight": 1,
       "knowledgeLevel": "k3"
     },
@@ -21139,7 +21139,7 @@
           "120"
         ]
       },
-      "explanation": "The measured rate is 80 / 120 = 0.7 person-hours per item. 180 test cases remain, so the remaining effort is 120 person-hours. 200 person-hours would be the effort for all 300 test cases, including the work already done. Syllabus reference: CTFL v4.0.1, section 5.1.4 (p. 49); FL-5.1.4 (K3).",
+      "explanation": "The measured rate is 80 person-hours for 120 test cases. 180 test cases remain, so the remaining effort is 80 ÷ 120 × 180 = 120 person-hours. 200 person-hours would be the effort for all 300 test cases, including the work already done. Syllabus reference: CTFL v4.0.1, section 5.1.4 (p. 49); FL-5.1.4 (K3).",
       "weight": 1,
       "knowledgeLevel": "k3"
     },
@@ -22053,7 +22053,7 @@
           "oc50dbfdd"
         ]
       },
-      "explanation": "A good title is a short summary of the anomaly: what happens and under which condition. The first option names the failure and its trigger. The others are vague, describe when the test was run rather than what went wrong, or blame a person, which a defect report should avoid. Syllabus reference: CTFL v4.0.1, section 5.5 (p. 56); FL-5.5.1 (K3).",
+      "explanation": "A good title is a short summary of the anomaly: what happens and under which condition. The chosen title names the failure and its trigger. The others are vague, describe when the test was run rather than what went wrong, or blame a person, which a defect report should avoid. Syllabus reference: CTFL v4.0.1, section 5.5 (p. 56); FL-5.5.1 (K3).",
       "weight": 1,
       "knowledgeLevel": "k3"
     },
@@ -22677,48 +22677,40 @@
     {
       "id": "bank-5-5-16",
       "familyId": "bank-5-5-16",
-      "kind": "sequence",
-      "prompt": "A tester sees a failure while running a test case and wants to write a useful defect report. Put the activities in a sensible order.",
+      "kind": "single",
+      "prompt": "A draft defect report for a web shop contains these two entries. Severity: \"Must be corrected before the trade fair on Friday.\" Priority: \"Customers cannot pay, so no order can be completed.\" What should the tester correct?",
       "objectiveIds": [
         "ch-5",
         "fl-5.5.1"
       ],
       "options": [
         {
-          "id": "o47e30788",
-          "text": "Assess the severity and propose a priority"
+          "id": "o2897b8fd",
+          "text": "Move both entries into the title, since a title has to state the Friday deadline"
         },
         {
-          "id": "o4be5a17c",
-          "text": "Submit the report and set its status to open"
+          "id": "o78649506",
+          "text": "Keep both entries, since severity and priority are two names for the same thing"
         },
         {
-          "id": "od66aabff",
-          "text": "Repeat the test to check that the failure can be reproduced"
+          "id": "oa8c40d18",
+          "text": "Swap the two entries, since blocked payments are impact and the Friday date is urgency"
         },
         {
-          "id": "oef8d5e96",
-          "text": "Note the steps, the test data and the environment that lead to the failure"
-        },
-        {
-          "id": "ofb6f7c72",
-          "text": "Describe the expected and the actual result and attach evidence"
+          "id": "oeab7d005",
+          "text": "Delete both entries, since severity and priority are decided by the developers alone"
         }
       ],
       "slots": [],
-      "selectCount": 0,
+      "selectCount": 1,
       "reuse": false,
       "grading": {
-        "policy": "partial",
+        "policy": "exact",
         "correct": [
-          "od66aabff",
-          "oef8d5e96",
-          "ofb6f7c72",
-          "o47e30788",
-          "o4be5a17c"
+          "oa8c40d18"
         ]
       },
-      "explanation": "Reproducing first shows whether the observation is stable. The tester then records how to get there, describes the difference between expected and actual results with evidence, and judges impact and urgency. Only then is the report submitted with its initial status. Syllabus reference: CTFL v4.0.1, section 5.5 (p. 56); FL-5.5.1 (K3).",
+      "explanation": "Severity is the degree of impact of the defect, here that no customer can pay. Priority is the urgency of the fix, here the deadline before the trade fair. The two entries have been filled in the wrong way round. Syllabus reference: CTFL v4.0.1, section 5.5 (p. 56); FL-5.5.1 (K3).",
       "weight": 1,
       "knowledgeLevel": "k3"
     },
@@ -22726,7 +22718,7 @@
       "id": "bank-5-5-17",
       "familyId": "bank-5-5-17",
       "kind": "numeric",
-      "prompt": "A defect report contains exactly these items: a unique identifier, a title, the author and date, the test object and its version, the steps to reproduce, the actual result and the status. A checklist for defect reports asks for these further items: test environment, expected result, severity and priority. How many of the four checklist items are missing from the report? Enter a whole number only.",
+      "prompt": "A defect report contains exactly these items: a unique identifier, a title, the author and date, the test object and its version, the steps to reproduce, the actual result and the status. A review checklist asks for six items: unique identifier, test environment, expected result, actual result, severity and priority. How many of the six checklist items are missing from the report? Enter a whole number only.",
       "objectiveIds": [
         "ch-5",
         "fl-5.5.1"
@@ -22741,7 +22733,7 @@
           "4"
         ]
       },
-      "explanation": "None of the four checklist items appears in the report: it names no test environment, no expected result, no severity and no priority. All four are therefore missing, although the report looks complete at first sight. Syllabus reference: CTFL v4.0.1, section 5.5 (p. 56); FL-5.5.1 (K3).",
+      "explanation": "The report has the identifier and the actual result. It names no test environment, no expected result, no severity and no priority, so four of the six checklist items are missing. Syllabus reference: CTFL v4.0.1, section 5.5 (p. 56); FL-5.5.1 (K3).",
       "weight": 1,
       "knowledgeLevel": "k3"
     },
