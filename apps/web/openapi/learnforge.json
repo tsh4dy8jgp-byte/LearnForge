@@ -2108,6 +2108,18 @@
               "null",
               "string"
             ]
+          },
+          "rows": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
           }
         }
       },
@@ -2116,7 +2128,8 @@
           "text",
           "callout",
           "example",
-          "code"
+          "code",
+          "table"
         ]
       },
       "CourseCatalogDto": {

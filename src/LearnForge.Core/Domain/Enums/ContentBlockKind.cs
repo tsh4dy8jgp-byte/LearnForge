@@ -5,5 +5,6 @@ public enum ContentBlockKind
     Text,
     Callout,
     Example,
-    Code
+    Code,
+    Table
 }

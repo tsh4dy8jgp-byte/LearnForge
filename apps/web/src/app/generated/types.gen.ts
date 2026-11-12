@@ -170,9 +170,10 @@ export type ContentBlock = {
     kind: ContentBlockKind;
     text: string;
     title?: null | string;
+    rows?: null | Array<Array<string>>;
 };
 
-export type ContentBlockKind = 'text' | 'callout' | 'example' | 'code';
+export type ContentBlockKind = 'text' | 'callout' | 'example' | 'code' | 'table';
 
 export type CourseCatalogDto = {
     id: string;

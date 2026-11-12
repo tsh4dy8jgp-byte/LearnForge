@@ -7,7 +7,7 @@ WCAG 2.2 AA is a design and release requirement for every feature. Follow the [a
 ## Content and assessment
 
 - Restricted Markdown and math compiled into typed content rather than raw HTML; stable block IDs, modules, glossary terms, language/direction and catalog metadata.
-- Figures, tables, worked examples, primary sources, inline checks and media with reviewed alternatives, captions, transcripts and audio description as applicable. See the [content accessibility contract](accessibility/content-and-authoring.md).
+- Figures, worked examples, primary sources, inline checks and media with reviewed alternatives, captions, transcripts and audio description as applicable. See the [content accessibility contract](accessibility/content-and-authoring.md).
 - Pack-scoped assets with hashed manifests, MIME validation and storage abstraction; stricter duplicate-property validation.
 - QTI/Markdown/YAML adapters, richer templates and semantic duplicate detection, all routed through the compiler.
 - Additional question formats, strategy-based renderers, per-option rationale, hints, difficulty and richer numeric policies; independent validation and compatibility review before adoption.

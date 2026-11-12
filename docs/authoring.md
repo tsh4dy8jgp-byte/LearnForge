@@ -21,6 +21,27 @@ A pack declares an optional `goal`: `readiness` (the default, for exam preparati
 
 Keep lesson IDs stable. Learner progress is keyed by lesson ID, and changing a lesson's content flags it as updated for learners who completed it.
 
+### Lesson blocks
+
+A lesson is a list of blocks. Each block has a `kind`, `text` and an optional `title`, which is shown as a heading.
+
+| Kind | Use | Rendering |
+| --- | --- | --- |
+| `text` | Explanations | A paragraph; line breaks in `text` are kept |
+| `callout` | Warnings, traps, key rules | A highlighted paragraph |
+| `example` | Worked examples, exercises, solutions | A highlighted paragraph |
+| `code` | Code, pseudocode, anything that needs fixed-width alignment | Preformatted text |
+| `table` | Tabular content, such as decision tables and comparisons | An HTML table |
+
+A `table` block adds `rows`, an array of rows of plain-text cells. The first row is the header and its cells must not be blank; body cells may be empty. Use 1–40 body rows and 2–12 columns, with the same number of cells in every row and at most 500 characters per cell. The first cell of each body row is rendered as that row's header, so put the row label there. `text` is optional for tables and is shown as a note under the table. `rows` is not allowed on other kinds. Do not lay tables out with spaces in a `text` or `example` block: the lesson font is proportional, so the columns will not line up.
+
+```json
+{ "kind": "table", "title": "Free delivery", "text": "X means the action occurs.",
+  "rows": [["Condition or action", "R1", "R2"], ["Member?", "T", "F"], ["Free delivery", "X", ""]] }
+```
+
+All block content is rendered as text. Blocks cannot contain HTML or Markdown.
+
 ## Question contracts
 
 Single questions have one correct option and selectCount 1. Multiple questions have exactly selectCount correct options and at least one distractor. Sequence questions use a complete permutation as grading.correct. Matching questions use slots, a shared options bank and grading.matches; set reuse true when a token may fill multiple slots. Dropdown questions put their option banks on each slot and also use grading.matches.
