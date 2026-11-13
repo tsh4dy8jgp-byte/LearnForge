@@ -6,8 +6,9 @@ import { ApiClient } from '../http/api-client';
 import { message } from '../http/api-error';
 import { AttemptSummary } from '../api-contracts';
 import { SiteSettingsStore } from '../site/site-settings-store';
+import { Icon } from '../icons/icon';
 @Component({
-  imports: [DatePipe, DecimalPipe, FormsModule, RouterLink],
+  imports: [DatePipe, DecimalPipe, FormsModule, RouterLink, Icon],
   templateUrl: './history-page.html',
 })
 export class HistoryPage {

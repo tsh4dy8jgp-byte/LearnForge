@@ -13,6 +13,7 @@ import { LearnerPreview } from './learner-preview';
 import { SiteSettingsStore } from '../site/site-settings-store';
 import { FlashcardEditor } from './flashcard-editor';
 import { FlashcardExports } from '../flashcards/flashcard-exports';
+import { Icon } from '../icons/icon';
 
 @Component({
   imports: [
@@ -22,6 +23,7 @@ import { FlashcardExports } from '../flashcards/flashcard-exports';
     LearnerPreview,
     FlashcardEditor,
     FlashcardExports,
+    Icon,
   ],
   providers: [DraftEditorState],
   host: { '(window:beforeunload)': 'editor.beforeUnload($event)' },

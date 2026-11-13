@@ -36,7 +36,7 @@
   >
     @for (option of sequence(); track option.id; let i = $index) {
       <div class="sequence-item" cdkDrag [cdkDragDisabled]="disabled()">
-        <span class="drag-handle" aria-hidden="true">⠿</span><span class="muted">{{ i + 1 }}.</span
+        <lf-icon class="drag-handle" name="grip" /><span class="muted">{{ i + 1 }}.</span
         ><strong>{{ option.text }}</strong>
         <div class="row">
           <button
@@ -46,7 +46,7 @@
             [attr.aria-label]="'Move ' + option.text + ' up'"
             (click)="move(i, -1)"
           >
-            ↑</button
+            <lf-icon name="arrow-up" /></button
           ><button
             type="button"
             class="icon-button"
@@ -54,7 +54,7 @@
             [attr.aria-label]="'Move ' + option.text + ' down'"
             (click)="move(i, 1)"
           >
-            ↓
+            <lf-icon name="arrow-down" />
           </button>
         </div>
       </div>

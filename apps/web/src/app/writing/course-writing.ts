@@ -52,10 +52,13 @@ export class CourseWriting {
         (!this.dueOnly() || this.isDue(c.id)),
     ),
   );
+  // Every session response carries its own copy of the character; an equal copy must not restart
+  // the board, or saving a result would wipe the character the learner just finished.
   protected readonly character = computed(
     () =>
       this.current()?.character ??
       this.course().characters?.find((c) => c.id === this.selectedId()),
+    { equal: (a, b) => a === b || JSON.stringify(a) === JSON.stringify(b) },
   );
   protected readonly progress = computed(() =>
     this.summary.value()?.characters.find((c) => c.characterId === this.character()?.id),
@@ -100,6 +103,7 @@ export class CourseWriting {
         },
       );
       this.current.set(session);
+      this.trainer()?.reset();
       this.notice.set('Practice started. A reload lets you resume from this character.');
       this.summary.reload();
     });
@@ -112,6 +116,7 @@ export class CourseWriting {
         `/me/courses/${this.course().id}/writing/sessions/${id}`,
       );
       this.current.set(session);
+      this.trainer()?.reset();
       this.selectedId.set(session.character.id);
       this.mode.set(session.mode);
       this.notice.set(
@@ -120,10 +125,18 @@ export class CourseWriting {
     });
   }
   protected completed(result: PracticeResult) {
-    if (this.preview() || !this.active()) {
+    if (this.preview() || !this.account.user()) {
       this.notice.set('Practice complete. Sign in and start a saved session to record progress.');
       return;
     }
+    if (!this.active()) {
+      this.notice.set(
+        'Practice complete, but this attempt was not saved. Use saved practice to record progress.',
+      );
+      return;
+    }
+    // A failed save keeps its result and request ID for retrying; keep them over later attempts.
+    if (this.pending()) return;
     this.pending.set(result);
     this.resultKey = crypto.randomUUID();
     void this.save();

@@ -8,7 +8,9 @@
         {{ a.completedAt | date: 'medium' }}
       </p>
     </div>
-    <a routerLink="/dashboard" class="button secondary">Back to overview →</a>
+    <a routerLink="/dashboard" class="button secondary"
+      >Back to overview <lf-icon name="arrow-right"
+    /></a>
   </div>
   @if (a.summary; as s) {
     @if (s.passed != null) {
@@ -76,7 +78,9 @@
           <p><strong>Your answer:</strong> {{ describe(q, a.answers[q.id]) }}</p>
           <p><strong>Expected:</strong> {{ expected(q, g) }}</p>
           <p class="explanation">{{ g.explanation }}</p>
-          <a [routerLink]="['/courses', a.packId]" class="text-link">Revisit the lesson →</a>
+          <a [routerLink]="['/courses', a.packId]" class="text-link"
+            >Revisit the lesson <lf-icon name="arrow-right"
+          /></a>
         </div>
       </details>
     }

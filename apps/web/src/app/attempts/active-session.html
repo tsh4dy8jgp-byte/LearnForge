@@ -87,13 +87,13 @@
                 [disabled]="state.busy() || !!state.unsaved() || !state.canGo(state.index() - 1)"
                 (click)="state.go(state.index() - 1)"
               >
-                ← Previous</button
+                <lf-icon name="arrow-left" />Previous</button
               ><button
                 class="button secondary"
                 [disabled]="state.busy() || !!state.unsaved() || !state.canGo(state.index() + 1)"
                 (click)="state.go(state.index() + 1)"
               >
-                Next →
+                Next <lf-icon name="arrow-right" />
               </button>
             </div>
           </div>
@@ -125,7 +125,7 @@
           [disabled]="state.busy() || !!state.unsaved()"
           (click)="state.nextSection()"
         >
-          Finish this section →
+          Finish this section <lf-icon name="arrow-right" />
         </button>
         <p class="muted small">Completed sections cannot be reopened during this attempt.</p>
       }

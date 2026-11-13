@@ -2,9 +2,10 @@ import { Component, computed, input, linkedSignal, output, signal } from '@angul
 import { FormsModule } from '@angular/forms';
 import { CdkDrag, CdkDropList, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Answer, Question } from '../api-contracts';
+import { Icon } from '../icons/icon';
 @Component({
   selector: 'lf-question-input',
-  imports: [FormsModule, CdkDrag, CdkDropList],
+  imports: [FormsModule, CdkDrag, CdkDropList, Icon],
   templateUrl: './question-input.html',
 })
 export class QuestionInput {

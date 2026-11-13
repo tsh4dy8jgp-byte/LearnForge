@@ -154,8 +154,11 @@ nav > a {
   font-size: 0.88rem;
   color: var(--muted);
 }
-nav > a > span {
-  font-size: 1.25rem;
+nav > a > lf-icon {
+  font-size: 1.15rem;
+}
+nav > a.active > lf-icon {
+  color: var(--green);
 }
 nav > a:hover {
   background: var(--subtle);
@@ -230,6 +233,10 @@ nav > a.active {
   border-radius: 50%;
   margin-right: 9px;
 }
+/* #main receives focus after each navigation so screen readers start at the page; it is not a control. */
+main:focus {
+  outline: none;
+}
 main {
   max-width: 1510px;
   margin: auto;
@@ -291,7 +298,7 @@ footer {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
+  gap: 0.55em;
   border-radius: 8px;
   padding: 11px 19px;
   font-weight: 600;
@@ -315,6 +322,10 @@ footer {
   width: 100%;
 }
 .text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  text-align: left;
   background: none;
   border: 0;
   color: var(--green);
@@ -324,12 +335,17 @@ footer {
   text-underline-offset: 4px;
 }
 .text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
   color: var(--green);
   font-size: 0.85rem;
   font-weight: 600;
 }
 .breadcrumb {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
   font-size: 0.85rem;
   color: var(--muted);
   margin-bottom: 22px;
@@ -345,6 +361,7 @@ footer {
   font-size: 0.72rem;
   display: inline-flex;
   align-items: center;
+  gap: 0.45em;
   white-space: nowrap;
   background: var(--secondary-tint);
   color: var(--orange);
@@ -360,6 +377,35 @@ footer {
   border-color: var(--success-border);
   background: var(--success-bg);
   color: var(--success-text);
+}
+/* Mastery reads as a progression: neutral, warm, amber, green. The label always names the state. */
+.pill.mastery {
+  gap: 0.4em;
+  padding-left: 8px;
+}
+.pill.mastery > lf-icon {
+  font-size: 1.2em;
+}
+.pill.mastery[data-state='notStarted'] {
+  background: var(--subtle);
+  color: var(--muted);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.pill.mastery[data-state='developing'] {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+/* Arrows lean toward where they lead; the reduced-motion rule below removes the transition. */
+lf-icon[data-icon='arrow-right'],
+lf-icon[data-icon='external'] {
+  transition: transform 0.15s ease;
+}
+a:hover lf-icon[data-icon='arrow-right'],
+button:hover:not(:disabled) lf-icon[data-icon='arrow-right'] {
+  transform: translateX(2px);
+}
+a:hover lf-icon[data-icon='external'] {
+  transform: translate(1px, -1px);
 }
 .stat-grid {
   display: grid;
@@ -593,6 +639,14 @@ legend {
 .course-art.alternate {
   background: var(--secondary-tint);
 }
+.course-art .tiny-label {
+  position: relative;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  padding: 4px 10px;
+  letter-spacing: 1.2px;
+}
 .course-number {
   font-family: Georgia, serif;
   font-size: 4.6rem;
@@ -734,6 +788,12 @@ legend {
 .lesson-nav button > span {
   color: var(--muted);
   font-size: 0.8rem;
+  min-width: 1.4rem;
+  flex-shrink: 0;
+}
+.lesson-nav button > span.done {
+  color: var(--success-text);
+  font-size: 1rem;
 }
 .lesson-nav strong {
   font-size: 0.86rem;
@@ -828,8 +888,20 @@ pre {
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
+.objective-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
 .objective-card h3 {
   margin-top: 20px;
+}
+.objective-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: auto;
 }
 .practice-layout {
   display: grid;
@@ -987,8 +1059,12 @@ td {
 .drag-handle {
   color: var(--muted);
   cursor: grab;
+  font-size: 1.1rem;
 }
 .icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid var(--border-strong);
   color: var(--green);
   background: var(--subtle);
@@ -1209,7 +1285,7 @@ td {
     white-space: nowrap;
     padding: 8px 12px;
   }
-  .sidebar nav > a > span {
+  .sidebar nav > a > lf-icon {
     font-size: 1rem;
   }
   .topbar {
@@ -1426,17 +1502,46 @@ td {
     scroll-behavior: auto !important;
   }
 }
+/* Numbered steps: a counter disc, the suggestion, then its action underneath. */
 .next-steps {
+  list-style: none;
+  counter-reset: step;
   margin: 0 0 18px;
-  padding-left: 20px;
+  padding: 0;
   display: grid;
-  gap: 8px;
+  gap: 14px;
 }
 .next-steps li {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 14px;
-  align-items: baseline;
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 1.6rem minmax(0, 1fr);
+  column-gap: 12px;
+  row-gap: 4px;
+  align-items: start;
+}
+.next-steps li::before {
+  content: counter(step);
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: var(--lime);
+  color: var(--green);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.next-steps li > * {
+  grid-column: 2;
+  justify-self: start;
+}
+.next-steps li.done {
+  display: block;
+}
+.next-steps li.done::before {
+  content: none;
 }
 lf-mastery-badge {
   display: inline-flex;

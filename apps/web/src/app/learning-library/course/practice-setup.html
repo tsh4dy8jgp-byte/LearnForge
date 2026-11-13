@@ -56,7 +56,11 @@
     </p>
     @if (signedIn()) {
       <button class="button" [disabled]="busy()">
-        {{ busy() ? 'Preparing…' : 'Begin session →' }}
+        @if (busy()) {
+          Preparing…
+        } @else {
+          Begin session <lf-icon name="arrow-right" />
+        }
       </button>
     } @else {
       <a routerLink="/sign-in" class="button">Sign in to practise</a>

@@ -129,13 +129,11 @@
             </button>
           }
         </div>
-        @if (preview() || !account.user() || practiceMode() === 'watch' || active()) {
-          <lf-character-trainer
-            [character]="c"
-            [mode]="practiceMode()"
-            (finished)="completed($event)"
-          />
-        }
+        <lf-character-trainer
+          [character]="c"
+          [mode]="practiceMode()"
+          (finished)="completed($event)"
+        />
         <div class="row session-controls">
           @if (active()) {
             <button
@@ -145,7 +143,12 @@
             >
               Finish session
             </button>
-          } @else if (account.user() && !preview() && !summary.value()?.activeSessionId) {
+          } @else if (
+            account.user() &&
+            !preview() &&
+            !summary.value()?.activeSessionId &&
+            practiceMode() !== 'watch'
+          ) {
             <button
               class="button"
               [disabled]="busy() || summary.isLoading() || !!summary.error()"

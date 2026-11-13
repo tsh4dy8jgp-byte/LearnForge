@@ -1,9 +1,11 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { AppearancePreferences, colorSchemes, layouts } from './appearance-preferences';
 import type { SiteColorScheme, SiteLayout } from '../api-contracts';
+import { Icon } from '../icons/icon';
 
 @Component({
   selector: 'app-appearance',
+  imports: [Icon],
   templateUrl: './appearance-page.html',
 })
 export class AppearancePage {

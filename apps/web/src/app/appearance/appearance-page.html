@@ -43,10 +43,10 @@
         </span>
         <span class="option-name"
           >{{ layout.name
-          }}<span class="selection-mark" aria-hidden="true">{{
-            appearance.layout() === layout.id ? '✓' : '○'
-          }}</span></span
-        >
+          }}<lf-icon
+            class="selection-mark"
+            [name]="appearance.layout() === layout.id ? 'check' : 'circle'"
+        /></span>
         <span class="option-description" [id]="'layout-description-' + layout.id">{{
           layout.description
         }}</span>
@@ -74,10 +74,10 @@
         </span>
         <span class="option-name"
           >{{ scheme.name
-          }}<span class="selection-mark" aria-hidden="true">{{
-            appearance.colorScheme() === scheme.id ? '✓' : '○'
-          }}</span></span
-        >
+          }}<lf-icon
+            class="selection-mark"
+            [name]="appearance.colorScheme() === scheme.id ? 'check' : 'circle'"
+        /></span>
         <span class="option-description" [id]="'scheme-description-' + scheme.id">{{
           scheme.description
         }}</span>

@@ -16,6 +16,7 @@ import { PracticeSelection } from './practice-selection';
 import { CourseWriting } from '../../writing/course-writing';
 import { CourseFlashcards } from '../../flashcards/course-flashcards';
 import { CourseCharacterStudy } from '../../writing/course-character-study';
+import { Icon } from '../../icons/icon';
 
 @Component({
   imports: [
@@ -32,6 +33,7 @@ import { CourseCharacterStudy } from '../../writing/course-character-study';
     CourseFlashcards,
     CourseWriting,
     CourseCharacterStudy,
+    Icon,
   ],
   templateUrl: './course-page.html',
 })

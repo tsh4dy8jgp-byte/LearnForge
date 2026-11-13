@@ -5,8 +5,9 @@ import { Router, RouterLink } from '@angular/router';
 import { ApiClient } from '../http/api-client';
 import { message } from '../http/api-error';
 import { SiteSettingsStore } from '../site/site-settings-store';
+import { Icon } from '../icons/icon';
 @Component({
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, Icon],
   templateUrl: './auth-page.html',
 })
 export class AuthPage {

@@ -3,10 +3,11 @@ import { RouterLink } from '@angular/router';
 import { form, FormField, required, submit } from '@angular/forms/signals';
 import { CourseCatalogDto } from '../../api-contracts';
 import { PracticeSelection } from './practice-selection';
+import { Icon } from '../../icons/icon';
 
 @Component({
   selector: 'lf-practice-setup',
-  imports: [RouterLink, FormField],
+  imports: [RouterLink, FormField, Icon],
   templateUrl: './practice-setup.html',
 })
 export class PracticeSetup {

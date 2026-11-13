@@ -130,7 +130,7 @@ test('a learner uses dark Focus, saves an answer, and resumes in Campus without 
   // Find a single-choice question without depending on shuffled delivery order.
   for (let n = 0; n < 5; n++) {
     if (await page.locator('.question-card input[type=radio]').count()) break;
-    await page.getByRole('button', { name: 'Next →', exact: true }).click();
+    await page.getByRole('button', { name: 'Next', exact: true }).click();
     await expect(page.locator('.question-card .eyebrow')).toHaveText(`QUESTION ${n + 2} / 5`);
   }
   const answer = page.locator('.question-card input[type=radio]').first();

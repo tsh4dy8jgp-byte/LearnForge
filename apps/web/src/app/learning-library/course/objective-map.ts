@@ -1,10 +1,11 @@
 import { Component, input, output } from '@angular/core';
 import { CourseCatalogDto, ObjectiveMasteryDto } from '../../api-contracts';
 import { MasteryBadge } from '../../learning/mastery-badge';
+import { Icon } from '../../icons/icon';
 
 @Component({
   selector: 'lf-objective-map',
-  imports: [MasteryBadge],
+  imports: [MasteryBadge, Icon],
   templateUrl: './objective-map.html',
 })
 export class ObjectiveMap {

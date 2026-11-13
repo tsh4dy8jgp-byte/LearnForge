@@ -69,7 +69,7 @@ test('practical AI course supports saved reading, capstone review and graded mas
     await card.getByRole('button', { name: 'Check answer', exact: true }).click();
     await expect(page.locator('.feedback')).toContainText(source.explanation);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
-    if (index < attempt.questions.length - 1) await page.getByRole('button', { name: 'Next →', exact: true }).click();
+    if (index < attempt.questions.length - 1) await page.getByRole('button', { name: 'Next', exact: true }).click();
   }
   await page.getByRole('button', { name: 'Submit session', exact: true }).click();
   await page.getByRole('button', { name: 'Confirm submission', exact: true }).click();
