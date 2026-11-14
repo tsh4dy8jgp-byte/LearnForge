@@ -1,0 +1,2093 @@
+{
+  "format": "exam/1",
+  "id": "safe-ainf",
+  "version": "1.0.1",
+  "title": "AI-Native Foundations · unofficial practice and mocks",
+  "description": "Exam practice for the Scaled Agile AI-Native Foundations exam (45 single-select questions, 90 minutes, pass mark 76% on the study guide checked on 13 Nov 2026): 90 original questions across the four published domains, weighted 20- and 45-question mocks, and flashcards. Readiness here is a practice signal, not a prediction of an exam result. Unofficial, original practice material. It is not affiliated with or endorsed by Scaled Agile, Inc. SAFe and Scaled Agile Framework are registered trademarks of Scaled Agile, Inc.",
+  "license": "Personal study use only. Not for redistribution.",
+  "goal": "readiness",
+  "domains": [
+    {
+      "id": "ainf.fundamentals",
+      "title": "Fundamentals and Core Architectures (26-30%)",
+      "weight": 28,
+      "prerequisites": []
+    },
+    {
+      "id": "ainf.responsible",
+      "title": "Responsible AI, Governance, and Security (18-22%)",
+      "weight": 20,
+      "prerequisites": [
+        "ainf.fundamentals"
+      ]
+    },
+    {
+      "id": "ainf.practical",
+      "title": "Practical AI Application and Prompt Engineering (33-37%)",
+      "weight": 35,
+      "prerequisites": [
+        "ainf.fundamentals"
+      ]
+    },
+    {
+      "id": "ainf.strategy",
+      "title": "AI Business Strategy and Transition (13-17%)",
+      "weight": 15,
+      "prerequisites": [
+        "ainf.fundamentals",
+        "ainf.practical"
+      ]
+    }
+  ],
+  "mocks": {
+    "short": {
+      "count": 20,
+      "minutes": 40,
+      "title": "Short mock · 20 questions, 40 minutes"
+    },
+    "full": {
+      "count": 45,
+      "minutes": 90,
+      "title": "Full mock · 45 questions, 90 minutes"
+    }
+  },
+  "readiness": {
+    "shortAttempts": 3,
+    "fullAttempts": 2,
+    "threshold": 90,
+    "lookbackDays": 90,
+    "minimumFreshPercent": 70
+  },
+  "sources": [
+    {
+      "title": "Scaled Agile · Exam study guide: AI-Native Foundations",
+      "url": "https://ai-native-support.scaledagile.com/en/articles/13835880-exam-study-guide-ai-native-foundations-exam-ai-native-foundations-professional"
+    },
+    {
+      "title": "Scaled Agile · AI-Native Foundations certification page",
+      "url": "https://scaledagile.com/certification/ai-native-foundations/"
+    },
+    {
+      "title": "Scaled Agile · AI-Native overview",
+      "url": "https://scaledagile.com/ai-native/"
+    },
+    {
+      "title": "Scaled Agile blog · AI fundamentals certification",
+      "url": "https://scaledagile.com/blog/ai-fundamentals-certification/"
+    },
+    {
+      "title": "Scaled Agile blog · AI-Native articles",
+      "url": "https://scaledagile.com/tag/ai-native/"
+    },
+    {
+      "title": "Scaled Agile blog · AI certifications for product managers",
+      "url": "https://scaledagile.com/blog/ai-certifications-product-managers/"
+    },
+    {
+      "title": "Microsoft Learn · Retrieval augmented generation and indexes",
+      "url": "https://learn.microsoft.com/azure/foundry/concepts/retrieval-augmented-generation"
+    },
+    {
+      "title": "Microsoft Learn · RAG prompt engineering",
+      "url": "https://learn.microsoft.com/azure/architecture/ai-ml/guide/rag/rag-prompt-engineering"
+    },
+    {
+      "title": "Microsoft Learn · Prompt engineering techniques",
+      "url": "https://learn.microsoft.com/azure/foundry/openai/concepts/prompt-engineering"
+    },
+    {
+      "title": "Microsoft Learn · Responsible AI for agent design",
+      "url": "https://learn.microsoft.com/agents/design-guidelines/responsible-ai"
+    },
+    {
+      "title": "Microsoft Learn · AI agent adoption",
+      "url": "https://learn.microsoft.com/azure/cloud-adoption-framework/ai-agents/"
+    },
+    {
+      "title": "Microsoft Learn · AI agents in Azure Cosmos DB (copilots and autonomous agents)",
+      "url": "https://learn.microsoft.com/azure/cosmos-db/ai-agents"
+    },
+    {
+      "title": "Microsoft Learn · AI agent shared responsibility model",
+      "url": "https://learn.microsoft.com/azure/security/fundamentals/shared-responsibility-ai-agent"
+    },
+    {
+      "title": "GDPR Article 3 · Territorial scope",
+      "url": "https://gdpr-info.eu/art-3-gdpr/"
+    },
+    {
+      "title": "GDPR Article 4 · Definitions",
+      "url": "https://gdpr-info.eu/art-4-gdpr/"
+    },
+    {
+      "title": "GDPR Article 5 · Principles",
+      "url": "https://gdpr-info.eu/art-5-gdpr/"
+    },
+    {
+      "title": "GDPR Article 17 · Right to erasure",
+      "url": "https://gdpr-info.eu/art-17-gdpr/"
+    },
+    {
+      "title": "GDPR Article 22 · Automated individual decision-making",
+      "url": "https://gdpr-info.eu/art-22-gdpr/"
+    },
+    {
+      "title": "GDPR Recital 26 · Anonymous and pseudonymised data",
+      "url": "https://gdpr-info.eu/recitals/no-26/"
+    },
+    {
+      "title": "NIST AI RMF 1.0 · Core functions",
+      "url": "https://airc.nist.gov/airmf-resources/airmf/5-sec-core/"
+    },
+    {
+      "title": "OWASP GenAI · LLM01:2025 Prompt Injection",
+      "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/"
+    },
+    {
+      "title": "OWASP GenAI · LLM06:2025 Excessive Agency",
+      "url": "https://genai.owasp.org/llmrisk/llm062025-excessive-agency/"
+    }
+  ],
+  "questions": [
+    {
+      "id": "ainf-fund-01",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "Which description fits generative AI?",
+      "answer": "Models that create new content such as text or images",
+      "distractors": [
+        "Systems that follow hand-written rules to route work",
+        "Models that assign a score or a label to each input",
+        "Dashboards that summarise past figures for monthly reports"
+      ],
+      "explanation": "Generative AI produces new content from patterns learned in data. A model that only scores or labels an input is predictive machine learning, which is the closest wrong answer because it also learns from data."
+    },
+    {
+      "id": "ainf-fund-02",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "What is an LLM at its core?",
+      "answer": "A model trained on huge amounts of text to predict the next token",
+      "distractors": [
+        "A database that stores documents as searchable numeric vectors",
+        "A rules engine that parses sentences with hand-coded grammar",
+        "A search index that ranks pages by how often a given keyword appears"
+      ],
+      "explanation": "A large language model learns from text to predict what comes next, and that is how it generates language. A vector database is often used beside an LLM for retrieval, but it stores and searches content and generates nothing."
+    },
+    {
+      "id": "ainf-fund-03",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "Tessel Bank replaces hand-written fraud rules with a system that learns patterns from five years of labelled transactions and scores each new payment. Which term fits the new system?",
+      "answer": "Machine learning",
+      "distractors": [
+        "Generative AI",
+        "Retrieval-augmented generation",
+        "Robotic process automation"
+      ],
+      "explanation": "Learning from labelled history to predict a score is machine learning. Generative AI is tempting because it is the best-known kind of AI, but nothing here creates new content."
+    },
+    {
+      "id": "ainf-fund-04",
+      "kind": "sequence",
+      "domain": "ainf.fundamentals",
+      "prompt": "Arrange the five levels of AI named in the AI-Native Foundations outline from the lowest to the highest autonomy.",
+      "steps": [
+        "Rule-Based Automation",
+        "Intelligent Automation",
+        "Agentic Workflows",
+        "Semi-Automatic Agents",
+        "Full-Autonomous Agents"
+      ],
+      "explanation": "The study guide lists the levels in this order, from fixed rules up to agents that act without supervision. The step most often misplaced is Agentic Workflows, which sits in the middle, below both agent levels."
+    },
+    {
+      "id": "ainf-fund-05",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "Halden Freight's invoice bot follows a fixed script: when the total matches the purchase order it approves, otherwise it sends the invoice to a clerk. Nothing in it learns or reasons. Which of the five levels is this?",
+      "answer": "Rule-Based Automation",
+      "distractors": [
+        "Intelligent Automation",
+        "Agentic Workflows",
+        "Semi-Automatic Agents"
+      ],
+      "explanation": "A fixed if-then script with no learning is the lowest level, Rule-Based Automation. Intelligent Automation would add a learned or AI component to the automated flow. The outline only names the five levels; their full definitions are taught in the course, so check this reading against your workbook."
+    },
+    {
+      "id": "ainf-fund-06",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "An AI system plans each purchase order by itself but pauses and waits for a buyer to approve before it places any order. Which of the five levels fits best?",
+      "answer": "Semi-Automatic Agents",
+      "distractors": [
+        "Full-Autonomous Agents",
+        "Rule-Based Automation",
+        "Intelligent Automation"
+      ],
+      "explanation": "The system plans and acts like an agent, yet a person must approve its actions, which points to the fourth level. Full-Autonomous Agents would place the orders with no approval step. The outline only names the five levels; their full definitions are taught in the course, so check this reading against your workbook."
+    },
+    {
+      "id": "ainf-fund-07",
+      "kind": "sequence",
+      "domain": "ainf.fundamentals",
+      "prompt": "Arrange the steps of a basic RAG request in order.",
+      "steps": [
+        "The user asks a question",
+        "The application retrieves relevant passages from an index",
+        "The passages are added to the prompt as grounding data",
+        "The model generates an answer from the augmented prompt"
+      ],
+      "explanation": "RAG runs retrieve, then augment, then generate. Retrieval must come before generation, because the model can only ground its answer in passages that are already in its prompt."
+    },
+    {
+      "id": "ainf-fund-08",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "What is the main role of RAG in an LLM solution?",
+      "answer": "Grounding answers in retrieved data the model was not trained on",
+      "distractors": [
+        "Retraining the weights of the model each night on new files",
+        "Compressing prompts so that each request uses far fewer input tokens",
+        "Encrypting documents before they are passed to the model"
+      ],
+      "explanation": "RAG retrieves relevant content and places it in the prompt, so answers can draw on private or current data. It does not change the model's weights, which is what distinguishes it from retraining or fine-tuning."
+    },
+    {
+      "id": "ainf-fund-09",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "Odell Health's policy assistant must answer from documents that change every week and show which document each answer came from. Which approach fits best?",
+      "answer": "RAG over an index of the current documents",
+      "distractors": [
+        "Fine-tuning once on last year's documents",
+        "A longer system prompt that demands accuracy",
+        "A higher temperature for broader answers"
+      ],
+      "explanation": "RAG reads the current documents at question time and can cite them. Fine-tuning is the tempting alternative, but a fine-tuned model is frozen at its training data and cannot point to a source document."
+    },
+    {
+      "id": "ainf-fund-10",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "A RAG assistant gives a confident but wrong answer. The logs show that the retriever returned passages about a different product. What does this show?",
+      "answer": "Grounding is only as good as the passages that retrieval returns",
+      "distractors": [
+        "The model's training data has to be older than the search index",
+        "Adding retrieval always removes the risk of a hallucination",
+        "The passages returned were too long to fit the context window"
+      ],
+      "explanation": "If retrieval returns irrelevant passages, the model can still produce an inaccurate answer. The belief that retrieval removes hallucination is the trap: RAG reduces guessing, but it depends on retrieval quality."
+    },
+    {
+      "id": "ainf-fund-11",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "Which description matches composite AI?",
+      "answer": "Combining machine learning, rules and LLMs in one solution",
+      "distractors": [
+        "Running one very large model for all tasks in a company",
+        "Chaining several prompts to the same LLM in a single chat",
+        "Merging the training data of two vendors into one shared model"
+      ],
+      "explanation": "The study guide describes composite AI as combining machine learning, rules-based systems and LLMs. Chaining prompts to one LLM is a prompting technique and still uses a single kind of AI."
+    },
+    {
+      "id": "ainf-fund-12",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "Quarry Insurance scores claims with a fraud model, applies fixed regulatory rules to each payout, and uses an LLM to draft the customer letter. What is this design an example of?",
+      "answer": "Composite AI",
+      "distractors": [
+        "Fine-tuning",
+        "Prompt chaining",
+        "Multimodal AI"
+      ],
+      "explanation": "Three different techniques, a learned model, fixed rules and an LLM, work together in one solution, which is composite AI. Multimodal AI is about one model handling several input types such as text and images."
+    },
+    {
+      "id": "ainf-fund-13",
+      "kind": "matching",
+      "domain": "ainf.fundamentals",
+      "prompt": "Match each component of an AI agent to what it does.",
+      "pairs": [
+        {
+          "item": "Generative AI model",
+          "match": "Reasoning about the request and deciding the next step"
+        },
+        {
+          "item": "Instructions",
+          "match": "Setting the scope, boundaries and expected behaviour"
+        },
+        {
+          "item": "Tools",
+          "match": "Calling functions, APIs or systems to take action"
+        },
+        {
+          "item": "Memory",
+          "match": "Keeping the conversation history and state"
+        }
+      ],
+      "extraMatches": [
+        "Shrinking the model so that replies arrive faster"
+      ],
+      "explanation": "An agent uses a model to reason, instructions to bound it, tools to act and memory for continuity. Tools and memory are the pair most often confused: tools change or read the outside world, memory keeps state."
+    },
+    {
+      "id": "ainf-fund-14",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "What most clearly separates an AI agent from a plain LLM chat?",
+      "answer": "It decides on steps and calls tools to act toward a goal",
+      "distractors": [
+        "It was trained on a much larger set of public web documents",
+        "It answers faster because it skips the reasoning stage",
+        "It stores each answer so that none is repeated later"
+      ],
+      "explanation": "An agent uses a model to choose actions and tools over several steps, while a plain chat only returns text. Training-set size is the tempting answer, but an agent and a chat can run on exactly the same model."
+    },
+    {
+      "id": "ainf-fund-15",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "A team gives an LLM a goal, a calendar API and an email API. It checks availability, proposes a slot, sends invitations and tries again when someone declines. Which term describes the whole system?",
+      "answer": "An AI agent",
+      "distractors": [
+        "A fine-tuned model",
+        "A prompt template",
+        "A vector index"
+      ],
+      "explanation": "A model that pursues a goal by choosing and calling tools across several steps is an agent. A prompt template only shapes one request and cannot call the calendar or react to a decline."
+    },
+    {
+      "id": "ainf-fund-16",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "Why do agents call for more testing and governance than a standard RAG application?",
+      "answer": "The model chooses its own steps and tools, so runs can differ",
+      "distractors": [
+        "Their answers are stored in memory and cannot be removed afterwards",
+        "They need a separate model for each tool they can call",
+        "Their retrieval is slower than in a fixed RAG pipeline"
+      ],
+      "explanation": "Standard RAG follows a fixed retrieval flow, while an agent lets the model decide what to do at each step, which makes behaviour nondeterministic. Speed is not the issue; unpredictability of actions is."
+    },
+    {
+      "id": "ainf-fund-17",
+      "kind": "matching",
+      "domain": "ainf.fundamentals",
+      "prompt": "Match each AI term to its meaning.",
+      "pairs": [
+        {
+          "item": "Token",
+          "match": "A chunk of text that a model reads or writes"
+        },
+        {
+          "item": "Embedding",
+          "match": "A numeric representation used for similarity search"
+        },
+        {
+          "item": "Context window",
+          "match": "The amount of text a model can consider at once"
+        },
+        {
+          "item": "Hallucination",
+          "match": "A fluent output that is false or unsupported"
+        }
+      ],
+      "extraMatches": [
+        "A saved copy of the weights of a model"
+      ],
+      "explanation": "Tokens are the units of text, embeddings are numeric representations, the context window is the working limit and a hallucination is a confident falsehood. Token and context window are the usual mix-up: the window is measured in tokens."
+    },
+    {
+      "id": "ainf-fund-18",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "What happens during inference?",
+      "answer": "A trained model produces an output for a new input",
+      "distractors": [
+        "The weights of a model are adjusted using examples",
+        "Raw data is cleaned and split into separate sets",
+        "Engineers compare model designs on a benchmark"
+      ],
+      "explanation": "Inference is using a trained model to produce an output. Adjusting weights from examples is training, the phase that comes before inference and the one it is most often confused with."
+    },
+    {
+      "id": "ainf-fund-19",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "Verano Travel wants its assistant to write in the brand's voice consistently across thousands of replies, and examples in the prompt have not been enough. The facts it needs are already supplied. Which customisation targets this most directly?",
+      "answer": "Fine-tuning on approved samples",
+      "distractors": [
+        "A vector index of fare rules",
+        "A larger context window",
+        "A lower price per token"
+      ],
+      "explanation": "Fine-tuning adapts how a model behaves and writes, which suits a persistent style need. A vector index is the tempting answer, but retrieval supplies facts, and the facts are not what is missing here."
+    },
+    {
+      "id": "ainf-fund-20",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "What does raising the temperature setting of an LLM do to its output?",
+      "answer": "Makes it more varied and less predictable",
+      "distractors": [
+        "Makes it draw on a much longer prompt",
+        "Makes it shorter and more factual",
+        "Makes it reflect more recent data"
+      ],
+      "explanation": "Temperature controls randomness in token selection, so a higher value gives more varied output. It does not make answers more factual; if anything, a lower temperature is used when consistency matters."
+    },
+    {
+      "id": "ainf-fund-21",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "An LLM cites a court case in a legal summary, and the case turns out to be invented. Which term names this failure?",
+      "answer": "Hallucination",
+      "distractors": [
+        "Overfitting",
+        "Prompt injection",
+        "Data drift"
+      ],
+      "explanation": "A fluent, confident statement that is false or unsupported is a hallucination. Prompt injection is an attack that changes the model's behaviour through crafted input, and nobody attacked the model here."
+    },
+    {
+      "id": "ainf-fund-22",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "Which description fits a copilot?",
+      "answer": "An assistant that works beside a user and suggests things to accept or edit",
+      "distractors": [
+        "An agent that completes an entire process with no person involved at all",
+        "A model that a company trains from scratch using its own private data",
+        "A script that replays recorded clicks in an existing line-of-business application"
+      ],
+      "explanation": "A copilot works alongside a person and offers suggestions the person can accept, reject or change. An agent that finishes the whole process alone is an autonomous agent, the contrast the same source draws."
+    },
+    {
+      "id": "ainf-fund-23",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "A marketing lead who cannot code wants a reusable assistant that follows the brand guide and can consult three uploaded reference files. What is the simplest fit?",
+      "answer": "A custom GPT with instructions and knowledge files",
+      "distractors": [
+        "A new foundation model trained for the department",
+        "A data warehouse with nightly reporting files",
+        "A fine-tuned vision model on dedicated servers"
+      ],
+      "explanation": "A custom GPT packages instructions and reference files into a reusable assistant without code. Training a new foundation model would be far more than the need requires, and the lead has neither the data nor the skills."
+    },
+    {
+      "id": "ainf-fund-24",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "A custom GPT answers questions from uploaded files but cannot update the CRM. What would have to be added for it to do so?",
+      "answer": "An action that connects it to the CRM's API",
+      "distractors": [
+        "A longer set of instructions about the CRM system",
+        "More example chats in its knowledge files",
+        "A higher temperature for creative replies"
+      ],
+      "explanation": "To change another system an assistant needs a tool or action that calls that system. More instructions only change what it says; they give it no way to reach the CRM."
+    },
+    {
+      "id": "ainf-fund-25",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "A task needs one summary of a document that a person supplies and then reviews. Which choice is proportionate?",
+      "answer": "A single LLM prompt, since no tools or planning are needed",
+      "distractors": [
+        "An autonomous agent, since agents outperform plain prompts",
+        "A multi-agent system, since summaries benefit from debate",
+        "A fine-tuned model, since each document will be different"
+      ],
+      "explanation": "A one-step task with the content supplied needs only a prompt. An agent adds autonomy and with it unpredictability and governance effort, which is justified by multi-step work with tools, not by a summary."
+    },
+    {
+      "id": "ainf-fund-26",
+      "kind": "single",
+      "domain": "ainf.fundamentals",
+      "prompt": "Which term describes a model that accepts an image together with a text question and answers in text?",
+      "answer": "Multimodal",
+      "distractors": [
+        "Multi-agent",
+        "Fine-tuned",
+        "Retrieval-augmented"
+      ],
+      "explanation": "A multimodal model handles more than one type of input or output, such as images and text. Multi-agent sounds similar but describes several agents cooperating, whatever kinds of input they take."
+    },
+    {
+      "id": "ainf-resp-01",
+      "kind": "single",
+      "domain": "ainf.responsible",
+      "prompt": "A hiring model recommends equally qualified candidates at different rates depending on their gender. Which responsible AI principle is most directly breached?",
+      "answer": "Fairness",
+      "distractors": [
+        "Transparency",
+        "Accountability",
+        "Reliability"
+      ],
+      "explanation": "Fairness means similar people receive similar outcomes, without unfair treatment tied to sensitive attributes. Transparency would be the issue if candidates were not told how AI was used, which is a different problem from unequal outcomes."
+    },
+    {
+      "id": "ainf-resp-02",
+      "kind": "single",
+      "domain": "ainf.responsible",
+      "prompt": "A bank's chatbot introduces itself as a human adviser and gives no sign that its answers are generated. Which principle is most directly breached?",
+      "answer": "Transparency",
+      "distractors": [
+        "Fairness",
+        "Inclusiveness",
+        "Reliability"
+      ],
+      "explanation": "Transparency means people can see that AI is involved and understand its capabilities and limits. The answers may be perfectly fair and reliable, yet customers are still misled about what they are talking to."
+    },
+    {
+      "id": "ainf-resp-03",
+      "kind": "single",
+      "domain": "ainf.responsible",
+      "prompt": "After an AI pricing tool overcharges customers, each department says the model made the decision and that nobody owns it. Which principle is missing?",
+      "answer": "Accountability",
+      "distractors": [
+        "Transparency",
+        "Fairness",
+        "Privacy"
+      ],
+      "explanation": "Accountability means named people remain answerable for an AI system and its outcomes. Transparency is tempting, but the problem is not that the decision is hidden; it is that nobody takes responsibility for it."
+    },
+    {
+      "id": "ainf-resp-04",
+      "kind": "single",
+      "domain": "ainf.responsible",
+      "prompt": "Which GDPR principle says to collect only the personal data needed for the stated purpose?",
+      "answer": "Data minimisation",
+      "distractors": [
+        "Storage limitation",
+        "Purpose limitation",
+        "Integrity and confidentiality"
+      ],
+      "explanation": "Data minimisation limits collection to what is necessary. Purpose limitation is the close neighbour: it is about not reusing data for incompatible purposes, not about how much is collected."
+    },
+    {
+      "id": "ainf-resp-05",
+      "kind": "single",
+      "domain": "ainf.responsible",
+      "prompt": "Support transcripts with customer names were collected lawfully and are used solely for support, but the company has no deletion schedule and keeps them forever. Which GDPR principle does this most directly conflict with?",
+      "answer": "Storage limitation",
+      "distractors": [
+        "Accuracy",
+        "Purpose limitation",
+        "Lawfulness, fairness and transparency"
+      ],
+      "explanation": "Storage limitation says personal data is kept no longer than needed. Purpose limitation is the tempting answer, but the purpose has not changed here; only the retention period is unbounded."
+    },
+    {
+      "id": "ainf-resp-06",
+      "kind": "single",
+      "domain": "ainf.responsible",
+      "prompt": "A company based in Singapore, with no office in Europe, sells subscriptions to consumers in France and processes their personal data. Does the GDPR apply?",
+      "answer": "Yes, since it offers services to people who are in the EU",
+      "distractors": [
+        "No, since the company has no establishment inside the EU",
+        "No, since its servers are located outside European territory",
+        "Yes, but only where a customer holds an EU passport"
+      ],
+      "explanation": "Article 3 extends the GDPR to organisations outside the EU that offer goods or services to people in the Union. Having no EU establishment is the tempting reason to say no, and it is exactly the case the article covers."
+    },
+    {
+      "id": "ainf-resp-07",
+      "kind": "single",
+      "domain": "ainf.responsible",
+      "prompt": "How does the GDPR treat pseudonymised data that could be linked back to a person with a separately kept key?",
+      "answer": "As personal data that remains within its scope",
+      "distractors": [
+        "As anonymous information that is outside its scope",
+        "As public data that any person is free to reuse",
+        "As special category data that cannot be processed"
+      ],
+      "explanation": "Recital 26 says pseudonymised data that can be attributed to a person with additional information is still personal data. Only information that no longer identifies anyone counts as anonymous and falls outside the rules."
+    },
+    {
+      "id": "ainf-resp-08",
+      "kind": "single",
+      "domain": "ainf.responsible",
+      "prompt": "A data team wants to train a model on support tickets with no GDPR obligations attached to the training set. What must be true of that data?",
+      "answer": "People cannot be identified from it by reasonably likely means",
+      "distractors": [
+        "Names are replaced by codes and the lookup table is locked away",
+        "All tickets are encrypted while they are stored and transferred",
+        "Each email address is hashed together with a secret salt value"
+      ],
+      "explanation": "Only anonymous information, where people are no longer identifiable, is outside the GDPR. Replacing names with codes while keeping the lookup table is pseudonymisation, and that data is still personal data."
+    },
+    {
+      "id": "ainf-resp-09",
+      "kind": "single",
+      "domain": "ainf.responsible",
+      "prompt": "Which GDPR right lets a person ask a company to delete their personal data on certain grounds?",
+      "answer": "The right to erasure",
+      "distractors": [
+        "The right to data portability",
+        "The right to rectification",
+        "The right to object"
+      ],
+      "explanation": "Article 17 sets out the right to erasure, also known as the right to be forgotten. Rectification is about correcting inaccurate data, so the data stays; erasure removes it."
+    },
+    {
+      "id": "ainf-resp-10",
+      "kind": "single",
+      "domain": "ainf.responsible",
+      "prompt": "Which situation falls under the GDPR right concerning decisions based solely on automated processing?",
+      "answer": "A loan refused by an algorithm with no human involved",
+      "distractors": [
+        "A spam filter that moves a newsletter to a folder",
+        "A clerk who totals an invoice using a spreadsheet",
+        "A chatbot that suggests help articles to a site visitor"
+      ],
+      "explanation": "Article 22 covers decisions made solely by automated means that have legal or similarly significant effects on a person, such as refusing credit. A spam filter is automated too, but its effect on the person is not significant in that sense."
+    },
+    {
+      "id": "ainf-resp-11",
+      "kind": "single",
+      "domain": "ainf.responsible",
+      "prompt": "Whose personal information does the California Consumer Privacy Act protect?",
+      "answer": "Residents of California",
+      "distractors": [
+        "Citizens of any US state",
+        "Residents of the European Union",
+        "Businesses registered in California"
+      ],
+      "explanation": "The CCPA gives privacy rights to California residents. It is a state law, so it does not protect residents of other states, and the European equivalent is the GDPR."
+    },
+    {
+      "id": "ainf-resp-12",
+      "kind": "single",
+      "domain": "ainf.responsible",
+      "prompt": "A California customer tells a retailer to stop passing their personal information to data brokers for money. Which CCPA right are they using?",
+      "answer": "The right to opt out of sale or sharing",
+      "distractors": [
+        "The right to know what is being collected",
+        "The right to correct inaccurate information",
+        "The right to equal service and pricing"
+      ],
+      "explanation": "The CCPA lets consumers opt out of the sale or sharing of their personal information. The right to know is about finding out what a business holds and does; it does not by itself stop the selling."
+    },
+    {
+      "id": "ainf-resp-13",
+      "kind": "single",
+      "domain": "ainf.responsible",
+      "prompt": "An assistant that summarises web pages reads hidden text on a page telling it to forward the user's emails, and it tries to comply. What is this attack called?",
+      "answer": "Indirect prompt injection",
+      "distractors": [
+        "Direct prompt injection",
+        "Training data poisoning",
+        "Model inversion"
+      ],
+      "explanation": "The malicious instruction arrived inside external content the model processed, which makes it indirect prompt injection. In a direct injection the attacker types the instruction into the prompt personally."
+    },
+    {
+      "id": "ainf-resp-14",
+      "kind": "single",
+      "domain": "ainf.responsible",
+      "prompt": "An agent that only has to read order status has been given an API key that can also issue refunds. Which fix addresses the risk most directly?",
+      "answer": "Limit the key to the permissions that the task needs",
+      "distractors": [
+        "Raise the temperature so that its choices are varied",
+        "Add several refund examples to its instructions",
+        "Move the agent to a larger and more recent model"
+      ],
+      "explanation": "Excessive permissions are a root cause of excessive agency, and the fix is least privilege for each tool. A better model does not help: any model can be manipulated or mistaken, and then the spare permission is what does the damage."
+    },
+    {
+      "id": "ainf-resp-15",
+      "kind": "single",
+      "domain": "ainf.responsible",
+      "prompt": "An agent can draft and send payments. Which control best balances usefulness with safety?",
+      "answer": "A person approves each payment before it is sent",
+      "distractors": [
+        "The agent approves payments by its own judgement",
+        "Logging is switched off so amounts stay private",
+        "The prompt asks the model to be careful with money"
+      ],
+      "explanation": "High-impact, hard-to-reverse actions such as payments call for a human approval gate. An instruction in the prompt to be careful is the tempting shortcut, but instructions can be overridden by manipulated input, whereas an approval step cannot."
+    },
+    {
+      "id": "ainf-resp-16",
+      "kind": "single",
+      "domain": "ainf.responsible",
+      "prompt": "An analyst wants to paste a customer list with names and account numbers into a free public chatbot to tidy it up. What is the responsible course?",
+      "answer": "Use an approved tool or remove the personal data first",
+      "distractors": [
+        "Paste the list and delete the chat history afterwards",
+        "Paste half of the list so that less data is exposed",
+        "Ask the chatbot to confirm that it will forget the data"
+      ],
+      "explanation": "Personal and confidential data should go only into tools the organisation has approved, or be removed before use. Deleting the chat afterwards does not undo the disclosure, because the data has already left the company's control."
+    },
+    {
+      "id": "ainf-resp-17",
+      "kind": "matching",
+      "domain": "ainf.responsible",
+      "prompt": "Match each function of the NIST AI Risk Management Framework to its description.",
+      "pairs": [
+        {
+          "item": "Govern",
+          "match": "Builds the culture, policies and accountability for AI risk"
+        },
+        {
+          "item": "Map",
+          "match": "Establishes the context in which risks are framed"
+        },
+        {
+          "item": "Measure",
+          "match": "Analyses, assesses and monitors the risks"
+        },
+        {
+          "item": "Manage",
+          "match": "Allocates resources to respond to the risks"
+        }
+      ],
+      "extraMatches": [
+        "Certifies that a model is free of bias"
+      ],
+      "explanation": "The framework has four functions: govern, map, measure and manage. Govern is the cross-cutting one that runs through the other three, and map and measure are the pair most often swapped: map frames the risks, measure assesses them."
+    },
+    {
+      "id": "ainf-resp-18",
+      "kind": "single",
+      "domain": "ainf.responsible",
+      "prompt": "A team is unsure whether an AI feature that predicts which employees may resign is appropriate. Which step belongs earliest in an ethical review?",
+      "answer": "Identify who is affected and how they could be harmed",
+      "distractors": [
+        "Measure the accuracy of the model on held-out data",
+        "Choose the vendor with the lowest cost per prediction",
+        "Write the launch announcement for the affected staff"
+      ],
+      "explanation": "Ethical review starts with the people affected and the possible harms, before any decision to build. Accuracy matters later, but an accurate model can still be the wrong thing to deploy."
+    },
+    {
+      "id": "ainf-prac-01",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "What is few-shot prompting?",
+      "answer": "Including a handful of example inputs and outputs in the prompt",
+      "distractors": [
+        "Retraining the model on a small dataset of newly labelled examples",
+        "Sending the same prompt several times and taking a vote",
+        "Limiting the answer to a small number of output tokens"
+      ],
+      "explanation": "Few-shot prompting places a few worked examples in the prompt to show the model the behaviour wanted. It does not retrain anything: the examples condition the model for that request alone."
+    },
+    {
+      "id": "ainf-prac-02",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "A model keeps labelling support tickets with categories the team does not use. Which prompt change is most likely to help?",
+      "answer": "Add several tickets paired with their correct category",
+      "distractors": [
+        "Ask the model to think harder about each ticket",
+        "Shorten the prompt so that the model reads it faster",
+        "Remove the category list to avoid biasing the model"
+      ],
+      "explanation": "Examples that pair inputs with the wanted labels show the model exactly how to behave. Telling it to think harder gives it no new information about which categories are valid."
+    },
+    {
+      "id": "ainf-prac-03",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "A prompt asks an LLM to extract the end date from a contract, and it invents one when the document has none. Which addition addresses this?",
+      "answer": "Tell it to reply 'not found' when no such value is present",
+      "distractors": [
+        "Tell it that accuracy is extremely important in this particular task",
+        "Tell it to answer in one short sentence with no preamble",
+        "Tell it to act as a senior lawyer who reviews contracts"
+      ],
+      "explanation": "Giving the model an explicit way out when the answer is absent reduces invented answers. Stressing that accuracy matters sounds helpful but leaves the model with no permitted response except a date."
+    },
+    {
+      "id": "ainf-prac-04",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "Which prompt is most likely to produce a usable first draft?",
+      "answer": "Write a 150-word update for store managers on the new returns policy, friendly in tone, as three bullets",
+      "distractors": [
+        "Write something about the new returns policy",
+        "Returns policy update, and make it good",
+        "Write a truly excellent, world-class and highly engaging update about returns that the whole company will love"
+      ],
+      "explanation": "The strongest prompt states the audience, length, tone and format, leaving little to interpretation. The long prompt full of praise words is the trap: it is wordy without being specific about anything."
+    },
+    {
+      "id": "ainf-prac-05",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "An LLM gives generic advice on a migration plan. Which addition gives it the most useful context?",
+      "answer": "The systems involved, the constraints and the decision needed",
+      "distractors": [
+        "A request to be more creative and more original this time",
+        "A reminder that the answer matters a great deal to the team",
+        "A sentence praising the quality of its earlier responses"
+      ],
+      "explanation": "Specific context about the situation lets the model tailor its answer. Asking for creativity changes the style of a generic answer without making it any more relevant."
+    },
+    {
+      "id": "ainf-prac-06",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "Which instruction belongs in a RAG-based prompt?",
+      "answer": "Answer using the provided context and cite a source for each claim",
+      "distractors": [
+        "Answer from general knowledge whenever the context looks incomplete",
+        "Answer at length so that every retrieved passage gets a mention",
+        "Answer without mentioning where the information was found"
+      ],
+      "explanation": "A RAG prompt tells the model to base its answer on the retrieved context and to cite it. Allowing general knowledge to fill gaps is the tempting option, and it is how ungrounded answers slip back in."
+    },
+    {
+      "id": "ainf-prac-07",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "A RAG assistant sometimes answers from its general training when the retrieved passages do not cover the question. Which prompt change targets this?",
+      "answer": "Say what to do when the context lacks the answer, such as stating so",
+      "distractors": [
+        "Increase the number of example questions that are shown inside the prompt",
+        "Place the retrieved passages after the response from the model",
+        "Remove the instruction to cite sources in order to save tokens"
+      ],
+      "explanation": "A RAG prompt should set guardrails for missing or conflicting information, so the model says the answer is not in the context. More example questions do not tell it what to do when retrieval comes back empty."
+    },
+    {
+      "id": "ainf-prac-08",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "Why specify an output format, such as named JSON fields, in a prompt?",
+      "answer": "It reduces ambiguity and makes later processing predictable",
+      "distractors": [
+        "It lowers the cost of every request by a fixed proportion",
+        "It stops the model from drawing on the retrieved passages",
+        "It makes the training data behind the model more recent"
+      ],
+      "explanation": "A stated format removes guesswork about structure, so software or people downstream can rely on it. It has no set effect on cost and nothing to do with how recent the model's knowledge is."
+    },
+    {
+      "id": "ainf-prac-09",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "Which prompt gives an image generator the most to work with?",
+      "answer": "A red bicycle leaning on a stone wall at sunset, wide shot, soft warm light, watercolour style",
+      "distractors": [
+        "A really nice and beautiful picture of a bicycle that looks amazing and professional in all respects",
+        "Bicycle",
+        "Make an image for our spring campaign"
+      ],
+      "explanation": "An effective image prompt names the subject, setting, framing, lighting and style. The long prompt of praise words is tempting because of its length, but words like nice and amazing describe nothing the model can draw."
+    },
+    {
+      "id": "ainf-prac-10",
+      "kind": "sequence",
+      "domain": "ainf.practical",
+      "prompt": "A team wants to redesign a work process with AI. Arrange these activities in a sensible order.",
+      "steps": [
+        "Map the current process and where time is lost",
+        "Choose a step where AI can add value",
+        "Decide where a person reviews the AI's output",
+        "Pilot the redesigned process, review step included, and measure the result"
+      ],
+      "explanation": "Understanding the current process comes first, then choosing where AI helps, then designing oversight, and only then a measured pilot. Starting with a pilot is the common mistake, because nothing shows which step was worth changing."
+    },
+    {
+      "id": "ainf-prac-11",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "Generated product images keep including captions and logos that nobody asked for. What is the most direct prompt fix?",
+      "answer": "State what to exclude, such as lettering and brand marks",
+      "distractors": [
+        "Describe the product itself in much greater detail",
+        "Ask for the image at a much higher resolution",
+        "Switch the style from a photograph to a flat illustration"
+      ],
+      "explanation": "Telling the generator what to leave out addresses unwanted elements directly. More detail about the product improves the product in the picture and leaves the unwanted extras untouched."
+    },
+    {
+      "id": "ainf-prac-12",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "Which detail matters in a video prompt but has no meaning in a prompt for a still image?",
+      "answer": "Camera movement and how the action unfolds",
+      "distractors": [
+        "The subject and the setting of the scene",
+        "The lighting and the overall colour mood",
+        "The visual style, such as film or animation"
+      ],
+      "explanation": "Video adds time, so a prompt should describe motion: how the camera moves and what happens in sequence. Subject, lighting and style matter for both stills and video."
+    },
+    {
+      "id": "ainf-prac-13",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "A generated clip of a chef cooking shows random, unrelated actions. Which addition helps most?",
+      "answer": "Describe the sequence: what happens at the start, middle and end",
+      "distractors": [
+        "Add more adjectives about how delicious the food should look on screen",
+        "Ask for the same clip in a wider cinematic aspect ratio",
+        "Name the brand of camera whose look it should imitate"
+      ],
+      "explanation": "A video prompt needs the order of events, or the model fills time with arbitrary motion. Adjectives about the food change appearance and do nothing for the order of the actions."
+    },
+    {
+      "id": "ainf-prac-14",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "The first answer from an LLM is close to what you need but too formal and too long. What is the efficient next step?",
+      "answer": "Give targeted feedback and ask for a revised version",
+      "distractors": [
+        "Open a new chat and send the same prompt again",
+        "Accept it, since models rarely improve on a retry",
+        "Rewrite the entire prompt from the very beginning"
+      ],
+      "explanation": "Prompting is iterative: say what to change and keep what already works. Resending the same prompt in a new chat throws away the progress and gives the model no reason to answer differently."
+    },
+    {
+      "id": "ainf-prac-15",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "A single prompt asks for market research, a pricing model and a launch email, and each part comes back shallow. What is the better approach?",
+      "answer": "Split the work into steps and review each one in turn",
+      "distractors": [
+        "Put the word 'detailed' before each of the three tasks",
+        "Raise the temperature so that each part is more inventive",
+        "Ask for all three parts in one very long paragraph"
+      ],
+      "explanation": "Breaking a large request into smaller steps lets each receive full attention and lets you correct course between them. Adding the word detailed asks for more text without giving the model more focus."
+    },
+    {
+      "id": "ainf-prac-16",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "For a multi-step calculation of delivery costs, which instruction tends to improve an LLM's accuracy?",
+      "answer": "Ask it to work through the steps and then give the result",
+      "distractors": [
+        "Ask it to reply in as few words as it possibly can",
+        "Ask it to leave out the working and state the total at once",
+        "Ask it to write its reply in a confident tone"
+      ],
+      "explanation": "Asking a model to reason step by step before answering improves multi-step problems and exposes its working for checking. Asking only for the total hides errors and removes the reasoning that prevents them."
+    },
+    {
+      "id": "ainf-prac-17",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "A team redesigns invoice approval so that AI extracts the fields and proposes a decision. Where should human review sit to keep meaningful oversight?",
+      "answer": "Before payment, on the cases the AI flags or is unsure about",
+      "distractors": [
+        "Nowhere, because extraction accuracy was high during testing",
+        "After payment, in a yearly audit of a few random samples",
+        "At design time, when the prompts are first being written"
+      ],
+      "explanation": "Oversight is meaningful when a person can still change the outcome, so the review belongs before the irreversible step and on the uncertain cases. A yearly audit after payment is the tempting compromise, but it finds mistakes only after the money has gone."
+    },
+    {
+      "id": "ainf-prac-18",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "Before adding AI to a slow customer onboarding process, what should the team do first?",
+      "answer": "Map the current steps and find where time and errors occur",
+      "distractors": [
+        "Choose the most capable model that the project budget allows",
+        "Automate the opening step, since it is performed most",
+        "Write prompts for all steps and compare the outputs"
+      ],
+      "explanation": "Redesign starts from understanding the existing workflow and its bottlenecks. Picking a model first is the common error: it chooses a solution before anyone knows which problem is worth solving."
+    },
+    {
+      "id": "ainf-prac-19",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "Which task in a claims process is the strongest candidate for AI assistance?",
+      "answer": "Summarising long claim files for an adjuster to review",
+      "distractors": [
+        "Signing off the final payout on large disputed claims",
+        "Deciding whether to change the company's risk appetite",
+        "Meeting a distressed customer after a serious loss"
+      ],
+      "explanation": "Summarising large volumes of text for a person to check is high-volume, low-risk work that AI does well. The final decision on a disputed payout carries accountability that should stay with a person."
+    },
+    {
+      "id": "ainf-prac-20",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "Reviewers approve 99 percent of AI-drafted replies within two seconds each. What does this suggest about the oversight step?",
+      "answer": "It has become a rubber stamp and needs to be redesigned",
+      "distractors": [
+        "It proves that the AI drafts are close to perfect",
+        "It shows that the reviewers are highly efficient",
+        "It means that the review step can now be removed with no risk"
+      ],
+      "explanation": "Two seconds is too short to read a reply, so the review exists on paper only. High approval rates do not prove quality when nobody is really checking, which is why the step needs redesign, not removal."
+    },
+    {
+      "id": "ainf-prac-21",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "A project lead wants AI help to find risks the team has overlooked. Which prompt is most useful?",
+      "answer": "Here are our plan and assumptions; imagine it failed in six months and list the likely causes",
+      "distractors": [
+        "List the risks of projects",
+        "Tell me that our project will succeed and explain in as much detail as you can why that is so",
+        "Is our plan good?"
+      ],
+      "explanation": "Supplying the plan and asking the model to imagine failure draws out specific, overlooked risks. Asking it to explain why the project will succeed invites agreement, which is the opposite of surfacing risk."
+    },
+    {
+      "id": "ainf-prac-22",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "An LLM returns twelve plausible project risks. What should the team do with the list?",
+      "answer": "Check each against what they know and rank the real ones",
+      "distractors": [
+        "Add all twelve to the risk register as confirmed risks",
+        "Discard it, since a model cannot know the project",
+        "Ask the model which of the risks will happen soonest"
+      ],
+      "explanation": "AI output is a starting point that people validate with their knowledge of the project. Accepting all twelve treats plausible text as fact, and discarding the list wastes the prompts it could give the team's thinking."
+    },
+    {
+      "id": "ainf-prac-23",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "Why give an LLM the dependencies, dates and assumptions of a plan when asking it for risks?",
+      "answer": "With no specifics it can return only generic risks",
+      "distractors": [
+        "Longer prompts are processed with a higher priority",
+        "The model keeps the plan to use in later projects",
+        "Extra detail prevents the model from missing risks"
+      ],
+      "explanation": "A model can only reason about what is in its prompt, so hidden risks emerge from the plan's own details. More detail improves relevance, but it does not prevent errors, so the output still needs review."
+    },
+    {
+      "id": "ainf-prac-24",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "A manager receives harsh written feedback: 'Your team never delivers what was agreed.' How can AI help most constructively?",
+      "answer": "Reframe it as open questions about what was expected and missed",
+      "distractors": [
+        "Draft a firm reply listing the reasons the critic is mistaken",
+        "Rewrite the feedback so that it sounds positive when shared",
+        "Score how unfair the feedback is on a scale of one to ten"
+      ],
+      "explanation": "Turning difficult feedback into curious, open questions moves the conversation toward facts and expectations. Softening the wording hides the problem, and a rebuttal defends a position without learning anything."
+    },
+    {
+      "id": "ainf-prac-25",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "Which question is the most productive reframing of the complaint 'This report is useless'?",
+      "answer": "Which decisions did you hope this report would support?",
+      "distractors": [
+        "Why do you always criticise the work that I send you?",
+        "Can you agree that the report was difficult to write?",
+        "Who told you that this report had no value at all?"
+      ],
+      "explanation": "A productive question asks about the need behind the complaint and can be answered with useful facts. Questions that defend the author or look for someone to blame keep the conversation on the conflict."
+    },
+    {
+      "id": "ainf-prac-26",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "Before pasting a colleague's critical email into an AI tool to help reframe it, what should come first?",
+      "answer": "Remove names and details that identify people",
+      "distractors": [
+        "Add the job title of the colleague for context",
+        "Ask the tool whether the email is a fair one",
+        "Forward the email to the wider team for views"
+      ],
+      "explanation": "Feedback about people is personal information, so identifying details come out before it goes into a tool. Adding a job title makes the person easier to identify, which is the opposite of what is needed."
+    },
+    {
+      "id": "ainf-prac-27",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "Which summary of an AI opportunity is best linked to a work goal?",
+      "answer": "Draft first replies to routine tickets with AI, cutting response time from eight hours to two",
+      "distractors": [
+        "Use AI across the whole support team, because our main competitors are already doing so",
+        "Adopt the newest large language model for the department as soon as it has been publicly released",
+        "Explore whether AI could turn out to be interesting for some of our day-to-day tasks"
+      ],
+      "explanation": "A good opportunity summary names the task, the AI contribution and a measurable goal it serves. Doing it because competitors do is a reason to look, but it states no goal that could show whether it worked."
+    },
+    {
+      "id": "ainf-prac-28",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "An opportunity summary says 'AI will transform our reporting.' What is the most important thing it lacks?",
+      "answer": "A measurable outcome tied to a specific goal",
+      "distractors": [
+        "The name of the model that would be used",
+        "A longer account of how LLMs generate text",
+        "A list of competitors that already use AI"
+      ],
+      "explanation": "Without a measurable outcome nobody can prioritise the idea or tell later whether it succeeded. The model name is an implementation detail that can wait until the goal is clear."
+    },
+    {
+      "id": "ainf-prac-29",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "Which is the best example of a micro-plan for applying a new AI habit in your role?",
+      "answer": "This week, draft two status reports with AI and note the time saved",
+      "distractors": [
+        "This year, become the leading expert on AI in the entire department and beyond",
+        "Soon, look into which AI tools the other teams have tried",
+        "Someday, redesign all of the team's processes around AI"
+      ],
+      "explanation": "A micro-plan is a small, concrete action that can start immediately and shows a result. Becoming the department expert is an ambition with no first step, which is why it rarely turns into action."
+    },
+    {
+      "id": "ainf-prac-30",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "What makes a micro-plan likely to be carried out?",
+      "answer": "It is small, specific, time-bound and has a visible result",
+      "distractors": [
+        "It covers all parts of the role at the same moment",
+        "It waits until a full training programme is finished",
+        "It depends on a budget approval for some new tools and licences"
+      ],
+      "explanation": "Small, specific and time-bound actions are easy to start and easy to check. A plan that waits for training or budget puts its first step in someone else's hands."
+    },
+    {
+      "id": "ainf-prac-31",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "An LLM produces a summary of a regulation with article numbers. What should happen before it goes to a client?",
+      "answer": "A person checks its claims against the source text",
+      "distractors": [
+        "The summary is run through a grammar checker",
+        "The model is asked whether it feels confident",
+        "The article numbers are taken out of it to be on the safe side"
+      ],
+      "explanation": "Outputs that will be relied on need verification against the source by someone accountable. Asking the model whether it is confident is tempting, but a model can be confidently wrong about its own answer."
+    },
+    {
+      "id": "ainf-prac-32",
+      "kind": "single",
+      "domain": "ainf.practical",
+      "prompt": "Why separate instructions from pasted source material with clear markers in a prompt?",
+      "answer": "So the model can tell what to do from what to work on",
+      "distractors": [
+        "So the pasted material is counted as fewer tokens",
+        "So the model retains the material in later chats",
+        "So the answer comes back in the same language"
+      ],
+      "explanation": "Clear separation stops the model from confusing content with instructions. It has no effect on token counts or on what the model remembers between chats."
+    },
+    {
+      "id": "ainf-strat-01",
+      "kind": "single",
+      "domain": "ainf.strategy",
+      "prompt": "Which four forces make up EDGE in the AI-Native Foundations outline?",
+      "answer": "Exponential, disruptive, generative, emergent",
+      "distractors": [
+        "Economic, digital, global, environmental",
+        "Efficient, data-driven, governed, ethical",
+        "Experimental, distributed, generative, evolving"
+      ],
+      "explanation": "The study guide spells EDGE out as exponential growth, disruptive, generative and emergent. The last option is the trap because it keeps generative while swapping the other three words."
+    },
+    {
+      "id": "ainf-strat-02",
+      "kind": "single",
+      "domain": "ainf.strategy",
+      "prompt": "The cost of an AI task halves every few months while capability keeps compounding, so plans that assume steady yearly improvement fall behind. Which EDGE force is this?",
+      "answer": "Exponential",
+      "distractors": [
+        "Disruptive",
+        "Generative",
+        "Emergent"
+      ],
+      "explanation": "Compounding change that outruns linear planning is the exponential force. Disruptive is close, but it describes the effect on markets and business models, not the rate of improvement itself. The outline names the four forces; this reading of each force follows the plain meaning of the word, so check it against your course material."
+    },
+    {
+      "id": "ainf-strat-03",
+      "kind": "single",
+      "domain": "ainf.strategy",
+      "prompt": "A team finds that a language model can carry out a useful task that nobody designed or trained it for. Which EDGE force does this illustrate?",
+      "answer": "Emergent",
+      "distractors": [
+        "Exponential",
+        "Disruptive",
+        "Generative"
+      ],
+      "explanation": "Capabilities that appear without being planned are emergent. Generative is tempting because the model generates output, but the point here is the surprise of the capability, not the creation of content. The outline names the four forces; this reading of each force follows the plain meaning of the word, so check it against your course material."
+    },
+    {
+      "id": "ainf-strat-04",
+      "kind": "single",
+      "domain": "ainf.strategy",
+      "prompt": "Which labels does the AI-Native Foundations outline use to classify AI use cases?",
+      "answer": "Stable, Evolving, Frontier",
+      "distractors": [
+        "Crawl, Walk, Run",
+        "Pilot, Scale, Retire",
+        "Core, Adjacent, Transformational"
+      ],
+      "explanation": "The study guide asks candidates to classify use cases as Stable, Evolving or Frontier, according to maturity and future potential. The other sets are common maturity or portfolio labels from elsewhere."
+    },
+    {
+      "id": "ainf-strat-05",
+      "kind": "single",
+      "domain": "ainf.strategy",
+      "prompt": "A company bolts a chatbot onto its ordering system and changes nothing else about how it works. In Scaled Agile's public description, what is this closer to?",
+      "answer": "Embedded AI",
+      "distractors": [
+        "AI-Native by design",
+        "AI-first redesign",
+        "AI-augmented operations"
+      ],
+      "explanation": "Scaled Agile's articles contrast AI-Native with embedded AI, where AI components are added to existing systems. AI-Native means the organisation is designed with AI at the forefront, which adding one chatbot does not achieve."
+    },
+    {
+      "id": "ainf-strat-06",
+      "kind": "single",
+      "domain": "ainf.strategy",
+      "prompt": "How do Scaled Agile's public articles describe an AI-Native organization?",
+      "answer": "One designed with AI at the forefront, as a cultural foundation",
+      "distractors": [
+        "One that buys an AI licence for each person it employs",
+        "One that replaces most of its staff with fully autonomous agents",
+        "One that builds every foundation model that it relies on"
+      ],
+      "explanation": "The articles describe AI-Native as designing the organisation with AI at the forefront, a cultural foundation more than a technology choice. Buying licences is adoption of a tool and changes nothing about how the organisation thinks or works."
+    },
+    {
+      "id": "ainf-strat-07",
+      "kind": "single",
+      "domain": "ainf.strategy",
+      "prompt": "According to Scaled Agile's public articles, which is a reason AI initiatives fail?",
+      "answer": "Experiments never grow into reliable solutions",
+      "distractors": [
+        "Vendors release new models far too slowly",
+        "Staff adopt AI tools faster than leaders expect",
+        "Regulators prohibit most business uses of AI"
+      ],
+      "explanation": "The article names three causes: no clear strategic vision from leadership, a workforce not upskilled to think with AI, and experiments that are never scaled. Slow model releases are not among them; the pace of releases is, if anything, the opposite problem."
+    },
+    {
+      "id": "ainf-strat-08",
+      "kind": "single",
+      "domain": "ainf.strategy",
+      "prompt": "An engineer says: 'The larger model has higher latency and cost per token but fewer errors.' Which translation suits an executive?",
+      "answer": "It is slower and costs more per request but errs less often",
+      "distractors": [
+        "It has more parameters and a considerably longer context window",
+        "It uses a newer transformer architecture for its internal layers",
+        "It scores higher than the others on several public benchmarks"
+      ],
+      "explanation": "Business language states the effect on speed, cost and risk. Parameters and architecture are true but leave the executive unable to weigh the trade-off."
+    },
+    {
+      "id": "ainf-strat-09",
+      "kind": "single",
+      "domain": "ainf.strategy",
+      "prompt": "A sponsor asks why the team proposes RAG, not fine-tuning, for a policy assistant. Which answer is in business language?",
+      "answer": "Answers follow document changes at once, with no retraining cost",
+      "distractors": [
+        "Embeddings sit in a vector index and are compared by cosine",
+        "Gradient updates would risk catastrophic forgetting of skills",
+        "The chunking strategy relies on overlapping token windows"
+      ],
+      "explanation": "The business case for RAG is that answers stay current as documents change, without paying to retrain. The other answers may be technically sound, but they describe mechanisms, not outcomes a sponsor can judge."
+    },
+    {
+      "id": "ainf-strat-10",
+      "kind": "single",
+      "domain": "ainf.strategy",
+      "prompt": "A sales director asks for 'an AI that closes deals by itself.' What is the most useful first response?",
+      "answer": "Clarify the underlying problem and which data and steps exist",
+      "distractors": [
+        "Promise a fully autonomous sales agent within the next quarter",
+        "Explain that AI has nothing to offer for sales work",
+        "Order licences for the most advanced model on offer"
+      ],
+      "explanation": "Translating a business wish into a realistic solution starts with the real problem and what is feasible with the data available. Promising an autonomous agent accepts the request at face value before anyone knows whether it can work."
+    },
+    {
+      "id": "ainf-strat-11",
+      "kind": "single",
+      "domain": "ainf.strategy",
+      "prompt": "A team has a clean history of resolved tickets and no data scientists. Which is the most realistic first AI solution?",
+      "answer": "Suggesting reply drafts based on earlier cases",
+      "distractors": [
+        "Training its own foundation model on company data",
+        "Replacing the support team with autonomous agents",
+        "Predicting next year's revenue to the exact dollar"
+      ],
+      "explanation": "A realistic first solution matches the data and skills the team already has and keeps people in control. Training a foundation model needs data, money and expertise far beyond a team with no data scientists."
+    },
+    {
+      "id": "ainf-strat-12",
+      "kind": "single",
+      "domain": "ainf.strategy",
+      "prompt": "When comparing AI vendors, which question matters most for protecting company data?",
+      "answer": "Is our data used to train their models, and where is it kept?",
+      "distractors": [
+        "How many parameters does their largest model have as of today?",
+        "Which well-known brands appear in their advertising?",
+        "How often do their researchers publish new papers?"
+      ],
+      "explanation": "Data handling, whether inputs are used for training and where they are stored, decides the privacy and confidentiality risk. Model size says something about capability and nothing about what happens to your data."
+    },
+    {
+      "id": "ainf-strat-13",
+      "kind": "single",
+      "domain": "ainf.strategy",
+      "prompt": "Which contract term most reduces the risk of being locked in to one AI vendor?",
+      "answer": "The right to export data and prompts in usable formats",
+      "distractors": [
+        "A discount for committing to a contract term of five years",
+        "Exclusive use of the vendor's proprietary tooling",
+        "Automatic renewal unless cancelled a year ahead"
+      ],
+      "explanation": "Being able to take data and prompts elsewhere keeps the option to switch. A long-term discount is attractive on price, but it deepens the dependence it appears to reward."
+    },
+    {
+      "id": "ainf-strat-14",
+      "kind": "single",
+      "domain": "ainf.strategy",
+      "prompt": "After an AI vendor has been selected, which practice belongs to managing the relationship?",
+      "answer": "Reviewing quality, cost and incidents against agreed measures",
+      "distractors": [
+        "Assuming that performance will stay the same after launch",
+        "Sharing administrator credentials to speed up their support",
+        "Letting the vendor decide which company data is in scope"
+      ],
+      "explanation": "Vendor management continues after selection: outcomes are reviewed against what was agreed. Models and services change over time, so assuming stable performance is the quiet failure this practice prevents."
+    }
+  ],
+  "flashcardDecks": [
+    {
+      "id": "fundamentals",
+      "title": "Fundamentals and core architectures",
+      "notes": [
+        {
+          "id": "levels-order",
+          "kind": "cloze",
+          "objectiveIds": [
+            "ainf.fundamentals"
+          ],
+          "text": "The five levels of AI, lowest to highest: {{c1::Rule-Based Automation}}, {{c2::Intelligent Automation}}, {{c3::Agentic Workflows}}, {{c4::Semi-Automatic Agents}}, {{c5::Full-Autonomous Agents}}.",
+          "explanation": "Names exactly as the study guide lists them. The definitions of each level come from the course.",
+          "tags": [
+            "fundamentals",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Scaled Agile · Exam study guide: AI-Native Foundations",
+              "url": "https://ai-native-support.scaledagile.com/en/articles/13835880-exam-study-guide-ai-native-foundations-exam-ai-native-foundations-professional"
+            }
+          ]
+        },
+        {
+          "id": "levels-first",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.fundamentals"
+          ],
+          "front": "Which of the five levels of AI is the lowest?",
+          "back": "Rule-Based Automation.",
+          "explanation": "Fixed rules with no learning sit at the bottom of the ladder.",
+          "tags": [
+            "fundamentals",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Scaled Agile · Exam study guide: AI-Native Foundations",
+              "url": "https://ai-native-support.scaledagile.com/en/articles/13835880-exam-study-guide-ai-native-foundations-exam-ai-native-foundations-professional"
+            }
+          ]
+        },
+        {
+          "id": "levels-top",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.fundamentals"
+          ],
+          "front": "Which of the five levels of AI is the highest?",
+          "back": "Full-Autonomous Agents.",
+          "explanation": "The top level acts without a person approving each step.",
+          "tags": [
+            "fundamentals",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Scaled Agile · Exam study guide: AI-Native Foundations",
+              "url": "https://ai-native-support.scaledagile.com/en/articles/13835880-exam-study-guide-ai-native-foundations-exam-ai-native-foundations-professional"
+            }
+          ]
+        },
+        {
+          "id": "levels-middle",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.fundamentals"
+          ],
+          "front": "Which level sits between Intelligent Automation and Semi-Automatic Agents?",
+          "back": "Agentic Workflows.",
+          "explanation": "It is the third of the five levels.",
+          "tags": [
+            "fundamentals",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Scaled Agile · Exam study guide: AI-Native Foundations",
+              "url": "https://ai-native-support.scaledagile.com/en/articles/13835880-exam-study-guide-ai-native-foundations-exam-ai-native-foundations-professional"
+            }
+          ]
+        },
+        {
+          "id": "rag-steps",
+          "kind": "cloze",
+          "objectiveIds": [
+            "ainf.fundamentals"
+          ],
+          "text": "A RAG request runs in three steps: {{c1::retrieve}}, {{c2::augment}}, {{c3::generate}}.",
+          "explanation": "Relevant content is retrieved, added to the prompt as grounding data, and the model then generates the answer.",
+          "tags": [
+            "fundamentals",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Microsoft Learn · Retrieval augmented generation and indexes",
+              "url": "https://learn.microsoft.com/azure/foundry/concepts/retrieval-augmented-generation"
+            }
+          ]
+        },
+        {
+          "id": "rag-term",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ainf.fundamentals"
+          ],
+          "front": "Retrieval-augmented generation (RAG)",
+          "back": "Grounding a model's answer in content retrieved at question time.",
+          "explanation": "RAG lets a model use private or current data without changing its weights.",
+          "tags": [
+            "fundamentals"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Microsoft Learn · Retrieval augmented generation and indexes",
+              "url": "https://learn.microsoft.com/azure/foundry/concepts/retrieval-augmented-generation"
+            }
+          ]
+        },
+        {
+          "id": "composite",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.fundamentals"
+          ],
+          "front": "What is composite AI?",
+          "back": "Combining machine learning, rules-based systems and LLMs in one solution.",
+          "explanation": "Each technique does the part it is best at.",
+          "tags": [
+            "fundamentals"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Scaled Agile · Exam study guide: AI-Native Foundations",
+              "url": "https://ai-native-support.scaledagile.com/en/articles/13835880-exam-study-guide-ai-native-foundations-exam-ai-native-foundations-professional"
+            }
+          ]
+        },
+        {
+          "id": "agent-vs-llm",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.fundamentals"
+          ],
+          "front": "What separates an AI agent from a plain LLM chat?",
+          "back": "An agent decides on steps and calls tools to act toward a goal.",
+          "explanation": "A chat returns text; an agent can act, which is why it needs more governance.",
+          "tags": [
+            "fundamentals"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Microsoft Learn · AI agent adoption",
+              "url": "https://learn.microsoft.com/azure/cloud-adoption-framework/ai-agents/"
+            }
+          ]
+        },
+        {
+          "id": "agent-parts",
+          "kind": "cloze",
+          "objectiveIds": [
+            "ainf.fundamentals"
+          ],
+          "text": "Core parts of an agent: a {{c1::model}} to reason, {{c2::instructions}} to bound it, {{c3::tools}} to act and {{c4::memory}} to keep state.",
+          "explanation": "Retrieval of grounding knowledge is often listed as a fifth part.",
+          "tags": [
+            "fundamentals"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Microsoft Learn · AI agent adoption",
+              "url": "https://learn.microsoft.com/azure/cloud-adoption-framework/ai-agents/"
+            }
+          ]
+        },
+        {
+          "id": "hallucination",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ainf.fundamentals"
+          ],
+          "front": "Hallucination",
+          "back": "A fluent, confident output that is false or unsupported.",
+          "explanation": "Grounding and human checking reduce the risk; neither removes it.",
+          "tags": [
+            "fundamentals"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "copilot",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ainf.fundamentals"
+          ],
+          "front": "Copilot",
+          "back": "An AI assistant that works beside a user and offers suggestions to accept or edit.",
+          "explanation": "Contrast with an autonomous agent, which completes work independently.",
+          "tags": [
+            "fundamentals"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Microsoft Learn · AI agents in Azure Cosmos DB (copilots and autonomous agents)",
+              "url": "https://learn.microsoft.com/azure/cosmos-db/ai-agents"
+            }
+          ]
+        },
+        {
+          "id": "fine-tune-vs-rag",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.fundamentals"
+          ],
+          "front": "Fine-tuning or RAG: which one changes the model's weights?",
+          "back": "Fine-tuning. RAG only changes what is in the prompt.",
+          "explanation": "Fine-tuning shapes behaviour and style; RAG supplies facts.",
+          "tags": [
+            "fundamentals"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Microsoft Learn · Retrieval augmented generation and indexes",
+              "url": "https://learn.microsoft.com/azure/foundry/concepts/retrieval-augmented-generation"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "responsible",
+      "title": "Responsible AI, governance and security",
+      "notes": [
+        {
+          "id": "rai-three",
+          "kind": "cloze",
+          "objectiveIds": [
+            "ainf.responsible"
+          ],
+          "text": "The study guide names three principles of responsible AI: {{c1::fairness}}, {{c2::transparency}} and {{c3::accountability}}.",
+          "explanation": "Fair outcomes, openness about AI use and its limits, and people who stay answerable.",
+          "tags": [
+            "responsible",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Scaled Agile · Exam study guide: AI-Native Foundations",
+              "url": "https://ai-native-support.scaledagile.com/en/articles/13835880-exam-study-guide-ai-native-foundations-exam-ai-native-foundations-professional"
+            }
+          ]
+        },
+        {
+          "id": "accountability",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.responsible"
+          ],
+          "front": "What does accountability mean for an AI system?",
+          "back": "Named people remain answerable for the system and its outcomes.",
+          "explanation": "'The model decided' is not an owner.",
+          "tags": [
+            "responsible"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Microsoft Learn · Responsible AI for agent design",
+              "url": "https://learn.microsoft.com/agents/design-guidelines/responsible-ai"
+            }
+          ]
+        },
+        {
+          "id": "minimisation",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.responsible"
+          ],
+          "front": "Which GDPR principle limits collection to what is needed for the purpose?",
+          "back": "Data minimisation.",
+          "explanation": "Purpose limitation is about reuse; storage limitation is about how long data is kept.",
+          "tags": [
+            "responsible"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "GDPR Article 5 · Principles",
+              "url": "https://gdpr-info.eu/art-5-gdpr/"
+            }
+          ]
+        },
+        {
+          "id": "pseudonymised",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.responsible"
+          ],
+          "front": "Is pseudonymised data still personal data under the GDPR?",
+          "back": "Yes, while it can be linked back to a person with additional information.",
+          "explanation": "Only anonymous information is outside the regulation.",
+          "tags": [
+            "responsible"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "GDPR Recital 26 · Anonymous and pseudonymised data",
+              "url": "https://gdpr-info.eu/recitals/no-26/"
+            }
+          ]
+        },
+        {
+          "id": "art22",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.responsible"
+          ],
+          "front": "What does GDPR Article 22 give a person?",
+          "back": "The right not to be subject to solely automated decisions with legal or similarly significant effects.",
+          "explanation": "Typical example: an automated loan refusal with no human involved.",
+          "tags": [
+            "responsible"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "GDPR Article 22 · Automated individual decision-making",
+              "url": "https://gdpr-info.eu/art-22-gdpr/"
+            }
+          ]
+        },
+        {
+          "id": "ccpa-who",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.responsible"
+          ],
+          "front": "Whom does the CCPA protect?",
+          "back": "Residents of California.",
+          "explanation": "It includes rights to know, delete, correct and opt out of sale or sharing. Not verified against the official page on 13 Nov 2026.",
+          "tags": [
+            "responsible"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "indirect-injection",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ainf.responsible"
+          ],
+          "front": "Indirect prompt injection",
+          "back": "Malicious instructions hidden in content the model reads, such as a web page or file.",
+          "explanation": "In direct injection the attacker types the instruction into the prompt.",
+          "tags": [
+            "responsible"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "OWASP GenAI · LLM01:2025 Prompt Injection",
+              "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/"
+            }
+          ]
+        },
+        {
+          "id": "least-privilege",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.responsible"
+          ],
+          "front": "Which control limits the damage an agent can do if it is manipulated?",
+          "back": "Least privilege: each tool has only the permissions the task needs.",
+          "explanation": "Add human approval for high-impact actions.",
+          "tags": [
+            "responsible"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "OWASP GenAI · LLM06:2025 Excessive Agency",
+              "url": "https://genai.owasp.org/llmrisk/llm062025-excessive-agency/"
+            }
+          ]
+        },
+        {
+          "id": "nist-functions",
+          "kind": "cloze",
+          "objectiveIds": [
+            "ainf.responsible"
+          ],
+          "text": "The NIST AI RMF core functions are {{c1::govern}}, {{c2::map}}, {{c3::measure}} and {{c4::manage}}.",
+          "explanation": "Govern is cross-cutting and runs through the other three.",
+          "tags": [
+            "responsible",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "NIST AI RMF 1.0 · Core functions",
+              "url": "https://airc.nist.gov/airmf-resources/airmf/5-sec-core/"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "practical",
+      "title": "Practical application and prompting",
+      "notes": [
+        {
+          "id": "few-shot",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ainf.practical"
+          ],
+          "front": "Few-shot prompting",
+          "back": "Putting a few example inputs and outputs in the prompt to show the behaviour wanted.",
+          "explanation": "The examples condition one request; nothing is retrained.",
+          "tags": [
+            "practical"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Microsoft Learn · Prompt engineering techniques",
+              "url": "https://learn.microsoft.com/azure/foundry/openai/concepts/prompt-engineering"
+            }
+          ]
+        },
+        {
+          "id": "give-out",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.practical"
+          ],
+          "front": "How do you stop a model inventing an answer that is not in the text?",
+          "back": "Give it an out: tell it to reply 'not found' when the answer is absent.",
+          "explanation": "Stressing accuracy alone leaves it no permitted alternative.",
+          "tags": [
+            "practical"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Microsoft Learn · Prompt engineering techniques",
+              "url": "https://learn.microsoft.com/azure/foundry/openai/concepts/prompt-engineering"
+            }
+          ]
+        },
+        {
+          "id": "rag-prompt",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.practical"
+          ],
+          "front": "What should a RAG prompt tell the model to do?",
+          "back": "Answer from the provided context, cite sources, and say when the context lacks the answer.",
+          "explanation": "Otherwise it falls back on general training.",
+          "tags": [
+            "practical"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Microsoft Learn · RAG prompt engineering",
+              "url": "https://learn.microsoft.com/azure/architecture/ai-ml/guide/rag/rag-prompt-engineering"
+            }
+          ]
+        },
+        {
+          "id": "image-prompt",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.practical"
+          ],
+          "front": "What does a strong image prompt describe?",
+          "back": "Subject, setting, framing, lighting and style.",
+          "explanation": "Praise words such as 'beautiful' give the generator nothing to draw.",
+          "tags": [
+            "practical"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "video-prompt",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.practical"
+          ],
+          "front": "What does a video prompt need that a still-image prompt does not?",
+          "back": "Camera movement and the order in which the action unfolds.",
+          "explanation": "Video adds time, so describe the sequence.",
+          "tags": [
+            "practical"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "oversight-place",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.practical"
+          ],
+          "front": "Where does human review belong in an AI-assisted workflow?",
+          "back": "Before the irreversible step, on the cases the AI flags or is unsure about.",
+          "explanation": "Review after the fact cannot change the outcome.",
+          "tags": [
+            "practical"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Scaled Agile · Exam study guide: AI-Native Foundations",
+              "url": "https://ai-native-support.scaledagile.com/en/articles/13835880-exam-study-guide-ai-native-foundations-exam-ai-native-foundations-professional"
+            }
+          ]
+        },
+        {
+          "id": "premortem",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.practical"
+          ],
+          "front": "Which prompt pattern surfaces hidden project risks?",
+          "back": "Share the plan and assumptions, ask the model to imagine failure and list the causes.",
+          "explanation": "Then check each risk against what the team knows.",
+          "tags": [
+            "practical"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Scaled Agile · Exam study guide: AI-Native Foundations",
+              "url": "https://ai-native-support.scaledagile.com/en/articles/13835880-exam-study-guide-ai-native-foundations-exam-ai-native-foundations-professional"
+            }
+          ]
+        },
+        {
+          "id": "feedback",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.practical"
+          ],
+          "front": "How can AI help with difficult feedback?",
+          "back": "By reframing it as open questions about what was expected and what was missed.",
+          "explanation": "Remove names and identifying details first.",
+          "tags": [
+            "practical"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Scaled Agile · Exam study guide: AI-Native Foundations",
+              "url": "https://ai-native-support.scaledagile.com/en/articles/13835880-exam-study-guide-ai-native-foundations-exam-ai-native-foundations-professional"
+            }
+          ]
+        },
+        {
+          "id": "micro-plan",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.practical"
+          ],
+          "front": "What makes a good micro-plan?",
+          "back": "A small, specific, time-bound action with a visible result.",
+          "explanation": "Example: draft two status reports with AI this week and note the time saved.",
+          "tags": [
+            "practical"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Scaled Agile · Exam study guide: AI-Native Foundations",
+              "url": "https://ai-native-support.scaledagile.com/en/articles/13835880-exam-study-guide-ai-native-foundations-exam-ai-native-foundations-professional"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "strategy",
+      "title": "Business strategy and transition",
+      "notes": [
+        {
+          "id": "edge",
+          "kind": "cloze",
+          "objectiveIds": [
+            "ainf.strategy"
+          ],
+          "text": "EDGE stands for {{c1::Exponential}}, {{c2::Disruptive}}, {{c3::Generative}} and {{c4::Emergent}}.",
+          "explanation": "The four forces the course uses to make the AI-Native case in business terms.",
+          "tags": [
+            "strategy",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Scaled Agile · Exam study guide: AI-Native Foundations",
+              "url": "https://ai-native-support.scaledagile.com/en/articles/13835880-exam-study-guide-ai-native-foundations-exam-ai-native-foundations-professional"
+            }
+          ]
+        },
+        {
+          "id": "use-case-classes",
+          "kind": "cloze",
+          "objectiveIds": [
+            "ainf.strategy"
+          ],
+          "text": "AI use cases are classified as {{c1::Stable}}, {{c2::Evolving}} or {{c3::Frontier}}.",
+          "explanation": "By maturity and future potential. The definitions come from the course.",
+          "tags": [
+            "strategy",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Scaled Agile · Exam study guide: AI-Native Foundations",
+              "url": "https://ai-native-support.scaledagile.com/en/articles/13835880-exam-study-guide-ai-native-foundations-exam-ai-native-foundations-professional"
+            }
+          ]
+        },
+        {
+          "id": "ai-native",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.strategy"
+          ],
+          "front": "How do Scaled Agile's public articles describe an AI-Native organization?",
+          "back": "One designed with AI at the forefront, as a cultural foundation.",
+          "explanation": "Contrast: embedded AI adds AI components to existing systems.",
+          "tags": [
+            "strategy"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Scaled Agile blog · AI-Native articles",
+              "url": "https://scaledagile.com/tag/ai-native/"
+            }
+          ]
+        },
+        {
+          "id": "fail-reasons",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.strategy"
+          ],
+          "front": "Name the three reasons AI initiatives fail, per Scaled Agile's public articles.",
+          "back": "No clear strategic vision, a workforce not upskilled, experiments not scaled.",
+          "explanation": "All three are organisational, not technical.",
+          "tags": [
+            "strategy"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Scaled Agile blog · AI certifications for product managers",
+              "url": "https://scaledagile.com/blog/ai-certifications-product-managers/"
+            }
+          ]
+        },
+        {
+          "id": "business-language",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.strategy"
+          ],
+          "front": "How do you put an AI trade-off into business language?",
+          "back": "State its effect on speed, cost, quality and risk.",
+          "explanation": "Leave parameters and architecture out.",
+          "tags": [
+            "strategy"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Scaled Agile · Exam study guide: AI-Native Foundations",
+              "url": "https://ai-native-support.scaledagile.com/en/articles/13835880-exam-study-guide-ai-native-foundations-exam-ai-native-foundations-professional"
+            }
+          ]
+        },
+        {
+          "id": "vendor-data",
+          "kind": "basic",
+          "objectiveIds": [
+            "ainf.strategy"
+          ],
+          "front": "Which vendor question matters most for protecting data?",
+          "back": "Is our data used to train their models, and where is it kept?",
+          "explanation": "Also ask about export rights to limit lock-in.",
+          "tags": [
+            "strategy"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "Scaled Agile · Exam study guide: AI-Native Foundations",
+              "url": "https://ai-native-support.scaledagile.com/en/articles/13835880-exam-study-guide-ai-native-foundations-exam-ai-native-foundations-professional"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
