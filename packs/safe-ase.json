@@ -1,0 +1,4810 @@
+{
+  "schemaVersion": 1,
+  "id": "safe-ase",
+  "version": "1.0.0",
+  "title": "SAFe Agile Software Engineer (ASE) · unofficial lessons, practice and mocks",
+  "description": "Exam preparation for the SAFe Agile Software Engineer exam, ASE 6.0 (20 single-select questions, 45 minutes, pass mark 80% on the study guide checked on 14 Nov 2026): nine lessons with C# and Gherkin examples, 80 original questions, weighted 10- and 20-question mocks, and flashcards. The study guide publishes no domain weights, so objectives are weighted by the number of course lessons they cover, which is an assumption. Readiness here is a practice signal, not a prediction of an exam result. Unofficial, original practice material. It is not affiliated with or endorsed by Scaled Agile, Inc. SAFe and Scaled Agile Framework are registered trademarks of Scaled Agile, Inc.",
+  "license": "Personal study use only. Not for redistribution.",
+  "profile": "hybrid",
+  "goal": "readiness",
+  "objectives": [
+    {
+      "id": "ase.quality",
+      "title": "Built-in quality and accelerating flow (course lessons 2-3)",
+      "prerequisites": []
+    },
+    {
+      "id": "ase.architecture",
+      "title": "Applying intentional architecture (course lesson 4)",
+      "prerequisites": [
+        "ase.quality"
+      ]
+    },
+    {
+      "id": "ase.test-first",
+      "title": "Thinking test-first (course lesson 5)",
+      "prerequisites": [
+        "ase.architecture"
+      ]
+    },
+    {
+      "id": "ase.stories",
+      "title": "Discovering story details (course lesson 6)",
+      "prerequisites": [
+        "ase.test-first"
+      ]
+    },
+    {
+      "id": "ase.bdd",
+      "title": "Shared understanding with BDD (course lesson 7)",
+      "prerequisites": [
+        "ase.stories"
+      ]
+    },
+    {
+      "id": "ase.models",
+      "title": "Communicating with models (course lesson 8)",
+      "prerequisites": [
+        "ase.bdd"
+      ]
+    },
+    {
+      "id": "ase.code-design",
+      "title": "Code quality and design quality (course lessons 9-10)",
+      "prerequisites": [
+        "ase.models"
+      ]
+    },
+    {
+      "id": "ase.tdd",
+      "title": "Implementing with quality: TDD and refactoring (course lesson 11)",
+      "prerequisites": [
+        "ase.code-design"
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "id": "start-here",
+      "title": "Start here · How this pack works",
+      "summary": "Exam facts, how the pack maps to the course lessons, and what was verified.",
+      "objectiveIds": [
+        "ase.quality",
+        "ase.architecture",
+        "ase.test-first",
+        "ase.stories",
+        "ase.bdd",
+        "ase.models",
+        "ase.code-design",
+        "ase.tdd"
+      ],
+      "blocks": [
+        {
+          "kind": "text",
+          "text": "The SAFe Agile Software Engineer exam, ASE 6.0, has 20 single-select multiple-choice questions and a 45-minute timer. The pass mark is 80%, which means 16 correct answers, so you can miss four. It is web-based and closed book, and unanswered questions count as wrong. The first attempt is included when taken within 60 days of finishing the course. These facts come from the exam study guide as it stood on 14 November 2026. Check the guide again before you sit the exam.",
+          "title": "The exam"
+        },
+        {
+          "kind": "table",
+          "text": "The study guide publishes no weights. Weighting by lesson count is an assumption; the real exam may differ.",
+          "rows": [
+            [
+              "Objective here",
+              "Course lessons",
+              "Weight",
+              "Questions"
+            ],
+            [
+              "Built-in quality and flow",
+              "2 and 3",
+              "2",
+              "16"
+            ],
+            [
+              "Intentional architecture",
+              "4",
+              "1",
+              "8"
+            ],
+            [
+              "Thinking test-first",
+              "5",
+              "1",
+              "8"
+            ],
+            [
+              "Story details",
+              "6",
+              "1",
+              "8"
+            ],
+            [
+              "BDD",
+              "7",
+              "1",
+              "8"
+            ],
+            [
+              "Models",
+              "8",
+              "1",
+              "8"
+            ],
+            [
+              "Code and design quality",
+              "9 and 10",
+              "2",
+              "16"
+            ],
+            [
+              "TDD and refactoring",
+              "11",
+              "1",
+              "8"
+            ]
+          ],
+          "title": "Course lessons and this pack"
+        },
+        {
+          "kind": "text",
+          "text": "Read the lessons in order; each objective unlocks the next. After a lesson, practise that objective in learning mode. Short mocks have 10 questions in 23 minutes, and full mocks match the real exam at 20 questions in 45 minutes.\n\nWith only 20 questions, one real exam samples little of the syllabus, and four mistakes is the limit. That is why readiness here asks for more than 90% on several recent mocks. Readiness and mastery are practice signals. They are not predictions of your exam result.\n\nCode in these lessons is C# with xUnit, and scenarios are in Gherkin. It is there to be read. Nothing in this pack runs it.",
+          "title": "How to use the pack"
+        },
+        {
+          "kind": "callout",
+          "text": "Exam facts and the lesson list were read from the study guide on 14 November 2026. Most framework articles show only their introduction without a login. Of the 80 questions, 33 rest on a public page that was opened. The other 47 cover general software engineering that the course teaches (XP practices, the testing matrix, story splitting, CRC cards, SOLID, patterns, the TDD cycle) and are written from the author's knowledge. Compare them with your course workbook after class.",
+          "title": "What was and was not verified"
+        }
+      ]
+    },
+    {
+      "id": "quality",
+      "title": "1 · Built-in quality and accelerating flow",
+      "summary": "Why quality sets the pace, the XP practices, and validating the benefit hypothesis.",
+      "objectiveIds": [
+        "ase.quality"
+      ],
+      "blocks": [
+        {
+          "kind": "text",
+          "text": "Built-In Quality is a set of practices that help Agile teams meet quality standards while they create customer value. SAFe's argument is economic: quality determines how fast a team can deliver. A defect found a minute after it is written costs a minute. The same defect found in production costs an incident, a fix, a retest and a redeployment.\n\nSo the team shifts learning left, which means finding problems sooner. The listed benefits are higher customer satisfaction, improved velocity and delivery predictability, better system performance, and an improved ability to innovate, scale and meet compliance requirements.",
+          "title": "Quality sets the pace"
+        },
+        {
+          "kind": "text",
+          "text": "Agile software engineering takes most of its technical practices from Extreme Programming. Pair programming reviews code as it is written and spreads knowledge. Collective ownership lets anyone improve any code, supported by tests and standards. Continuous integration merges and verifies changes frequently. Test-driven development writes the test first. Refactoring improves structure without changing behaviour. Simple design builds what is needed now.\n\nTwo definitions matter. The definition of done is the requirements for completeness of a work product. Technical debt is the future cost of rework created by shortcuts taken now.",
+          "title": "Principles connected to practices"
+        },
+        {
+          "kind": "text",
+          "text": "Value flows when work moves in small batches with fast feedback. Large batches delay feedback and make each defect more expensive. A feature carries a benefit hypothesis, the proposed measurable benefit. It is validated by releasing something small and measuring what real users do. Passing tests shows the feature was built as specified. Only evidence shows it was worth building.",
+          "title": "Accelerating flow"
+        },
+        {
+          "kind": "example",
+          "text": "One developer at Osric Bank understands the billing module, and every billing story waits for her. The team starts pairing on billing stories and agrees that anyone may change the module once the tests pass. Within two iterations four people can work there, the queue is gone, and the unit tests written while pairing catch a rounding defect before it leaves the team.",
+          "title": "Worked example · Osric Bank"
+        },
+        {
+          "kind": "callout",
+          "text": "Generic answer: quality and speed trade off. SAFe answer: quality is what makes speed possible.\n\nGeneric answer: a story is done when it works in the demo. SAFe answer: it is done when it meets its acceptance criteria and the definition of done.\n\nWrong owner: quality belongs to the whole team, not to testers or a quality department.\n\nWrong fix: more specialisation for a bottleneck. Pairing and collective ownership remove the bottleneck.",
+          "title": "SAFe answer versus generic answer"
+        },
+        {
+          "kind": "text",
+          "text": "Write your team's definition of done from memory. Mark the one item that is most often skipped under pressure. Estimate what skipping it cost the last time a defect escaped.",
+          "title": "Guided activity"
+        },
+        {
+          "kind": "text",
+          "text": "The links to these pages are on the References tab of this course.\n\nScaled Agile · Exam study guide: ASE (6.0)\nSAFe · Built-In Quality (public introduction; the rest of the article needs a login)\nSAFe glossary\nSAFe · Team and Technical Agility discipline",
+          "title": "Sources opened on 14 Nov 2026"
+        },
+        {
+          "kind": "callout",
+          "text": "The definition and benefits of Built-In Quality, the link between quality and speed, shifting learning left, the definition of done, the benefit hypothesis and the note that refactoring needs capacity were read on public pages. The XP practice list and the definition of technical debt are written from the author's knowledge.",
+          "title": "What was and was not verified"
+        }
+      ]
+    },
+    {
+      "id": "architecture",
+      "title": "2 · Applying intentional architecture",
+      "summary": "Systems thinking, emergent and intentional design, and designing for testability.",
+      "objectiveIds": [
+        "ase.architecture"
+      ],
+      "blocks": [
+        {
+          "kind": "text",
+          "text": "Agile Architecture is a set of values, practices and collaborations that support the active, evolutionary design and architecture of a system. It avoids big design up front. It supports design simplicity, a balance of intentional and emergent design, and designing for testability, deployability and releasability.\n\nEmergent design means each team defines what the next increment needs. At scale that is not enough: without shared direction, teams produce one-off solutions that do not fit together. Intentional architecture adds some planning and cross-team coordination. The Architectural Runway, built by enablers, is the result both rely on.\n\nSystems thinking is the habit of looking at the whole. Optimising one service can slow the transaction the customer cares about.",
+          "title": "Architecture in an Agile setting"
+        },
+        {
+          "kind": "text",
+          "text": "Set-Based Design keeps design options open and converges on evidence. A spike is an enabler story used to gain knowledge that reduces risk or makes an estimate reliable.\n\nDesigning for testability mostly means controlling dependencies. Code that creates its own database connection can only be tested with a database. Code that receives a collaborator through an interface can be tested with a substitute.",
+          "title": "Options, spikes and testability"
+        },
+        {
+          "kind": "code",
+          "text": "// Hard to test: the class reaches for a concrete dependency.\npublic class InvoiceService\n{\n    public decimal Total(int orderId)\n    {\n        var repo = new SqlOrderRepository(\"Server=prod;...\");\n        return repo.Load(orderId).Lines.Sum(l => l.Price * l.Quantity);\n    }\n}\n\n// Testable: the dependency arrives through an interface.\npublic interface IOrderRepository { Order Load(int orderId); }\n\npublic class InvoiceService\n{\n    private readonly IOrderRepository _orders;\n    public InvoiceService(IOrderRepository orders) => _orders = orders;\n\n    public decimal Total(int orderId) =>\n        _orders.Load(orderId).Lines.Sum(l => l.Price * l.Quantity);\n}",
+          "title": "C# · A seam for testing"
+        },
+        {
+          "kind": "example",
+          "text": "A team at Ulverston Energy cannot estimate a metering story because nobody knows whether a new time-series library copes with the load. It plans a two-day spike, runs a load test, and learns the library is fast enough only with batching. The story is then estimated with that design, and an architectural enabler adds a shared batching component to the runway for the other teams.",
+          "title": "Worked example · Ulverston Energy"
+        },
+        {
+          "kind": "callout",
+          "text": "Generic Agile answer: let the architecture emerge. SAFe answer: balance emergent design with intentional architecture.\n\nTraditional answer: finish the design first. SAFe answer: just enough runway for near-term features.\n\nA manager deciding: the most senior person picks the design. SAFe prefers keeping options open until evidence decides.\n\nPadding an estimate is not a way to handle uncertainty. A spike is.",
+          "title": "SAFe answer versus generic answer"
+        },
+        {
+          "kind": "text",
+          "text": "Find one class you work with that creates its own dependencies. Sketch the interface you would extract and write the name of the first test that the change would make possible.",
+          "title": "Guided activity"
+        },
+        {
+          "kind": "text",
+          "text": "The links to these pages are on the References tab of this course.\n\nScaled Agile · Exam study guide: ASE (6.0)\nSAFe · Agile Architecture (public introduction; the rest of the article needs a login)\nSAFe · Architectural Runway (public introduction; the rest of the article needs a login)\nSAFe · Set-Based Design (public introduction; the rest of the article needs a login)\nSAFe · Spikes (public introduction; the rest of the article needs a login)\nSAFe · Enablers (public introduction; the rest of the article needs a login)",
+          "title": "Sources opened on 14 Nov 2026"
+        },
+        {
+          "kind": "callout",
+          "text": "The definitions of Agile Architecture, the runway, Set-Based Design, spikes and enablers were read on the public introductions. Systems thinking and the testability guidance are written from the author's knowledge.",
+          "title": "What was and was not verified"
+        }
+      ]
+    },
+    {
+      "id": "test-first",
+      "title": "3 · Thinking test-first",
+      "summary": "Shift left, the Agile testing matrix, NFRs, and quality through the pipeline.",
+      "objectiveIds": [
+        "ase.test-first"
+      ],
+      "blocks": [
+        {
+          "kind": "text",
+          "text": "Agile testing develops and tests in small increments, and often writes the test before the code, story or feature. Quality is built in from the start, the whole team shares responsibility for it, and tests are automated wherever possible. Shifting testing left means the test exists when the work begins, so a defect is found close to the moment it is introduced.",
+          "title": "Test-first as a way of thinking"
+        },
+        {
+          "kind": "table",
+          "text": "Written from the author's knowledge of the testing quadrants; the SAFe article is behind a login.",
+          "rows": [
+            [
+              "Facing",
+              "Guides development",
+              "Critiques the product"
+            ],
+            [
+              "Business-facing",
+              "Functional and story acceptance tests, often automated with BDD",
+              "Exploratory, usability and user acceptance testing, largely manual"
+            ],
+            [
+              "Technology-facing",
+              "Unit and component tests, automated with TDD",
+              "Performance, security and other system quality tests"
+            ]
+          ],
+          "title": "The Agile testing matrix"
+        },
+        {
+          "kind": "text",
+          "text": "Nonfunctional requirements are system qualities such as performance, scalability, security, usability and maintainability. They guide design and often act as constraints across the backlogs. They are revisited as part of the definition of done for each iteration, planning interval or release, which in practice means an automated check.\n\nA healthy test portfolio is shaped like a pyramid: many fast unit tests, fewer component and integration tests, and a small number of slow end-to-end tests. Writing tests first tends to produce that shape. Quality is then checked at each stage of the pipeline, not at one late gate.",
+          "title": "NFRs and the pyramid"
+        },
+        {
+          "kind": "example",
+          "text": "The regression suite at Varnham Retail is four hours of browser tests. Developers run it once a day and ignore intermittent failures. The team moves the price and stock rules into unit tests that run in seconds, keeps a dozen browser tests for the main journeys, and adds a response-time check to the pipeline. Feedback on a change drops from a day to ten minutes.",
+          "title": "Worked example · Varnham Retail"
+        },
+        {
+          "kind": "callout",
+          "text": "Generic answer: testers test after developers finish. SAFe answer: the team tests continuously, and often first.\n\nWrong quadrant: exploratory testing is business-facing and critiques the product. Unit tests are technology-facing and guide development.\n\nWrong treatment of an NFR: writing it as one story and closing it. It is a constraint that stays in force.\n\nMore interface tests are not more safety; they are slower feedback.",
+          "title": "SAFe answer versus generic answer"
+        },
+        {
+          "kind": "text",
+          "text": "List the tests your team runs before a release and place each in a quadrant. Which quadrant is empty or manual? Write one test you could automate there this month.",
+          "title": "Guided activity"
+        },
+        {
+          "kind": "text",
+          "text": "The links to these pages are on the References tab of this course.\n\nScaled Agile · Exam study guide: ASE (6.0)\nSAFe · Agile Testing (public introduction; the rest of the article needs a login)\nSAFe · Test-Driven Development (public introduction; the rest of the article needs a login)\nSAFe · Nonfunctional Requirements (public introduction; the rest of the article needs a login)\nSAFe glossary",
+          "title": "Sources opened on 14 Nov 2026"
+        },
+        {
+          "kind": "callout",
+          "text": "The definition of agile testing, shared responsibility, automation, the NFR definition and examples, and the link between test-first and the testing pyramid were read on public introductions. The four quadrants of the matrix are written from the author's knowledge.",
+          "title": "What was and was not verified"
+        }
+      ]
+    },
+    {
+      "id": "stories",
+      "title": "4 · Discovering story details",
+      "summary": "Story criteria, splitting, story maps, and assumptions.",
+      "objectiveIds": [
+        "ase.stories"
+      ],
+      "blocks": [
+        {
+          "kind": "text",
+          "text": "A story is a short description of a small piece of desired functionality, written from the user's perspective. It is a vertical slice of system behaviour that a team can finish within one iteration, usually in a few days. User stories describe value to an end user. Enabler stories describe exploration, architecture, infrastructure and compliance work. The team writes and estimates stories together.\n\nDetails are deferred until the story is about to be built. Acceptance criteria then make it specific: they give the information needed to confirm the story is implemented correctly. Do not confuse them with the definition of done, which applies to every story.",
+          "title": "What a story is"
+        },
+        {
+          "kind": "text",
+          "text": "A story that is too large is split so that each part still delivers behaviour someone can see and accept. Useful splits follow workflow steps, business rules, data variations or the simple case before the complex one. Splits by layer, such as interface then database, or by activity, such as code then test, give pieces that cannot be accepted alone.\n\nSplitting also shrinks the Minimum Marketable Feature, the smallest set of functionality worth releasing, which shortens time to value and to feedback.\n\nA story map arranges user activities from left to right and stories beneath them by priority. It shows gaps in the journey and helps choose a thin first slice. While discovering details, the team also writes down its assumptions and risks, and plans a spike where one of them is large.",
+          "title": "Splitting"
+        },
+        {
+          "kind": "code",
+          "text": "Feature: Pay for a booking\n\n  Scenario: Pay the full amount by card\n    Given a booking with a balance of 120.00\n    When the customer pays 120.00 by card\n    Then the booking is marked as paid\n    And a receipt is sent to the customer\n\n  Scenario: Card is declined\n    Given a booking with a balance of 120.00\n    When the card payment is declined\n    Then the booking remains unpaid\n    And the customer is asked for another payment method",
+          "title": "Gherkin · Acceptance criteria as examples"
+        },
+        {
+          "kind": "example",
+          "text": "The story 'pay for a booking' at Zennor Travel is estimated at three iterations. The team splits it by business rule: card payment in full, then vouchers, then part payment. The first slice goes through the interface, the service and the database for one rule, and it is demonstrated at the end of the iteration. The earlier idea, building the payment tables first, would have produced nothing to show.",
+          "title": "Worked example · Zennor Travel"
+        },
+        {
+          "kind": "callout",
+          "text": "Generic answer: a story is a small requirement document. SAFe answer: it is a short description, with details discovered in conversation and captured as acceptance criteria.\n\nWrong size test: a story fits in an iteration; a feature fits in a planning interval.\n\nWrong split: by layer or by task.\n\nWrong owner: the product owner defines and accepts stories, and the team writes and estimates them together. A manager does not assign estimates.",
+          "title": "SAFe answer versus generic answer"
+        },
+        {
+          "kind": "text",
+          "text": "Take a story from your backlog that feels large. Write three different ways to split it, then cross out any that is not a vertical slice. Write two scenarios for the first slice.",
+          "title": "Guided activity"
+        },
+        {
+          "kind": "text",
+          "text": "The links to these pages are on the References tab of this course.\n\nScaled Agile · Exam study guide: ASE (6.0)\nSAFe · Story (public introduction; the rest of the article needs a login)\nSAFe glossary\nSAFe · Enablers (public introduction; the rest of the article needs a login)\nSAFe · Spikes (public introduction; the rest of the article needs a login)",
+          "title": "Sources opened on 14 Nov 2026"
+        },
+        {
+          "kind": "callout",
+          "text": "The story definition, size, user and enabler stories, and the definitions of acceptance criteria and definition of done were read on public pages. Splitting patterns, story maps and the Minimum Marketable Feature are written from the author's knowledge.",
+          "title": "What was and was not verified"
+        }
+      ]
+    },
+    {
+      "id": "bdd",
+      "title": "5 · Shared understanding with BDD",
+      "summary": "The triad, scenarios, testing below the interface, and test doubles.",
+      "objectiveIds": [
+        "ase.bdd"
+      ],
+      "blocks": [
+        {
+          "kind": "text",
+          "text": "Behavior-Driven Development is a test-first Agile testing practice. It defines, and possibly automates, tests before or as part of specifying behaviour. Its first purpose is shared understanding between the business and the team, which guides development, reduces rework and increases flow.\n\nThree perspectives are needed, known as the triad: customer-centric, development-centric and test-centric. Together they agree concrete examples of how the system should behave. The examples become business-facing scenarios that describe behaviour from the user's point of view without describing the implementation. Automated, they keep the behaviour correct as the system changes and show which existing behaviour a new requirement touches.",
+          "title": "What BDD is for"
+        },
+        {
+          "kind": "text",
+          "text": "Given sets the context. When states the action or event. Then states the outcome that should be observed. A good scenario uses domain terms the business recognises and says nothing about buttons, colours or tables.\n\nBusiness rules and calculations are best tested below the user interface, directly against the domain logic. Keep a small number of interface tests for the screens themselves. Where a scenario depends on something slow, costly or unavailable, replace it with a test double.",
+          "title": "Good scenarios"
+        },
+        {
+          "kind": "code",
+          "text": "Scenario Outline: Loyalty discount\n  Given a customer with <years> years of membership\n  When they check out a basket worth <total>\n  Then the discount is <discount>\n\n  Examples:\n    | years | total  | discount |\n    | 0     | 100.00 | 0.00     |\n    | 3     | 100.00 | 5.00     |\n    | 10    | 100.00 | 10.00    |\n\n// Step definitions call the domain object, not the browser.\n[When(@\"they check out a basket worth (.*)\")]\npublic void WhenTheyCheckOut(decimal total) =>\n    _discount = _calculator.DiscountFor(_customer, total);\n\n[Then(@\"the discount is (.*)\")]\npublic void ThenTheDiscountIs(decimal expected) =>\n    Assert.Equal(expected, _discount);",
+          "title": "Gherkin and C# · A rule tested below the interface"
+        },
+        {
+          "kind": "example",
+          "text": "A fare rule at Corbin Travel depends on a partner service that is slow and charges per call. The product owner, a developer and a tester agree five examples in twenty minutes and find two cases nobody had considered. The scenarios run against the fare calculator with a test double in place of the partner, so the whole set runs in under a second on every commit.",
+          "title": "Worked example · Corbin Travel"
+        },
+        {
+          "kind": "callout",
+          "text": "Generic answer: BDD is a test automation tool. SAFe answer: it is a collaboration practice; automation follows.\n\nWrong layer: testing every rule through the browser.\n\nWrong wording: 'When the user clicks the blue button'. Describe behaviour, not implementation.\n\nWrong people: scenarios written by testers alone after the code exists. The triad agrees them before.",
+          "title": "SAFe answer versus generic answer"
+        },
+        {
+          "kind": "text",
+          "text": "Pick one business rule you know. Write a scenario outline with at least four example rows, including one boundary. Check each line: would the business recognise every word?",
+          "title": "Guided activity"
+        },
+        {
+          "kind": "text",
+          "text": "The links to these pages are on the References tab of this course.\n\nScaled Agile · Exam study guide: ASE (6.0)\nSAFe · Behavior-Driven Development (public introduction; the rest of the article needs a login)\nSAFe glossary",
+          "title": "Sources opened on 14 Nov 2026"
+        },
+        {
+          "kind": "callout",
+          "text": "The definition of BDD, its purpose, the triad, business-facing scenarios and the role of automated scenarios were read on the public introduction. Gherkin structure, testing below the interface and test doubles are written from the author's knowledge.",
+          "title": "What was and was not verified"
+        }
+      ]
+    },
+    {
+      "id": "models",
+      "title": "6 · Communicating with models",
+      "summary": "Why teams model, static and dynamic models, and CRC cards.",
+      "objectiveIds": [
+        "ase.models"
+      ],
+      "blocks": [
+        {
+          "kind": "text",
+          "text": "A model is a cheap way to explore and communicate a design. SAFe treats modelling as a Lean tool: it gives early feedback on requirements and design before the cost of change rises. Agile modelling is just enough to learn and to agree, drawn on a whiteboard as often as in a tool.\n\nA domain model describes the entities of the problem domain and the relationships between them. It gives the business and the teams a common language, and the same words then appear in stories, scenarios and code.",
+          "title": "Why model at all"
+        },
+        {
+          "kind": "table",
+          "text": "Written from the author's knowledge of common modelling practice.",
+          "rows": [
+            [
+              "Kind",
+              "Shows",
+              "Examples"
+            ],
+            [
+              "Static",
+              "Structure",
+              "Class diagram, component diagram, domain model"
+            ],
+            [
+              "Dynamic",
+              "Behaviour over time",
+              "Sequence diagram, state diagram, activity diagram"
+            ]
+          ],
+          "title": "Static and dynamic models"
+        },
+        {
+          "kind": "text",
+          "text": "Class-Responsibility-Collaboration is a lightweight technique. Each index card names one class, lists what it is responsible for, and lists the classes it collaborates with. The team then walks through a scenario, passing control from card to card.\n\nThe cards make design problems physical. A card with too many responsibilities is a class with low cohesion. A card that collaborates with everything is a class with high coupling.",
+          "title": "CRC cards"
+        },
+        {
+          "kind": "example",
+          "text": "A team at Hadleigh Pay argues about what can happen to an order after payment fails. A state diagram on the whiteboard settles it in ten minutes: created, paid, failed, retried, cancelled, with the event that causes each move. Two missing transitions become stories. A CRC walk-through of 'retry payment' then shows the Order card doing work that belongs on a new PaymentAttempt card.",
+          "title": "Worked example · Hadleigh Pay"
+        },
+        {
+          "kind": "callout",
+          "text": "Traditional answer: complete the models before coding. SAFe answer: model just enough to learn, and keep learning.\n\nWrong diagram: a class diagram for a question about behaviour over time. Use a sequence or state diagram.\n\nWrong conclusion: a crowded CRC card is not an important class; it is a class to split.\n\nModels do not replace conversation or tests.",
+          "title": "SAFe answer versus generic answer"
+        },
+        {
+          "kind": "text",
+          "text": "Take a feature you are working on. Write CRC cards for three to five classes on paper. Walk one scenario through them. Did any card need a responsibility it did not have, or have one it never used?",
+          "title": "Guided activity"
+        },
+        {
+          "kind": "text",
+          "text": "The links to these pages are on the References tab of this course.\n\nScaled Agile · Exam study guide: ASE (6.0)\nSAFe · Model-Based Systems Engineering (public introduction; the rest of the article needs a login)\nSAFe · Domain Modeling (public introduction; the rest of the article needs a login)",
+          "title": "Sources opened on 14 Nov 2026"
+        },
+        {
+          "kind": "callout",
+          "text": "The purpose of modelling and the definition of domain modelling were read on public introductions. Static and dynamic model types and the CRC technique are written from the author's knowledge.",
+          "title": "What was and was not verified"
+        }
+      ]
+    },
+    {
+      "id": "code-design",
+      "title": "7 · Code quality and design quality",
+      "summary": "Cohesion and coupling, collective ownership, interfaces, SOLID and patterns.",
+      "objectiveIds": [
+        "ase.code-design"
+      ],
+      "blocks": [
+        {
+          "kind": "text",
+          "text": "Cohesion is how closely the parts of a module relate to one purpose. Coupling is how much one module depends on others. Code is easiest to change with high cohesion and loose coupling. Other qualities follow from these: no duplication, so one piece of knowledge lives in one place; encapsulation, so details can change without affecting callers; readability; and testability.\n\nCollective ownership means anyone on the team may improve any code. It is safe when automated tests catch regressions and shared coding standards keep the code familiar.",
+          "title": "Code qualities"
+        },
+        {
+          "kind": "table",
+          "text": "Written from the author's knowledge; the study guide lists SOLID as a topic.",
+          "rows": [
+            [
+              "Principle",
+              "Idea"
+            ],
+            [
+              "Single responsibility",
+              "A class has one reason to change"
+            ],
+            [
+              "Open-closed",
+              "Open for extension, closed for modification"
+            ],
+            [
+              "Liskov substitution",
+              "A subtype can replace its base type without surprising the caller"
+            ],
+            [
+              "Interface segregation",
+              "No client depends on methods it does not use"
+            ],
+            [
+              "Dependency inversion",
+              "Depend on abstractions, with implementations supplied from outside"
+            ]
+          ],
+          "title": "SOLID"
+        },
+        {
+          "kind": "text",
+          "text": "Interface-oriented design defines the contract a collaborator must meet and lets implementations vary behind it. When several designs are plausible, keep the options open and decide on evidence.\n\nDesign patterns are named solutions to recurring problems. Strategy puts interchangeable algorithms behind one interface. Adapter converts an interface you were given into the one you need. Factory hides how objects are created. Use a pattern when the problem it solves is present. Simple design means not adding it in advance.",
+          "title": "Design options, interfaces and patterns"
+        },
+        {
+          "kind": "code",
+          "text": "// Before: every new customer type edits this method (breaks open-closed).\npublic decimal Discount(Customer c, decimal total)\n{\n    if (c.Type == \"Staff\") return total * 0.20m;\n    if (c.Type == \"Loyal\") return total * 0.10m;\n    return 0m;\n}\n\n// After: a new rule is a new class; existing code is untouched.\npublic interface IDiscountRule\n{\n    bool AppliesTo(Customer c);\n    decimal For(decimal total);\n}\n\npublic class StaffDiscount : IDiscountRule\n{\n    public bool AppliesTo(Customer c) => c.Type == \"Staff\";\n    public decimal For(decimal total) => total * 0.20m;\n}\n\npublic class DiscountCalculator\n{\n    private readonly IEnumerable<IDiscountRule> _rules;\n    public DiscountCalculator(IEnumerable<IDiscountRule> rules) => _rules = rules;\n\n    public decimal Discount(Customer c, decimal total) =>\n        _rules.FirstOrDefault(r => r.AppliesTo(c))?.For(total) ?? 0m;\n}",
+          "title": "C# · From conditionals to Strategy"
+        },
+        {
+          "kind": "example",
+          "text": "A tax change at Ingram Retail needs edits in nine classes, and one is missed. The cause is duplication: each class computes tax itself. The team extracts a TaxPolicy behind an interface, has the nine classes ask it, and covers it with unit tests. The next tax change is one edit and one test.",
+          "title": "Worked example · Ingram Retail"
+        },
+        {
+          "kind": "callout",
+          "text": "Generic answer: each component has an owner who approves changes. SAFe and XP answer: collective ownership, made safe by tests and standards.\n\nWrong principle: empty methods forced by a large interface point to interface segregation, not Liskov. Type checks before calling a subtype point to Liskov.\n\nWrong instinct: adding patterns for needs that may come. Build for the current need and refactor.\n\nInterface-oriented design is about contracts between components, not about screens.",
+          "title": "SAFe answer versus generic answer"
+        },
+        {
+          "kind": "text",
+          "text": "Open a class you changed recently. Write its responsibilities as a list. If there is more than one reason for it to change, name the class you would extract and the interface it would sit behind.",
+          "title": "Guided activity"
+        },
+        {
+          "kind": "text",
+          "text": "The links to these pages are on the References tab of this course.\n\nScaled Agile · Exam study guide: ASE (6.0)\nSAFe · Set-Based Design (public introduction; the rest of the article needs a login)",
+          "title": "Sources opened on 14 Nov 2026"
+        },
+        {
+          "kind": "callout",
+          "text": "The study guide lists cohesion and coupling, collective ownership, interface-oriented design, SOLID and design patterns as topics, and the Set-Based Design introduction was read. The explanations of each are written from the author's knowledge of general software design.",
+          "title": "What was and was not verified"
+        }
+      ]
+    },
+    {
+      "id": "tdd",
+      "title": "8 · Implementing with quality: TDD and refactoring",
+      "summary": "The red, green, refactor cycle, test doubles, and refactoring as enabler work.",
+      "objectiveIds": [
+        "ase.tdd"
+      ],
+      "blocks": [
+        {
+          "kind": "text",
+          "text": "Test-Driven Development is a philosophy and practice of building and running tests before implementing the code or component. The cycle has three steps. Red: write a small test for the next behaviour and watch it fail, which proves the test can detect what is missing. Green: write the simplest code that passes. Refactor: improve the design with all tests passing.\n\nThe result is code that is tested by construction and shaped by how it is used. Unit tests should be fast and isolated, so dependencies such as a database or a gateway are replaced by test doubles. A stub returns prepared answers. A mock or spy lets the test check how a collaborator was called.",
+          "title": "Test-driven development"
+        },
+        {
+          "kind": "code",
+          "text": "// Red: the test is written first and fails, because Rate() does not exist yet.\npublic class ShippingTests\n{\n    [Fact]\n    public void Orders_over_fifty_ship_free()\n    {\n        var shipping = new Shipping(new StubCarrier(baseRate: 4.99m));\n\n        Assert.Equal(0m, shipping.Rate(orderTotal: 60m));\n    }\n}\n\n// Green: the simplest code that passes.\npublic class Shipping\n{\n    private readonly ICarrier _carrier;\n    public Shipping(ICarrier carrier) => _carrier = carrier;\n\n    public decimal Rate(decimal orderTotal) =>\n        orderTotal > 50m ? 0m : _carrier.BaseRate();\n}\n\n// Refactor: with the test green, name the threshold.\nprivate const decimal FreeShippingThreshold = 50m;\n\n// The stub stands in for the real carrier service.\npublic class StubCarrier : ICarrier\n{\n    private readonly decimal _rate;\n    public StubCarrier(decimal baseRate) => _rate = baseRate;\n    public decimal BaseRate() => _rate;\n}",
+          "title": "C# and xUnit · One turn of the cycle"
+        },
+        {
+          "kind": "text",
+          "text": "Refactoring improves the internal structure or operation of code or a component without changing its external behaviour. It extends the useful life of software and is what makes emergent design possible.\n\nSmall refactorings are part of every story. A larger one is planned as an enabler story: estimable, verifiable, valuable and accepted by the product owner, and it needs capacity.\n\nWhen new behaviour is needed in tangled code, separate the two kinds of change. First refactor under passing tests to make the change easy. Then add the behaviour test-first.",
+          "title": "Refactoring"
+        },
+        {
+          "kind": "example",
+          "text": "A fee calculation at Tolland Bank lives in a 400-line method. A new fee type is needed. The pair first writes characterisation tests that pin down current behaviour, then extracts each fee into its own small class with the tests green throughout. Only then do they write a failing test for the new fee and add a class to pass it. The extraction is visible on the board as an enabler story.",
+          "title": "Worked example · Tolland Bank"
+        },
+        {
+          "kind": "callout",
+          "text": "Generic answer: write the code, then the tests. SAFe answer: the test comes first.\n\nWrong step: refactoring while a test is red, or writing the full implementation at green.\n\nHidden work: spreading a large refactoring across other stories. SAFe makes it an enabler story.\n\nRefactoring versus rewriting: a refactoring keeps behaviour the same. Adding a feature is a different step.",
+          "title": "SAFe answer versus generic answer"
+        },
+        {
+          "kind": "text",
+          "text": "Choose a small rule, such as a discount threshold. On paper, write the name of the first test, the simplest code that would pass it, and one refactoring you would then make. Repeat for a second test.",
+          "title": "Guided activity"
+        },
+        {
+          "kind": "text",
+          "text": "The links to these pages are on the References tab of this course.\n\nScaled Agile · Exam study guide: ASE (6.0)\nSAFe · Test-Driven Development (public introduction; the rest of the article needs a login)\nSAFe · Refactoring (public introduction; the rest of the article needs a login)\nSAFe glossary\nSAFe · Team and Technical Agility discipline",
+          "title": "Sources opened on 14 Nov 2026"
+        },
+        {
+          "kind": "callout",
+          "text": "The definitions of TDD and refactoring, refactors as enabler stories accepted by the product owner, and the need for capacity were read on public pages. The red, green, refactor steps and the kinds of test double are written from the author's knowledge.",
+          "title": "What was and was not verified"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "ase-qual-01",
+      "familyId": "ase-qual-01",
+      "kind": "single",
+      "prompt": "What is Built-In Quality in SAFe?",
+      "objectiveIds": [
+        "ase.quality"
+      ],
+      "options": [
+        {
+          "id": "o36c8ff71",
+          "text": "A quality department that audits the output of Agile teams"
+        },
+        {
+          "id": "o655d2db9",
+          "text": "A checklist the product owner signs at the demo"
+        },
+        {
+          "id": "o94565ff4",
+          "text": "Practices that help teams meet quality standards as they create value"
+        },
+        {
+          "id": "ob672f820",
+          "text": "A test phase that follows each planning interval before any release"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o94565ff4"
+        ]
+      },
+      "explanation": "Built-In Quality is a set of practices that let Agile teams meet quality standards while they create customer value. A test phase after the work is inspection at the end, which is what building quality in replaces.",
+      "weight": 1
+    },
+    {
+      "id": "ase-qual-02",
+      "familyId": "ase-qual-02",
+      "kind": "single",
+      "prompt": "A team at Harrow Pay says it will move faster by leaving tests until the feature works. What does SAFe say about quality and speed?",
+      "objectiveIds": [
+        "ase.quality"
+      ],
+      "options": [
+        {
+          "id": "o004e12e5",
+          "text": "Speed comes first while a product is young"
+        },
+        {
+          "id": "o0311241b",
+          "text": "Quality determines how fast a team can deliver"
+        },
+        {
+          "id": "o4137de74",
+          "text": "Quality is the concern of the release stage"
+        },
+        {
+          "id": "oc7d3900c",
+          "text": "Quality and speed trade off, so pick one each interval"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o0311241b"
+        ]
+      },
+      "explanation": "The Built-In Quality article says quality drives delivery speed, because defects found late cause rework and delay. The trade-off view is the tempting one, but it ignores the cost of that rework.",
+      "weight": 1
+    },
+    {
+      "id": "ase-qual-03",
+      "familyId": "ase-qual-03",
+      "kind": "single",
+      "prompt": "Which benefit does SAFe list for Built-In Quality?",
+      "objectiveIds": [
+        "ase.quality"
+      ],
+      "options": [
+        {
+          "id": "o1031a9c1",
+          "text": "Lower headcount in each Agile team on the train"
+        },
+        {
+          "id": "o73efdc10",
+          "text": "Less need for a product owner"
+        },
+        {
+          "id": "o80dc4074",
+          "text": "Fewer iterations in a planning interval"
+        },
+        {
+          "id": "o97af121a",
+          "text": "Improved velocity and delivery predictability"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o97af121a"
+        ]
+      },
+      "explanation": "The article lists higher customer satisfaction, improved velocity and predictability, better system performance and an improved ability to innovate. None of the benefits concerns reducing the people or events of the train.",
+      "weight": 1
+    },
+    {
+      "id": "ase-qual-04",
+      "familyId": "ase-qual-04",
+      "kind": "single",
+      "prompt": "What does shifting learning left mean for a team?",
+      "objectiveIds": [
+        "ase.quality"
+      ],
+      "options": [
+        {
+          "id": "o228b2e1f",
+          "text": "Giving design decisions to the architect"
+        },
+        {
+          "id": "o3257385e",
+          "text": "Moving testers to the start of the planning interval alone"
+        },
+        {
+          "id": "o65e1a958",
+          "text": "Writing documentation before code"
+        },
+        {
+          "id": "oafd51068",
+          "text": "Finding problems sooner, when they are cheaper to fix"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "oafd51068"
+        ]
+      },
+      "explanation": "Shifting left moves feedback earlier in the flow so that problems surface while they are small. It concerns the timing of learning for the whole team, not relocating a role.",
+      "weight": 1
+    },
+    {
+      "id": "ase-qual-05",
+      "familyId": "ase-qual-05",
+      "kind": "single",
+      "prompt": "Which of these is an XP technical practice?",
+      "objectiveIds": [
+        "ase.quality"
+      ],
+      "options": [
+        {
+          "id": "o0e202ea8",
+          "text": "WSJF prioritisation"
+        },
+        {
+          "id": "o16f8c516",
+          "text": "PI Planning"
+        },
+        {
+          "id": "o30b54d7c",
+          "text": "Value stream funding"
+        },
+        {
+          "id": "ofaecf1cb",
+          "text": "Pair programming"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "ofaecf1cb"
+        ]
+      },
+      "explanation": "Pair programming is one of the technical practices of XP, with TDD, continuous integration, refactoring and collective ownership. The others are SAFe practices at train and portfolio level.",
+      "weight": 1
+    },
+    {
+      "id": "ase-qual-06",
+      "familyId": "ase-qual-06",
+      "kind": "single",
+      "prompt": "Two developers at Lindqvist Rail share one keyboard; one writes code while the other checks it and thinks ahead, and they swap often. What is the main gain?",
+      "objectiveIds": [
+        "ase.quality"
+      ],
+      "options": [
+        {
+          "id": "o92d438ad",
+          "text": "Continuous review and shared knowledge of the code"
+        },
+        {
+          "id": "oc30a86bc",
+          "text": "Twice the output of two developers working apart"
+        },
+        {
+          "id": "of1896c34",
+          "text": "A record of who wrote each line for the audit trail"
+        },
+        {
+          "id": "of3ec8781",
+          "text": "Less need for automated tests in the pipeline"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o92d438ad"
+        ]
+      },
+      "explanation": "Pairing reviews code as it is written and spreads knowledge, which supports collective ownership. It does not double output and it complements automated tests; it does not replace them.",
+      "weight": 1
+    },
+    {
+      "id": "ase-qual-07",
+      "familyId": "ase-qual-07",
+      "kind": "single",
+      "prompt": "Any developer at Maren Health may change any part of the codebase, supported by tests and standards. Which practice is this?",
+      "objectiveIds": [
+        "ase.quality"
+      ],
+      "options": [
+        {
+          "id": "o1abd8b9e",
+          "text": "Code freeze"
+        },
+        {
+          "id": "o938f2dae",
+          "text": "Gated review boards"
+        },
+        {
+          "id": "od968491e",
+          "text": "Component teams"
+        },
+        {
+          "id": "oe1b71d1c",
+          "text": "Collective ownership"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "oe1b71d1c"
+        ]
+      },
+      "explanation": "Collective ownership lets the whole team improve any code, which removes waiting for a single owner. Component teams do the reverse by tying each area to one group.",
+      "weight": 1
+    },
+    {
+      "id": "ase-qual-08",
+      "familyId": "ase-qual-08",
+      "kind": "single",
+      "prompt": "A team at Osric Bank has one developer who alone understands the billing module, and work queues up for that person. Which pair of practices addresses this best?",
+      "objectiveIds": [
+        "ase.quality"
+      ],
+      "options": [
+        {
+          "id": "o468574c7",
+          "text": "Longer iterations and detailed estimates"
+        },
+        {
+          "id": "o6781c8dc",
+          "text": "A code freeze and a review board"
+        },
+        {
+          "id": "o802d521a",
+          "text": "Pairing and collective ownership"
+        },
+        {
+          "id": "oe59df08a",
+          "text": "Component teams and specialisation"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o802d521a"
+        ]
+      },
+      "explanation": "Pairing spreads the knowledge and collective ownership lets others change the module, so the queue disappears. More specialisation would deepen the dependence on one person.",
+      "weight": 1
+    },
+    {
+      "id": "ase-qual-09",
+      "familyId": "ase-qual-09",
+      "kind": "single",
+      "prompt": "What is the definition of done?",
+      "objectiveIds": [
+        "ase.quality"
+      ],
+      "options": [
+        {
+          "id": "o1cf2a522",
+          "text": "The sign-off by the business owners"
+        },
+        {
+          "id": "o7d75e260",
+          "text": "The list of stories planned for an iteration"
+        },
+        {
+          "id": "oc0806d26",
+          "text": "The requirements for completeness of a work product"
+        },
+        {
+          "id": "oc306ba03",
+          "text": "The acceptance criteria of a single story"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "oc0806d26"
+        ]
+      },
+      "explanation": "The definition of done states what must be true for a work product or increment to count as complete. Acceptance criteria are specific to one story; the definition of done applies to every item.",
+      "weight": 1
+    },
+    {
+      "id": "ase-qual-10",
+      "familyId": "ase-qual-10",
+      "kind": "single",
+      "prompt": "A story at Pemberton Travel passes its tests, but the code has no unit tests and was merged without review. The team's definition of done requires both. What is the status of the story?",
+      "objectiveIds": [
+        "ase.quality"
+      ],
+      "options": [
+        {
+          "id": "o17c3fdae",
+          "text": "It is done if the product owner accepts the risk"
+        },
+        {
+          "id": "o1e7e7b53",
+          "text": "It is done, since the acceptance tests pass in the demo"
+        },
+        {
+          "id": "oc448ad0d",
+          "text": "It is unfinished until both conditions are met"
+        },
+        {
+          "id": "of6bfd673",
+          "text": "It is done, and the gaps become a new story"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "oc448ad0d"
+        ]
+      },
+      "explanation": "A story is complete when it meets its acceptance criteria and the team's definition of done. Calling it done and deferring the gaps hides technical debt and makes velocity misleading.",
+      "weight": 1
+    },
+    {
+      "id": "ase-qual-11",
+      "familyId": "ase-qual-11",
+      "kind": "single",
+      "prompt": "What is technical debt?",
+      "objectiveIds": [
+        "ase.quality"
+      ],
+      "options": [
+        {
+          "id": "o17510337",
+          "text": "The licence fees owed for development tools each year"
+        },
+        {
+          "id": "o999cc7e8",
+          "text": "The time spent in meetings each iteration"
+        },
+        {
+          "id": "oc9226971",
+          "text": "The backlog of features that have not yet been started"
+        },
+        {
+          "id": "ofc049b5e",
+          "text": "The future cost of rework caused by shortcuts taken now"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "ofc049b5e"
+        ]
+      },
+      "explanation": "Technical debt is the cost that accumulates when a quick solution is chosen over a sound one, and it slows later work like interest on a loan. A feature backlog is unbuilt scope, which is a different thing.",
+      "weight": 1
+    },
+    {
+      "id": "ase-qual-12",
+      "familyId": "ase-qual-12",
+      "kind": "single",
+      "prompt": "A feature at Quenby Media is expected to raise sign-ups. How does a team validate its benefit hypothesis?",
+      "objectiveIds": [
+        "ase.quality"
+      ],
+      "options": [
+        {
+          "id": "o01146006",
+          "text": "Compare the estimate with the actual effort"
+        },
+        {
+          "id": "o07e9d87d",
+          "text": "Ask the architect to review the design"
+        },
+        {
+          "id": "o47c22207",
+          "text": "Confirm that each story passed its acceptance tests"
+        },
+        {
+          "id": "obb8999ae",
+          "text": "Measure the result with real users after a small release"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "obb8999ae"
+        ]
+      },
+      "explanation": "A benefit hypothesis is a proposed measurable benefit, so it is validated by evidence from users. Passing acceptance tests shows the feature was built as specified, not that it produced the benefit.",
+      "weight": 1
+    },
+    {
+      "id": "ase-qual-13",
+      "familyId": "ase-qual-13",
+      "kind": "single",
+      "prompt": "Which practice shortens the feedback loop for a developer most?",
+      "objectiveIds": [
+        "ase.quality"
+      ],
+      "options": [
+        {
+          "id": "o084fb9fb",
+          "text": "Running fast automated tests on each change"
+        },
+        {
+          "id": "o9b73305a",
+          "text": "Holding a longer review at the end of the iteration"
+        },
+        {
+          "id": "oe282ac74",
+          "text": "Writing a more detailed design document"
+        },
+        {
+          "id": "oe3f058dd",
+          "text": "Adding a manual regression cycle"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o084fb9fb"
+        ]
+      },
+      "explanation": "Fast automated tests tell a developer within minutes whether a change works. Reviews and manual cycles at the end give the same information days later, when the context is lost.",
+      "weight": 1
+    },
+    {
+      "id": "ase-qual-14",
+      "familyId": "ase-qual-14",
+      "kind": "single",
+      "prompt": "A team at Rowan Insurance works in large batches and integrates once per iteration. Why does this slow the flow of value?",
+      "objectiveIds": [
+        "ase.quality"
+      ],
+      "options": [
+        {
+          "id": "o13150981",
+          "text": "Large batches are forbidden by the definition of done"
+        },
+        {
+          "id": "o33587eaf",
+          "text": "Large batches cannot be estimated in story points"
+        },
+        {
+          "id": "o58e71b57",
+          "text": "Large batches need more people than small ones"
+        },
+        {
+          "id": "oaf1f50f5",
+          "text": "Large batches delay feedback and raise the cost of each defect"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "oaf1f50f5"
+        ]
+      },
+      "explanation": "Small batches move through the system faster and give earlier feedback, so problems are found while they are cheap. Batch size is an economic choice, not a rule in the definition of done.",
+      "weight": 1
+    },
+    {
+      "id": "ase-qual-15",
+      "familyId": "ase-qual-15",
+      "kind": "single",
+      "prompt": "Why do teams plan capacity for refactoring?",
+      "objectiveIds": [
+        "ase.quality"
+      ],
+      "options": [
+        {
+          "id": "o1f1a2a83",
+          "text": "It keeps the code able to accept change at a steady pace"
+        },
+        {
+          "id": "o6866b4f6",
+          "text": "It is required before each System Demo can take place"
+        },
+        {
+          "id": "o99758818",
+          "text": "It is how velocity is increased on paper"
+        },
+        {
+          "id": "oc30cf71d",
+          "text": "It replaces the need for architecture"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o1f1a2a83"
+        ]
+      },
+      "explanation": "SAFe notes that refactoring improves structure without changing behaviour and needs time and capacity. Without it, each new feature costs more than the last and the pace falls.",
+      "weight": 1
+    },
+    {
+      "id": "ase-qual-16",
+      "familyId": "ase-qual-16",
+      "kind": "matching",
+      "prompt": "Match each Extreme Programming practice to what it means.",
+      "objectiveIds": [
+        "ase.quality"
+      ],
+      "options": [
+        {
+          "id": "o0d9e612f",
+          "text": "Work is approved by a change board"
+        },
+        {
+          "id": "o1173ceeb",
+          "text": "Changes are merged and verified frequently"
+        },
+        {
+          "id": "o70f2bbbf",
+          "text": "Two people work on the same code together"
+        },
+        {
+          "id": "odc6ca6b0",
+          "text": "Anyone on the team may improve any code"
+        },
+        {
+          "id": "oe30df003",
+          "text": "Structure improves while behaviour stays the same"
+        }
+      ],
+      "slots": [
+        {
+          "id": "p1",
+          "text": "Pair programming",
+          "options": []
+        },
+        {
+          "id": "p2",
+          "text": "Collective ownership",
+          "options": []
+        },
+        {
+          "id": "p3",
+          "text": "Continuous integration",
+          "options": []
+        },
+        {
+          "id": "p4",
+          "text": "Refactoring",
+          "options": []
+        }
+      ],
+      "selectCount": 0,
+      "reuse": false,
+      "grading": {
+        "policy": "partial",
+        "correct": [],
+        "matches": {
+          "p1": "o70f2bbbf",
+          "p2": "odc6ca6b0",
+          "p3": "o1173ceeb",
+          "p4": "oe30df003"
+        }
+      },
+      "explanation": "These four are core XP technical practices. Approval by a change board is a governance step and is not part of XP.",
+      "weight": 1
+    },
+    {
+      "id": "ase-arch-01",
+      "familyId": "ase-arch-01",
+      "kind": "single",
+      "prompt": "What is Agile Architecture?",
+      "objectiveIds": [
+        "ase.architecture"
+      ],
+      "options": [
+        {
+          "id": "o4ce722e3",
+          "text": "A complete design produced before development starts on the train"
+        },
+        {
+          "id": "od882a191",
+          "text": "A framework chosen once for the life of the product"
+        },
+        {
+          "id": "oe6d02625",
+          "text": "A set of diagrams kept and approved by the architecture office"
+        },
+        {
+          "id": "offfaefcc",
+          "text": "Values, practices and collaborations that support evolutionary design"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "offfaefcc"
+        ]
+      },
+      "explanation": "SAFe defines Agile Architecture as a set of values, practices and collaborations that support the active, evolutionary design of a system. A complete up-front design is big design up front, which it avoids.",
+      "weight": 1
+    },
+    {
+      "id": "ase-arch-02",
+      "familyId": "ase-arch-02",
+      "kind": "single",
+      "prompt": "How does SAFe balance design decisions across many teams?",
+      "objectiveIds": [
+        "ase.architecture"
+      ],
+      "options": [
+        {
+          "id": "o1d509773",
+          "text": "Architecture decided after the release"
+        },
+        {
+          "id": "o3c1a1909",
+          "text": "Emergent design combined with intentional architecture"
+        },
+        {
+          "id": "o9187ca64",
+          "text": "A central blueprint fixed before the first interval"
+        },
+        {
+          "id": "o9c6ee973",
+          "text": "Emergent design by each team with no shared guidance at all"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o3c1a1909"
+        ]
+      },
+      "explanation": "At scale, emergent design alone leads to one-off solutions and poor reuse, so SAFe adds intentional architecture with some planning and coordination. A fixed central blueprint is the opposite extreme.",
+      "weight": 1
+    },
+    {
+      "id": "ase-arch-03",
+      "familyId": "ase-arch-03",
+      "kind": "single",
+      "prompt": "Which quality does Agile Architecture ask teams to design for?",
+      "objectiveIds": [
+        "ase.architecture"
+      ],
+      "options": [
+        {
+          "id": "o05d76d19",
+          "text": "Independence from business needs"
+        },
+        {
+          "id": "o49d81351",
+          "text": "Testability, deployability and releasability"
+        },
+        {
+          "id": "o5bc3f214",
+          "text": "Minimum number of services"
+        },
+        {
+          "id": "o9b61f5c1",
+          "text": "Maximum reuse of each class across the whole portfolio"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o49d81351"
+        ]
+      },
+      "explanation": "The article names designing for testability, deployability and releaseability. Reuse can be valuable, but pursuing it for every class adds coupling and is not the stated aim.",
+      "weight": 1
+    },
+    {
+      "id": "ase-arch-04",
+      "familyId": "ase-arch-04",
+      "kind": "single",
+      "prompt": "A class at Sandor Logistics creates its own database connection inside each method, so it cannot be tested without a live database. Which change improves testability?",
+      "objectiveIds": [
+        "ase.architecture"
+      ],
+      "options": [
+        {
+          "id": "o03b347d5",
+          "text": "Pass the dependency in through an interface"
+        },
+        {
+          "id": "ob40e496a",
+          "text": "Add a longer timeout to the database tests"
+        },
+        {
+          "id": "od42bc27e",
+          "text": "Mark the class as static"
+        },
+        {
+          "id": "oe4704753",
+          "text": "Move the tests to the end of the iteration"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o03b347d5"
+        ]
+      },
+      "explanation": "Injecting the dependency through an interface lets a test supply a substitute, so the class can be tested in isolation. A static class makes substitution harder, which is the opposite of the goal.",
+      "weight": 1
+    },
+    {
+      "id": "ase-arch-05",
+      "familyId": "ase-arch-05",
+      "kind": "single",
+      "prompt": "A team at Thackeray Bank optimises its own service and slows the end-to-end transaction for the customer. What was missing?",
+      "objectiveIds": [
+        "ase.architecture"
+      ],
+      "options": [
+        {
+          "id": "o2d753e05",
+          "text": "Review of the coding standard"
+        },
+        {
+          "id": "o3df01e51",
+          "text": "Estimation of the team's capacity"
+        },
+        {
+          "id": "o8296984b",
+          "text": "Systems thinking about the whole solution"
+        },
+        {
+          "id": "of66e9c31",
+          "text": "Critical path analysis of the iteration plan"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o8296984b"
+        ]
+      },
+      "explanation": "Systems thinking looks at how the parts interact, because optimising one component can make the whole worse. Planning techniques for one team do not show effects on the wider system.",
+      "weight": 1
+    },
+    {
+      "id": "ase-arch-06",
+      "familyId": "ase-arch-06",
+      "kind": "single",
+      "prompt": "What does Set-Based Design do?",
+      "objectiveIds": [
+        "ase.architecture"
+      ],
+      "options": [
+        {
+          "id": "o19e7ee7b",
+          "text": "Keeps design options open until evidence supports a choice"
+        },
+        {
+          "id": "o7bed7251",
+          "text": "Fixes one design early so teams can plan their work in detail"
+        },
+        {
+          "id": "o81d17903",
+          "text": "Removes the need for integration"
+        },
+        {
+          "id": "oa4eb37d9",
+          "text": "Assigns each design to a separate team"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o19e7ee7b"
+        ]
+      },
+      "explanation": "Set-Based Design keeps requirements and design options flexible for as long as possible and converges using evidence from learning points. Fixing one design early is point-based design, which leads to late discoveries.",
+      "weight": 1
+    },
+    {
+      "id": "ase-arch-07",
+      "familyId": "ase-arch-07",
+      "kind": "single",
+      "prompt": "A team at Ulverston Energy cannot estimate a story because nobody knows whether a new library handles the load. What should it plan?",
+      "objectiveIds": [
+        "ase.architecture"
+      ],
+      "options": [
+        {
+          "id": "o30d4bb71",
+          "text": "A refactoring of the existing module"
+        },
+        {
+          "id": "o34d6f4a5",
+          "text": "A spike to gain the knowledge needed"
+        },
+        {
+          "id": "o733c8c18",
+          "text": "A design review with the business owners"
+        },
+        {
+          "id": "odf40f5c5",
+          "text": "A larger estimate that covers the uncertainty"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o34d6f4a5"
+        ]
+      },
+      "explanation": "A spike is an enabler story used to gain knowledge that reduces risk or makes an estimate reliable. Padding the estimate hides the uncertainty and leaves it unresolved.",
+      "weight": 1
+    },
+    {
+      "id": "ase-arch-08",
+      "familyId": "ase-arch-08",
+      "kind": "single",
+      "prompt": "What is the purpose of an architectural enabler?",
+      "objectiveIds": [
+        "ase.architecture"
+      ],
+      "options": [
+        {
+          "id": "o1fe13884",
+          "text": "To deliver a feature directly to the end user"
+        },
+        {
+          "id": "o41ad06c2",
+          "text": "To train new team members"
+        },
+        {
+          "id": "o463e089e",
+          "text": "To record a decision already made"
+        },
+        {
+          "id": "o59f176f1",
+          "text": "To build the runway that later features need"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o59f176f1"
+        ]
+      },
+      "explanation": "Architecture enablers build the Architectural Runway so that near-term features can be implemented with little redesign. They are backlog items, but they deliver value indirectly through what they make possible.",
+      "weight": 1
+    },
+    {
+      "id": "ase-tf-01",
+      "familyId": "ase-tf-01",
+      "kind": "single",
+      "prompt": "What characterises agile testing?",
+      "objectiveIds": [
+        "ase.test-first"
+      ],
+      "options": [
+        {
+          "id": "o0b689b7d",
+          "text": "Testing the features marked as critical by the business"
+        },
+        {
+          "id": "o39030768",
+          "text": "Developing and testing in small increments, often writing tests first"
+        },
+        {
+          "id": "o60f25b89",
+          "text": "Testing the complete system once development has been finished"
+        },
+        {
+          "id": "o818ed18e",
+          "text": "Handing each build to a separate test group for a full cycle"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o39030768"
+        ]
+      },
+      "explanation": "Agile testing develops and tests in small increments and often writes the tests before the code, story or feature. Testing after development is finished is the phase-gate approach it replaces.",
+      "weight": 1
+    },
+    {
+      "id": "ase-tf-02",
+      "familyId": "ase-tf-02",
+      "kind": "single",
+      "prompt": "What does shifting testing left achieve?",
+      "objectiveIds": [
+        "ase.test-first"
+      ],
+      "options": [
+        {
+          "id": "o63b891ab",
+          "text": "Testing takes place in production alone"
+        },
+        {
+          "id": "ob646279f",
+          "text": "Testers are moved to a team that works ahead of developers"
+        },
+        {
+          "id": "ob929b585",
+          "text": "Defects are found close to when they are introduced"
+        },
+        {
+          "id": "of4cc59c5",
+          "text": "Tests are written by the product owner"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "ob929b585"
+        ]
+      },
+      "explanation": "Shifting left moves testing earlier so that the cause of a defect is still fresh and cheap to correct. It is about the timing of tests, not about a separate team that works ahead.",
+      "weight": 1
+    },
+    {
+      "id": "ase-tf-03",
+      "familyId": "ase-tf-03",
+      "kind": "single",
+      "prompt": "In the Agile testing matrix, which quadrant holds unit and component tests?",
+      "objectiveIds": [
+        "ase.test-first"
+      ],
+      "options": [
+        {
+          "id": "o2b29b0ff",
+          "text": "Business-facing tests that guide development"
+        },
+        {
+          "id": "o5c39041b",
+          "text": "Technology-facing tests that guide development"
+        },
+        {
+          "id": "o914ec2c4",
+          "text": "Business-facing tests that critique the finished product"
+        },
+        {
+          "id": "o9a74aa92",
+          "text": "Technology-facing tests that critique the product"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o5c39041b"
+        ]
+      },
+      "explanation": "Unit and component tests are technology-facing and support the team while it builds. Business-facing tests that guide development are the functional, story-level acceptance tests.",
+      "weight": 1
+    },
+    {
+      "id": "ase-tf-04",
+      "familyId": "ase-tf-04",
+      "kind": "single",
+      "prompt": "Exploratory testing and usability testing sit in which quadrant of the Agile testing matrix?",
+      "objectiveIds": [
+        "ase.test-first"
+      ],
+      "options": [
+        {
+          "id": "o5232efcc",
+          "text": "Technology-facing tests that guide development of the code"
+        },
+        {
+          "id": "o588adfee",
+          "text": "Business-facing tests that guide development"
+        },
+        {
+          "id": "o638cca27",
+          "text": "Technology-facing tests that critique the product"
+        },
+        {
+          "id": "od95987f6",
+          "text": "Business-facing tests that critique the product"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "od95987f6"
+        ]
+      },
+      "explanation": "Exploratory and usability tests are business-facing and evaluate the product as built, and they are largely manual. Technology-facing tests that critique the product are the performance, security and other system quality tests.",
+      "weight": 1
+    },
+    {
+      "id": "ase-tf-05",
+      "familyId": "ase-tf-05",
+      "kind": "single",
+      "prompt": "What role do nonfunctional requirements play?",
+      "objectiveIds": [
+        "ase.test-first"
+      ],
+      "options": [
+        {
+          "id": "o18b409a4",
+          "text": "They are system qualities that constrain design across backlogs"
+        },
+        {
+          "id": "o42bc41eb",
+          "text": "They are optional goals deferred to later releases of the system"
+        },
+        {
+          "id": "o57c188ab",
+          "text": "They are stories with no acceptance criteria attached to them"
+        },
+        {
+          "id": "o7c801cd1",
+          "text": "They are tasks owned by the System Team"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o18b409a4"
+        ]
+      },
+      "explanation": "NFRs describe system qualities such as performance and security and often act as constraints on every backlog. They are not optional; a system that misses them can fail its users or regulators.",
+      "weight": 1
+    },
+    {
+      "id": "ase-tf-06",
+      "familyId": "ase-tf-06",
+      "kind": "single",
+      "prompt": "How should a team keep meeting a response-time requirement as the system grows?",
+      "objectiveIds": [
+        "ase.test-first"
+      ],
+      "options": [
+        {
+          "id": "o07847afd",
+          "text": "Leave it to the operations group after release"
+        },
+        {
+          "id": "o0e503eb3",
+          "text": "Test it once before the first release and record the result"
+        },
+        {
+          "id": "o80464ba4",
+          "text": "Write it as a single story and close it"
+        },
+        {
+          "id": "of7e90d1c",
+          "text": "Automate the check and run it for each increment"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "of7e90d1c"
+        ]
+      },
+      "explanation": "NFRs are revisited as part of the definition of done for each iteration, interval or release, so an automated check keeps them honest. A single test before release says nothing about later changes.",
+      "weight": 1
+    },
+    {
+      "id": "ase-tf-07",
+      "familyId": "ase-tf-07",
+      "kind": "single",
+      "prompt": "A suite at Varnham Retail has many slow user-interface tests and few unit tests, and takes four hours to run. What does the testing pyramid advise?",
+      "objectiveIds": [
+        "ase.test-first"
+      ],
+      "options": [
+        {
+          "id": "o15839078",
+          "text": "Equal numbers of tests at each level"
+        },
+        {
+          "id": "o6f7dd44f",
+          "text": "Many fast unit tests and fewer slow end-to-end tests"
+        },
+        {
+          "id": "oc180218c",
+          "text": "More user-interface tests so each path is covered twice over"
+        },
+        {
+          "id": "of4b35112",
+          "text": "Manual tests in place of the slow ones"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o6f7dd44f"
+        ]
+      },
+      "explanation": "A balanced portfolio has a broad base of fast developer tests and a small number of slow end-to-end tests. A suite heavy with interface tests gives feedback too slowly to support frequent integration.",
+      "weight": 1
+    },
+    {
+      "id": "ase-tf-08",
+      "familyId": "ase-tf-08",
+      "kind": "single",
+      "prompt": "Where is quality built in a pipeline that follows test-first thinking?",
+      "objectiveIds": [
+        "ase.test-first"
+      ],
+      "options": [
+        {
+          "id": "o70821594",
+          "text": "In production, through customer reports"
+        },
+        {
+          "id": "oa9b9aab9",
+          "text": "In the staging environment, by a dedicated test team alone"
+        },
+        {
+          "id": "of172fe1d",
+          "text": "In the IP iteration"
+        },
+        {
+          "id": "of98e4526",
+          "text": "At each stage, with automated tests wherever possible"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "of98e4526"
+        ]
+      },
+      "explanation": "Agile testing is continuous and mostly automated, which the Continuous Delivery Pipeline depends on. Leaving quality to staging concentrates all discovery at one late point.",
+      "weight": 1
+    },
+    {
+      "id": "ase-story-01",
+      "familyId": "ase-story-01",
+      "kind": "single",
+      "prompt": "What is a story in SAFe?",
+      "objectiveIds": [
+        "ase.stories"
+      ],
+      "options": [
+        {
+          "id": "od0a9e069",
+          "text": "A short description of a small piece of functionality from the user's view"
+        },
+        {
+          "id": "odc3ccafd",
+          "text": "A detailed specification of a feature, complete with all its design"
+        },
+        {
+          "id": "oe1213d49",
+          "text": "A task assigned to one developer for a single day of the iteration"
+        },
+        {
+          "id": "oebafdbe4",
+          "text": "A commitment made to the business owners at PI Planning"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "od0a9e069"
+        ]
+      },
+      "explanation": "A story is a short description of a small piece of desired functionality, written from the user's perspective, with details deferred until implementation. It is a vertical slice of behaviour, not a specification or a task.",
+      "weight": 1
+    },
+    {
+      "id": "ase-story-02",
+      "familyId": "ase-story-02",
+      "kind": "single",
+      "prompt": "How large should a story be?",
+      "objectiveIds": [
+        "ase.stories"
+      ],
+      "options": [
+        {
+          "id": "o28523d95",
+          "text": "Sized to fill one developer's iteration"
+        },
+        {
+          "id": "o422c7eba",
+          "text": "Sized to match one feature"
+        },
+        {
+          "id": "o6734df71",
+          "text": "Small enough to finish within a single planning interval"
+        },
+        {
+          "id": "oed79f94a",
+          "text": "Small enough to finish within a single iteration"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "oed79f94a"
+        ]
+      },
+      "explanation": "A story can be completed in a few days or less, inside one iteration. Fitting in a planning interval is the size test for a feature.",
+      "weight": 1
+    },
+    {
+      "id": "ase-story-03",
+      "familyId": "ase-story-03",
+      "kind": "single",
+      "prompt": "A team at Wexcombe Bank needs to try a new message broker before it can build on it. Which kind of story records this work?",
+      "objectiveIds": [
+        "ase.stories"
+      ],
+      "options": [
+        {
+          "id": "o095d36f6",
+          "text": "A user story"
+        },
+        {
+          "id": "o43f9d813",
+          "text": "A defect"
+        },
+        {
+          "id": "oc599f4fb",
+          "text": "An enabler story"
+        },
+        {
+          "id": "ocd70f047",
+          "text": "An epic"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "oc599f4fb"
+        ]
+      },
+      "explanation": "Enabler stories describe exploration, architecture, infrastructure and compliance work. A user story describes value to an end user, which this investigation does not deliver directly.",
+      "weight": 1
+    },
+    {
+      "id": "ase-story-04",
+      "familyId": "ase-story-04",
+      "kind": "single",
+      "prompt": "A user story at Yarrow Health reads 'build the database tables for appointments'. What is the problem with it?",
+      "objectiveIds": [
+        "ase.stories"
+      ],
+      "options": [
+        {
+          "id": "o133032f2",
+          "text": "It is a horizontal slice that delivers no behaviour a user can see"
+        },
+        {
+          "id": "o4118f956",
+          "text": "It should be written as a feature for the ART Backlog"
+        },
+        {
+          "id": "oe9db9018",
+          "text": "It lacks a named developer and a due date in the iteration"
+        },
+        {
+          "id": "of127c358",
+          "text": "It is too small to be estimated by the team in story points"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o133032f2"
+        ]
+      },
+      "explanation": "Stories should be vertical slices through the layers so that each one delivers observable behaviour and feedback. A layer-by-layer split postpones any working functionality until the last layer is done.",
+      "weight": 1
+    },
+    {
+      "id": "ase-story-05",
+      "familyId": "ase-story-05",
+      "kind": "single",
+      "prompt": "A story about payments at Zennor Travel is too big for one iteration. Which split is the most useful?",
+      "objectiveIds": [
+        "ase.stories"
+      ],
+      "options": [
+        {
+          "id": "o089f56e3",
+          "text": "By business rule, such as cards first and vouchers next"
+        },
+        {
+          "id": "o4b0f25c3",
+          "text": "By activity, such as coding first and testing next"
+        },
+        {
+          "id": "o7c4e5f64",
+          "text": "By layer, such as the interface first and the database after that"
+        },
+        {
+          "id": "of33e4b93",
+          "text": "By developer, one part for each person"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o089f56e3"
+        ]
+      },
+      "explanation": "Splitting by business rule or workflow step keeps each part a vertical slice with its own value. Splitting by layer or by activity gives parts that cannot be accepted on their own.",
+      "weight": 1
+    },
+    {
+      "id": "ase-story-06",
+      "familyId": "ase-story-06",
+      "kind": "single",
+      "prompt": "What are acceptance criteria?",
+      "objectiveIds": [
+        "ase.stories"
+      ],
+      "options": [
+        {
+          "id": "o44bf0d5c",
+          "text": "The team's shared standard of completeness for all of its work"
+        },
+        {
+          "id": "o734b83c6",
+          "text": "The tasks needed to build the story"
+        },
+        {
+          "id": "o783972cf",
+          "text": "The estimate agreed for the story"
+        },
+        {
+          "id": "o8be754d4",
+          "text": "Information that shows a story is implemented correctly"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o8be754d4"
+        ]
+      },
+      "explanation": "Acceptance criteria give the information needed to confirm that a story, feature or capability is implemented correctly, including its NFRs. The shared standard for all work is the definition of done.",
+      "weight": 1
+    },
+    {
+      "id": "ase-story-07",
+      "familyId": "ase-story-07",
+      "kind": "single",
+      "prompt": "A team at Alder Rail lays out user activities left to right and places stories under each in order of priority. What is this technique?",
+      "objectiveIds": [
+        "ase.stories"
+      ],
+      "options": [
+        {
+          "id": "o4bcaa1ba",
+          "text": "Value stream mapping"
+        },
+        {
+          "id": "o6ebd6978",
+          "text": "Domain modelling"
+        },
+        {
+          "id": "od9908b1c",
+          "text": "Story mapping"
+        },
+        {
+          "id": "ofd1b5176",
+          "text": "Impact analysis"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "od9908b1c"
+        ]
+      },
+      "explanation": "A story map arranges stories along the user's workflow and by priority, which helps find gaps and choose a thin first slice. Value stream mapping examines the delivery process, not the user's journey.",
+      "weight": 1
+    },
+    {
+      "id": "ase-story-08",
+      "familyId": "ase-story-08",
+      "kind": "single",
+      "prompt": "Why does a team look for the Minimum Marketable Feature when deciding what to release first?",
+      "objectiveIds": [
+        "ase.stories"
+      ],
+      "options": [
+        {
+          "id": "o42420710",
+          "text": "To reduce the number of acceptance tests"
+        },
+        {
+          "id": "o6a4491f8",
+          "text": "To release the smallest set that still gives customers value"
+        },
+        {
+          "id": "o7a23eebd",
+          "text": "To avoid the need for a product owner"
+        },
+        {
+          "id": "o916456e1",
+          "text": "To release the largest set the team can finish in the interval"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o6a4491f8"
+        ]
+      },
+      "explanation": "The Minimum Marketable Feature is the smallest piece of functionality worth releasing, so finding it shortens time to value and feedback. Aiming for the largest set delays both.",
+      "weight": 1
+    },
+    {
+      "id": "ase-bdd-01",
+      "familyId": "ase-bdd-01",
+      "kind": "single",
+      "prompt": "What is Behavior-Driven Development?",
+      "objectiveIds": [
+        "ase.bdd"
+      ],
+      "options": [
+        {
+          "id": "o2584b8f5",
+          "text": "A way of generating user-interface tests from the finished screens"
+        },
+        {
+          "id": "o7056cc35",
+          "text": "A test-first practice that defines tests as behaviour is specified"
+        },
+        {
+          "id": "o74a4f0b2",
+          "text": "A review of team conduct each iteration"
+        },
+        {
+          "id": "od28d2c75",
+          "text": "A method for estimating stories by behaviour"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o7056cc35"
+        ]
+      },
+      "explanation": "BDD is a test-first Agile testing practice that defines, and possibly automates, tests before or as part of specifying system behaviour. It starts before the code, so it cannot be derived from finished screens.",
+      "weight": 1
+    },
+    {
+      "id": "ase-bdd-02",
+      "familyId": "ase-bdd-02",
+      "kind": "single",
+      "prompt": "Which three perspectives does BDD bring together?",
+      "objectiveIds": [
+        "ase.bdd"
+      ],
+      "options": [
+        {
+          "id": "o0de42c48",
+          "text": "Portfolio-centric, programme-centric and team-centric views"
+        },
+        {
+          "id": "o12f6aeb6",
+          "text": "Design, build and run"
+        },
+        {
+          "id": "o828857f9",
+          "text": "Customer-centric, development-centric and test-centric"
+        },
+        {
+          "id": "obb086de2",
+          "text": "Past, present and future"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o828857f9"
+        ]
+      },
+      "explanation": "The triad combines customer, development and test perspectives so that behaviour is understood from each side. The levels of the organisation are a different idea and do not define the triad.",
+      "weight": 1
+    },
+    {
+      "id": "ase-bdd-03",
+      "familyId": "ase-bdd-03",
+      "kind": "single",
+      "prompt": "What is the main purpose of the conversation in BDD?",
+      "objectiveIds": [
+        "ase.bdd"
+      ],
+      "options": [
+        {
+          "id": "o3f608434",
+          "text": "A complete regression suite for the user interface layer"
+        },
+        {
+          "id": "o41419e27",
+          "text": "A signed requirements baseline"
+        },
+        {
+          "id": "o5444ee77",
+          "text": "Shared understanding between the business and the team"
+        },
+        {
+          "id": "o5a669409",
+          "text": "A record for the audit trail"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o5444ee77"
+        ]
+      },
+      "explanation": "BDD is a collaborative process that creates shared understanding of requirements, which reduces rework and increases flow. Automated tests are a valuable result, but they follow from the understanding.",
+      "weight": 1
+    },
+    {
+      "id": "ase-bdd-04",
+      "familyId": "ase-bdd-04",
+      "kind": "single",
+      "prompt": "In a Gherkin scenario, what does the When step express?",
+      "objectiveIds": [
+        "ase.bdd"
+      ],
+      "options": [
+        {
+          "id": "o038a44bd",
+          "text": "The action or event that triggers the behaviour"
+        },
+        {
+          "id": "o576b9258",
+          "text": "The name of the feature"
+        },
+        {
+          "id": "oae037827",
+          "text": "The outcome that should be observed"
+        },
+        {
+          "id": "off17f6d9",
+          "text": "The state of the system before anything has taken place"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o038a44bd"
+        ]
+      },
+      "explanation": "Given sets the context, When gives the triggering action and Then states the expected outcome. Mixing the starting state into When makes scenarios hard to read and reuse.",
+      "weight": 1
+    },
+    {
+      "id": "ase-bdd-05",
+      "familyId": "ase-bdd-05",
+      "kind": "single",
+      "prompt": "A scenario at Bexhill Bank reads 'When the user clicks the blue Submit button in the footer'. What is the weakness?",
+      "objectiveIds": [
+        "ase.bdd"
+      ],
+      "options": [
+        {
+          "id": "o223cdb8c",
+          "text": "It needs more Given steps"
+        },
+        {
+          "id": "od21e5065",
+          "text": "It lacks the name of the tester who will run the scenario"
+        },
+        {
+          "id": "oddd6c2f5",
+          "text": "It describes the implementation, not the behaviour"
+        },
+        {
+          "id": "of3282e5e",
+          "text": "It should be written as a unit test"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "oddd6c2f5"
+        ]
+      },
+      "explanation": "BDD scenarios describe behaviour from the user's perspective without focusing on how it is implemented. A scenario tied to a button's colour and position breaks whenever the screen changes.",
+      "weight": 1
+    },
+    {
+      "id": "ase-bdd-06",
+      "familyId": "ase-bdd-06",
+      "kind": "single",
+      "prompt": "A scenario at Corbin Travel needs a partner fare service that is slow and charges per call. What should the automated test use?",
+      "objectiveIds": [
+        "ase.bdd"
+      ],
+      "options": [
+        {
+          "id": "o024252c3",
+          "text": "A test double that stands in for the service"
+        },
+        {
+          "id": "o05a29fa2",
+          "text": "A longer timeout on each step"
+        },
+        {
+          "id": "o71acb91a",
+          "text": "The live service, with the suite run monthly"
+        },
+        {
+          "id": "o76eec5ce",
+          "text": "A manual check by the tester"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o024252c3"
+        ]
+      },
+      "explanation": "A test double replaces a slow, costly or unavailable dependency so the scenario runs quickly and repeatably. Running against the live service monthly gives feedback far too late.",
+      "weight": 1
+    },
+    {
+      "id": "ase-bdd-07",
+      "familyId": "ase-bdd-07",
+      "kind": "single",
+      "prompt": "Most business rules at Dunster Insurance are tested through the browser, and the suite is slow and brittle. Where should those rules be tested?",
+      "objectiveIds": [
+        "ase.bdd"
+      ],
+      "options": [
+        {
+          "id": "o65dac7b2",
+          "text": "By hand, before each demo"
+        },
+        {
+          "id": "oa56df158",
+          "text": "Below the user interface, against the domain logic"
+        },
+        {
+          "id": "od4fcb548",
+          "text": "In production, after release"
+        },
+        {
+          "id": "of9540a2a",
+          "text": "Through the browser, with retries added to each failing step"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "oa56df158"
+        ]
+      },
+      "explanation": "Rules and calculations are tested most cheaply and reliably beneath the interface, leaving a small number of interface tests for the screens themselves. Retries hide the brittleness and make the suite slower.",
+      "weight": 1
+    },
+    {
+      "id": "ase-bdd-08",
+      "familyId": "ase-bdd-08",
+      "kind": "single",
+      "prompt": "A rule about refunds changes at Elstow Retail. What do automated BDD tests give the team?",
+      "objectiveIds": [
+        "ase.bdd"
+      ],
+      "options": [
+        {
+          "id": "o408f6d45",
+          "text": "A way to find the existing behaviour that is affected"
+        },
+        {
+          "id": "ob8943074",
+          "text": "A guarantee that the new rule has been coded without defects"
+        },
+        {
+          "id": "oc056a763",
+          "text": "A reason to skip unit tests"
+        },
+        {
+          "id": "oeef30a1e",
+          "text": "A replacement for the product owner"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o408f6d45"
+        ]
+      },
+      "explanation": "Automated BDD tests keep behaviour correct as the system changes and act as a record of as-built behaviour, so affected scenarios show up at once. They do not prove new code is free of defects.",
+      "weight": 1
+    },
+    {
+      "id": "ase-model-01",
+      "familyId": "ase-model-01",
+      "kind": "single",
+      "prompt": "Why do Agile teams use models?",
+      "objectiveIds": [
+        "ase.models"
+      ],
+      "options": [
+        {
+          "id": "o2e80a270",
+          "text": "To satisfy a documentation quota"
+        },
+        {
+          "id": "o5d20a48b",
+          "text": "To produce a complete specification before coding"
+        },
+        {
+          "id": "o78699b4c",
+          "text": "To explore and communicate a design at low cost"
+        },
+        {
+          "id": "ofdfb6823",
+          "text": "To replace conversation between team members"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o78699b4c"
+        ]
+      },
+      "explanation": "A model lets a team reason about structure or behaviour and share that understanding before the cost of change rises. Agile modelling is just enough to learn, not a full specification.",
+      "weight": 1
+    },
+    {
+      "id": "ase-model-02",
+      "familyId": "ase-model-02",
+      "kind": "single",
+      "prompt": "Which diagram is a static model?",
+      "objectiveIds": [
+        "ase.models"
+      ],
+      "options": [
+        {
+          "id": "o1289931a",
+          "text": "An activity diagram"
+        },
+        {
+          "id": "o30722087",
+          "text": "A class diagram"
+        },
+        {
+          "id": "o9e4acf9a",
+          "text": "A sequence diagram"
+        },
+        {
+          "id": "oe74d6199",
+          "text": "A state diagram"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o30722087"
+        ]
+      },
+      "explanation": "Static models show structure, such as classes and their relationships. Sequence, state and activity diagrams are dynamic models, because they show behaviour over time.",
+      "weight": 1
+    },
+    {
+      "id": "ase-model-03",
+      "familyId": "ase-model-03",
+      "kind": "single",
+      "prompt": "What does a sequence diagram show?",
+      "objectiveIds": [
+        "ase.models"
+      ],
+      "options": [
+        {
+          "id": "o2749df83",
+          "text": "The backlog order of stories"
+        },
+        {
+          "id": "oa2b2acae",
+          "text": "Messages between objects over time"
+        },
+        {
+          "id": "oc0ec0462",
+          "text": "The inheritance hierarchy of the classes"
+        },
+        {
+          "id": "oedbe4cdc",
+          "text": "The tables of a database"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "oa2b2acae"
+        ]
+      },
+      "explanation": "A sequence diagram is a dynamic model of how objects collaborate through messages in time order. Inheritance and other structural relationships belong to a class diagram.",
+      "weight": 1
+    },
+    {
+      "id": "ase-model-04",
+      "familyId": "ase-model-04",
+      "kind": "single",
+      "prompt": "A team at Fenwick Health writes on index cards the name of each type, what it must do, and which others it works with. Which technique is this?",
+      "objectiveIds": [
+        "ase.models"
+      ],
+      "options": [
+        {
+          "id": "o099a66bb",
+          "text": "Story mapping"
+        },
+        {
+          "id": "o797037db",
+          "text": "Planning poker cards with relative estimates"
+        },
+        {
+          "id": "o84390cb5",
+          "text": "Class-Responsibility-Collaboration cards"
+        },
+        {
+          "id": "o9dfa7707",
+          "text": "Event storming"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o84390cb5"
+        ]
+      },
+      "explanation": "CRC cards record a class, its responsibilities and its collaborators, and the team walks through scenarios with them. Planning poker uses cards too, but for estimating.",
+      "weight": 1
+    },
+    {
+      "id": "ase-model-05",
+      "familyId": "ase-model-05",
+      "kind": "single",
+      "prompt": "During a CRC session at Garrick Rail, one card collects fifteen responsibilities. What does that suggest?",
+      "objectiveIds": [
+        "ase.models"
+      ],
+      "options": [
+        {
+          "id": "o30c640ea",
+          "text": "The class should become abstract"
+        },
+        {
+          "id": "o3bf7cdca",
+          "text": "The session needs more cards"
+        },
+        {
+          "id": "o99581861",
+          "text": "The class has low cohesion and should be divided"
+        },
+        {
+          "id": "ob1000ae7",
+          "text": "The class is central to the design and should keep them all"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o99581861"
+        ]
+      },
+      "explanation": "A card crowded with responsibilities points to a class doing too many things, which is low cohesion. Keeping them all in one place creates a class that changes for many unrelated reasons.",
+      "weight": 1
+    },
+    {
+      "id": "ase-model-06",
+      "familyId": "ase-model-06",
+      "kind": "single",
+      "prompt": "What does a domain model describe?",
+      "objectiveIds": [
+        "ase.models"
+      ],
+      "options": [
+        {
+          "id": "o23c717d7",
+          "text": "Entities of the business problem and their relationships"
+        },
+        {
+          "id": "o342e35ab",
+          "text": "Tasks in the iteration plan"
+        },
+        {
+          "id": "o55828cd9",
+          "text": "Screens in the user interface"
+        },
+        {
+          "id": "o5f7d6795",
+          "text": "Servers in the runtime environment and how they are connected"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o23c717d7"
+        ]
+      },
+      "explanation": "Domain modelling describes the entities of the problem domain and the relationships between them, giving the teams a common language. A map of servers is a deployment view, which serves another purpose.",
+      "weight": 1
+    },
+    {
+      "id": "ase-model-07",
+      "familyId": "ase-model-07",
+      "kind": "single",
+      "prompt": "Why does SAFe treat modelling as a Lean tool?",
+      "objectiveIds": [
+        "ase.models"
+      ],
+      "options": [
+        {
+          "id": "o557a1d5e",
+          "text": "It gives fast feedback before the cost of change rises"
+        },
+        {
+          "id": "o606afba5",
+          "text": "It moves all decisions to the start of the work on a solution"
+        },
+        {
+          "id": "oa2b3c5a7",
+          "text": "It removes the need for prototypes"
+        },
+        {
+          "id": "oe0cb16c8",
+          "text": "It replaces automated tests"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o557a1d5e"
+        ]
+      },
+      "explanation": "The MBSE article describes models as a cost-effective way to explore system characteristics and learn early and incrementally. Moving every decision to the start is the opposite of incremental learning.",
+      "weight": 1
+    },
+    {
+      "id": "ase-model-08",
+      "familyId": "ase-model-08",
+      "kind": "single",
+      "prompt": "A team at Hadleigh Pay needs to understand the stages an order passes through and what moves it between them. Which model fits best?",
+      "objectiveIds": [
+        "ase.models"
+      ],
+      "options": [
+        {
+          "id": "o5231b231",
+          "text": "A class diagram"
+        },
+        {
+          "id": "oa5d9f1bb",
+          "text": "A state diagram"
+        },
+        {
+          "id": "oa8709c79",
+          "text": "A package diagram"
+        },
+        {
+          "id": "oc4f0f546",
+          "text": "A component diagram"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "oa5d9f1bb"
+        ]
+      },
+      "explanation": "A state diagram shows the states of one object and the events that cause transitions. A class diagram would show what an order is made of, not how it changes over its life.",
+      "weight": 1
+    },
+    {
+      "id": "ase-design-01",
+      "familyId": "ase-design-01",
+      "kind": "single",
+      "prompt": "What is cohesion?",
+      "objectiveIds": [
+        "ase.code-design"
+      ],
+      "options": [
+        {
+          "id": "o01a132cf",
+          "text": "How closely the parts of a module relate to one purpose"
+        },
+        {
+          "id": "o01bf20a6",
+          "text": "How often a module is deployed"
+        },
+        {
+          "id": "o0a083c12",
+          "text": "How many lines a module contains"
+        },
+        {
+          "id": "od9110ccb",
+          "text": "How many other modules a given module depends on at build time"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o01a132cf"
+        ]
+      },
+      "explanation": "Cohesion measures how well the contents of a module belong together, and high cohesion is desirable. The number of dependencies on other modules describes coupling.",
+      "weight": 1
+    },
+    {
+      "id": "ase-design-02",
+      "familyId": "ase-design-02",
+      "kind": "single",
+      "prompt": "Which combination makes code easiest to change?",
+      "objectiveIds": [
+        "ase.code-design"
+      ],
+      "options": [
+        {
+          "id": "o1712de6c",
+          "text": "Low cohesion and loose coupling"
+        },
+        {
+          "id": "o297da8b7",
+          "text": "High cohesion and tight coupling"
+        },
+        {
+          "id": "o58758919",
+          "text": "High cohesion and loose coupling"
+        },
+        {
+          "id": "ob1f62148",
+          "text": "Low cohesion and tight coupling"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o58758919"
+        ]
+      },
+      "explanation": "A change stays local when each module has one purpose and depends little on others. Tight coupling spreads the effect of a change even when each module is cohesive.",
+      "weight": 1
+    },
+    {
+      "id": "ase-design-03",
+      "familyId": "ase-design-03",
+      "kind": "single",
+      "prompt": "A change to the tax rule at Ingram Retail requires edits in nine classes. Which code quality is poor?",
+      "objectiveIds": [
+        "ase.code-design"
+      ],
+      "options": [
+        {
+          "id": "o3e62caee",
+          "text": "Readability, because the classes carry long descriptive names"
+        },
+        {
+          "id": "o7cf36bc9",
+          "text": "Duplication, because one rule is repeated across many classes"
+        },
+        {
+          "id": "oa023d330",
+          "text": "Testability, because there are nine tests"
+        },
+        {
+          "id": "obc0d651c",
+          "text": "Performance, because nine classes load slowly"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o7cf36bc9"
+        ]
+      },
+      "explanation": "When one decision must be changed in many places, the rule is duplicated and the classes are coupled through it. Encapsulating the rule in one place makes the next change a single edit.",
+      "weight": 1
+    },
+    {
+      "id": "ase-design-04",
+      "familyId": "ase-design-04",
+      "kind": "single",
+      "prompt": "What does the single responsibility principle state?",
+      "objectiveIds": [
+        "ase.code-design"
+      ],
+      "options": [
+        {
+          "id": "o01650807",
+          "text": "A class should have one reason to change"
+        },
+        {
+          "id": "o172be4be",
+          "text": "A class should have one public method"
+        },
+        {
+          "id": "o50ef31a2",
+          "text": "A class should be used by one caller"
+        },
+        {
+          "id": "ob9d7f46b",
+          "text": "A class should have one instance"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o01650807"
+        ]
+      },
+      "explanation": "The principle says a class should have a single reason to change, which means one responsibility. It does not limit the number of methods; a class may need several to fulfil one responsibility.",
+      "weight": 1
+    },
+    {
+      "id": "ase-design-05",
+      "familyId": "ase-design-05",
+      "kind": "single",
+      "prompt": "A report class at Jessop Bank is edited every time a new export format is added. Which principle would guide a better design?",
+      "objectiveIds": [
+        "ase.code-design"
+      ],
+      "options": [
+        {
+          "id": "oad2f7169",
+          "text": "Open-closed: add formats by extension, with no edits to existing code"
+        },
+        {
+          "id": "obc1e7ddb",
+          "text": "Interface segregation: merge the format interfaces"
+        },
+        {
+          "id": "oc8fa9235",
+          "text": "Liskov substitution: derive each of the formats from the report"
+        },
+        {
+          "id": "ocb2ad158",
+          "text": "Single responsibility: add the formats to one method"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "oad2f7169"
+        ]
+      },
+      "explanation": "The open-closed principle says code should be open for extension and closed for modification, for example by adding a new formatter behind an interface. Editing the same class for each format risks breaking what already works.",
+      "weight": 1
+    },
+    {
+      "id": "ase-design-06",
+      "familyId": "ase-design-06",
+      "kind": "single",
+      "prompt": "A subclass at Kelby Logistics throws an exception from a method the base class supports, so callers must check the type first. Which principle is broken?",
+      "objectiveIds": [
+        "ase.code-design"
+      ],
+      "options": [
+        {
+          "id": "o08b8e035",
+          "text": "Single responsibility"
+        },
+        {
+          "id": "o3e2c5e00",
+          "text": "Open-closed"
+        },
+        {
+          "id": "o90f82f3e",
+          "text": "Dependency inversion"
+        },
+        {
+          "id": "oeaa9c9d4",
+          "text": "Liskov substitution"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "oeaa9c9d4"
+        ]
+      },
+      "explanation": "Liskov substitution requires that a subtype can stand in for its base type without surprising the caller. Type checks before each call show that the subtype does not honour the base contract.",
+      "weight": 1
+    },
+    {
+      "id": "ase-design-07",
+      "familyId": "ase-design-07",
+      "kind": "single",
+      "prompt": "A printer interface at Lyndale Health forces a simple label printer to implement fax and scan methods it cannot support. Which principle applies?",
+      "objectiveIds": [
+        "ase.code-design"
+      ],
+      "options": [
+        {
+          "id": "o420ba03f",
+          "text": "Interface inheritance"
+        },
+        {
+          "id": "o4dce2c70",
+          "text": "Interface segregation"
+        },
+        {
+          "id": "o652786bf",
+          "text": "Liskov substitution"
+        },
+        {
+          "id": "ob3bad624",
+          "text": "Open-closed"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o4dce2c70"
+        ]
+      },
+      "explanation": "Interface segregation says clients should not depend on methods they do not use, so the large interface should be divided into smaller ones. The empty fax and scan methods are the symptom.",
+      "weight": 1
+    },
+    {
+      "id": "ase-design-08",
+      "familyId": "ase-design-08",
+      "kind": "single",
+      "prompt": "An order service at Mossley Pay creates a concrete SQL repository inside its constructor. Which principle would have it rely on an abstraction supplied from outside?",
+      "objectiveIds": [
+        "ase.code-design"
+      ],
+      "options": [
+        {
+          "id": "o2f49b682",
+          "text": "Dependency inversion"
+        },
+        {
+          "id": "o339f5ac6",
+          "text": "Interface segregation"
+        },
+        {
+          "id": "o4aac9852",
+          "text": "Single responsibility"
+        },
+        {
+          "id": "oe7f8d667",
+          "text": "Liskov substitution"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o2f49b682"
+        ]
+      },
+      "explanation": "Dependency inversion has high-level code depend on abstractions, with the concrete implementation provided from outside. This also makes the service testable with a substitute repository.",
+      "weight": 1
+    },
+    {
+      "id": "ase-design-09",
+      "familyId": "ase-design-09",
+      "kind": "single",
+      "prompt": "What is interface-oriented design?",
+      "objectiveIds": [
+        "ase.code-design"
+      ],
+      "options": [
+        {
+          "id": "o075c7c9e",
+          "text": "Designing to contracts so implementations can vary"
+        },
+        {
+          "id": "o7c8684da",
+          "text": "Designing without concrete classes"
+        },
+        {
+          "id": "o877234de",
+          "text": "Designing one interface per class"
+        },
+        {
+          "id": "o9a7033d6",
+          "text": "Designing the user-interface screens before the logic"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o075c7c9e"
+        ]
+      },
+      "explanation": "Interface-oriented design defines what a collaborator must do and lets implementations change behind that contract. The name suggests screens, but it concerns programming interfaces between components.",
+      "weight": 1
+    },
+    {
+      "id": "ase-design-10",
+      "familyId": "ase-design-10",
+      "kind": "single",
+      "prompt": "Discount calculation at Norbury Retail varies by customer type and is chosen at run time through a long chain of conditionals. Which design pattern fits?",
+      "objectiveIds": [
+        "ase.code-design"
+      ],
+      "options": [
+        {
+          "id": "o48ed559a",
+          "text": "Adapter"
+        },
+        {
+          "id": "o4dd9c2c1",
+          "text": "Observer"
+        },
+        {
+          "id": "o9125be26",
+          "text": "Singleton"
+        },
+        {
+          "id": "oecb6c0cd",
+          "text": "Strategy"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "oecb6c0cd"
+        ]
+      },
+      "explanation": "Strategy puts each algorithm behind a common interface so the caller can swap them without conditionals. A singleton controls the number of instances and does nothing for varying behaviour.",
+      "weight": 1
+    },
+    {
+      "id": "ase-design-11",
+      "familyId": "ase-design-11",
+      "kind": "single",
+      "prompt": "A team at Oakham Rail must use a supplier library whose interface does not match its own. Which pattern lets the two work together without changing either?",
+      "objectiveIds": [
+        "ase.code-design"
+      ],
+      "options": [
+        {
+          "id": "oa06164ec",
+          "text": "Strategy"
+        },
+        {
+          "id": "ob1b4046c",
+          "text": "Decorator"
+        },
+        {
+          "id": "oba4233b2",
+          "text": "Adapter"
+        },
+        {
+          "id": "od9d501a6",
+          "text": "Factory"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "oba4233b2"
+        ]
+      },
+      "explanation": "An adapter converts one interface into the one the client expects. It is also a useful seam for testing, because the adapter can be replaced by a test double.",
+      "weight": 1
+    },
+    {
+      "id": "ase-design-12",
+      "familyId": "ase-design-12",
+      "kind": "single",
+      "prompt": "A developer at Penrose Bank adds three design patterns to a small feature in case they are needed later. What is the concern?",
+      "objectiveIds": [
+        "ase.code-design"
+      ],
+      "options": [
+        {
+          "id": "o0685a8f7",
+          "text": "Patterns slow the compiler"
+        },
+        {
+          "id": "o271e47f0",
+          "text": "Patterns belong in enabler stories"
+        },
+        {
+          "id": "o471302c4",
+          "text": "Speculative work adds complexity with no current need"
+        },
+        {
+          "id": "oa1c86329",
+          "text": "Patterns should be approved by the system architect beforehand"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o471302c4"
+        ]
+      },
+      "explanation": "Simple design means building what current requirements need and letting the design emerge through refactoring. Patterns are solutions to problems that exist; added in advance they are cost without benefit.",
+      "weight": 1
+    },
+    {
+      "id": "ase-design-13",
+      "familyId": "ase-design-13",
+      "kind": "single",
+      "prompt": "Why does duplicated code lower quality?",
+      "objectiveIds": [
+        "ase.code-design"
+      ],
+      "options": [
+        {
+          "id": "o0b1a3779",
+          "text": "A single change must be made, and can be missed, in several places"
+        },
+        {
+          "id": "o458aa2d3",
+          "text": "A compiler must spend more time building the duplicated lines"
+        },
+        {
+          "id": "o65bc30c5",
+          "text": "A reviewer has more lines to read during each pull request review"
+        },
+        {
+          "id": "o9926672e",
+          "text": "A repository uses more storage"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o0b1a3779"
+        ]
+      },
+      "explanation": "Duplication means one piece of knowledge lives in several places, so a change may be applied to some and not others. Build time and storage are minor next to the defect risk.",
+      "weight": 1
+    },
+    {
+      "id": "ase-design-14",
+      "familyId": "ase-design-14",
+      "kind": "single",
+      "prompt": "What does collective ownership depend on to work safely?",
+      "objectiveIds": [
+        "ase.code-design"
+      ],
+      "options": [
+        {
+          "id": "o5af5be62",
+          "text": "Automated tests and shared coding standards"
+        },
+        {
+          "id": "o8cbf9ff8",
+          "text": "Named owners who approve changes to each file"
+        },
+        {
+          "id": "oa53f0021",
+          "text": "Separate branches for each developer"
+        },
+        {
+          "id": "odd3900e9",
+          "text": "A freeze before each demo"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o5af5be62"
+        ]
+      },
+      "explanation": "Anyone can change any code safely when tests catch regressions and standards keep the code familiar. Named owners approving each file is individual ownership, which brings back the queue.",
+      "weight": 1
+    },
+    {
+      "id": "ase-design-15",
+      "familyId": "ase-design-15",
+      "kind": "single",
+      "prompt": "A team at Quorn Energy is unsure whether a queue or a direct call suits a new integration. Which approach fits SAFe's guidance on design options?",
+      "objectiveIds": [
+        "ase.code-design"
+      ],
+      "options": [
+        {
+          "id": "o3417ffa8",
+          "text": "Choose the cheaper one and move on"
+        },
+        {
+          "id": "o3b621986",
+          "text": "Explore both briefly and decide when evidence is in"
+        },
+        {
+          "id": "oe23203dd",
+          "text": "Choose the one the most senior developer on the team prefers"
+        },
+        {
+          "id": "of69cceb7",
+          "text": "Build both fully and keep them"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o3b621986"
+        ]
+      },
+      "explanation": "Set-Based Design keeps options open and converges on evidence, which links to the principle of assuming variability and preserving options. Deciding by seniority commits early without the evidence.",
+      "weight": 1
+    },
+    {
+      "id": "ase-design-16",
+      "familyId": "ase-design-16",
+      "kind": "matching",
+      "prompt": "Match each SOLID principle to its idea.",
+      "objectiveIds": [
+        "ase.code-design"
+      ],
+      "options": [
+        {
+          "id": "o2a29f957",
+          "text": "Extend without modifying"
+        },
+        {
+          "id": "o4e2b693a",
+          "text": "No client depends on methods it does not use"
+        },
+        {
+          "id": "ob6baebaa",
+          "text": "One reason to change"
+        },
+        {
+          "id": "ocba3e133",
+          "text": "Subtypes can replace their base type"
+        },
+        {
+          "id": "oe5b2cac3",
+          "text": "Favour inheritance over composition"
+        },
+        {
+          "id": "ofc2e96d7",
+          "text": "Depend on abstractions"
+        }
+      ],
+      "slots": [
+        {
+          "id": "p1",
+          "text": "Single responsibility",
+          "options": []
+        },
+        {
+          "id": "p2",
+          "text": "Open-closed",
+          "options": []
+        },
+        {
+          "id": "p3",
+          "text": "Liskov substitution",
+          "options": []
+        },
+        {
+          "id": "p4",
+          "text": "Interface segregation",
+          "options": []
+        },
+        {
+          "id": "p5",
+          "text": "Dependency inversion",
+          "options": []
+        }
+      ],
+      "selectCount": 0,
+      "reuse": false,
+      "grading": {
+        "policy": "partial",
+        "correct": [],
+        "matches": {
+          "p1": "ob6baebaa",
+          "p2": "o2a29f957",
+          "p3": "ocba3e133",
+          "p4": "o4e2b693a",
+          "p5": "ofc2e96d7"
+        }
+      },
+      "explanation": "The five SOLID principles are listed with their short meanings. Favouring inheritance over composition reverses common design advice and is not a SOLID principle.",
+      "weight": 1
+    },
+    {
+      "id": "ase-tdd-01",
+      "familyId": "ase-tdd-01",
+      "kind": "single",
+      "prompt": "What is Test-Driven Development?",
+      "objectiveIds": [
+        "ase.tdd"
+      ],
+      "options": [
+        {
+          "id": "o84cafd85",
+          "text": "Writing tests for the code once a feature has been completed"
+        },
+        {
+          "id": "oa52ad110",
+          "text": "Testing through the user interface"
+        },
+        {
+          "id": "oc121a7b3",
+          "text": "Having testers drive the iteration plan"
+        },
+        {
+          "id": "oe56b0a8c",
+          "text": "Building and running a test before the code it checks"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "oe56b0a8c"
+        ]
+      },
+      "explanation": "TDD is a philosophy and practice of building and running tests before implementing the code or component. Writing tests afterwards checks the code but does not shape its design.",
+      "weight": 1
+    },
+    {
+      "id": "ase-tdd-02",
+      "familyId": "ase-tdd-02",
+      "kind": "single",
+      "prompt": "A developer at Radley Pay has written a new test and seen it fail. What is the next step in the TDD cycle?",
+      "objectiveIds": [
+        "ase.tdd"
+      ],
+      "options": [
+        {
+          "id": "o31550310",
+          "text": "Write three more tests"
+        },
+        {
+          "id": "o48196cc6",
+          "text": "Write the complete implementation along with its edge cases"
+        },
+        {
+          "id": "o59e6b53e",
+          "text": "Write the simplest code that makes the test pass"
+        },
+        {
+          "id": "o62ae6a62",
+          "text": "Refactor the surrounding module"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o59e6b53e"
+        ]
+      },
+      "explanation": "After red comes green: the smallest change that passes the test. Refactoring follows once the test passes, and writing the complete implementation at once skips the feedback the cycle is for.",
+      "weight": 1
+    },
+    {
+      "id": "ase-tdd-03",
+      "familyId": "ase-tdd-03",
+      "kind": "single",
+      "prompt": "Why does a developer watch a new test fail before writing the code?",
+      "objectiveIds": [
+        "ase.tdd"
+      ],
+      "options": [
+        {
+          "id": "o00c4fc51",
+          "text": "To slow the pace of change"
+        },
+        {
+          "id": "o28b63c69",
+          "text": "To record a baseline for the team's velocity in the tool"
+        },
+        {
+          "id": "o3dc9e2fd",
+          "text": "To give the reviewer evidence of effort"
+        },
+        {
+          "id": "of6856430",
+          "text": "To confirm the test can detect the missing behaviour"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "of6856430"
+        ]
+      },
+      "explanation": "A test that passes before the code exists is not testing what the developer thinks, so the failing run validates the test itself. It has nothing to do with velocity.",
+      "weight": 1
+    },
+    {
+      "id": "ase-tdd-04",
+      "familyId": "ase-tdd-04",
+      "kind": "single",
+      "prompt": "What is refactoring?",
+      "objectiveIds": [
+        "ase.tdd"
+      ],
+      "options": [
+        {
+          "id": "o75a04484",
+          "text": "Removing tests that fail"
+        },
+        {
+          "id": "o894289ac",
+          "text": "Fixing defects reported by customers"
+        },
+        {
+          "id": "od0e006fc",
+          "text": "Rewriting a component so that it supports a new feature for users"
+        },
+        {
+          "id": "oe1346bc1",
+          "text": "Improving internal structure without changing external behaviour"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "oe1346bc1"
+        ]
+      },
+      "explanation": "Refactoring improves the internal structure or operation of code or a component without changing its external behaviour. Adding a feature changes behaviour, so it is a separate step.",
+      "weight": 1
+    },
+    {
+      "id": "ase-tdd-05",
+      "familyId": "ase-tdd-05",
+      "kind": "single",
+      "prompt": "A team at Selwyn Health needs a larger refactoring that will take several days. How does SAFe treat this work?",
+      "objectiveIds": [
+        "ase.tdd"
+      ],
+      "options": [
+        {
+          "id": "o2a1d4b02",
+          "text": "As a task outside the backlog"
+        },
+        {
+          "id": "o4f4f16f9",
+          "text": "As hidden effort spread across the other stories in the plan"
+        },
+        {
+          "id": "o8e9e8b47",
+          "text": "As an enabler story that is estimated and accepted"
+        },
+        {
+          "id": "ob8713d5f",
+          "text": "As work for the IP iteration alone"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o8e9e8b47"
+        ]
+      },
+      "explanation": "The refactoring article says refactors are a type of enabler story and must be estimable, verifiable and valuable like any story, accepted by the product owner. Hiding the effort makes the plan and the velocity untrue.",
+      "weight": 1
+    },
+    {
+      "id": "ase-tdd-06",
+      "familyId": "ase-tdd-06",
+      "kind": "single",
+      "prompt": "New behaviour is needed in a tangled class at Tolland Bank. Which order of work is safest?",
+      "objectiveIds": [
+        "ase.tdd"
+      ],
+      "options": [
+        {
+          "id": "o66cd4854",
+          "text": "Add the behaviour in a copy of the class"
+        },
+        {
+          "id": "o7625baf9",
+          "text": "Rewrite the class and its tests together in one large change"
+        },
+        {
+          "id": "oe895226f",
+          "text": "Add the behaviour first, then tidy the class if time remains"
+        },
+        {
+          "id": "ofba19cad",
+          "text": "Refactor under passing tests, then add the behaviour test-first"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "ofba19cad"
+        ]
+      },
+      "explanation": "Changing structure and behaviour in separate steps keeps each one safe: first make the change easy under green tests, then make the change. Tidying if time remains usually means the tidying never happens.",
+      "weight": 1
+    },
+    {
+      "id": "ase-tdd-07",
+      "familyId": "ase-tdd-07",
+      "kind": "single",
+      "prompt": "A unit test at Upton Retail calls a real payment gateway and fails when the network is slow. Which kind of test double supplies a canned reply?",
+      "objectiveIds": [
+        "ase.tdd"
+      ],
+      "options": [
+        {
+          "id": "o2127adcb",
+          "text": "A production clone"
+        },
+        {
+          "id": "o2319c15e",
+          "text": "A stub"
+        },
+        {
+          "id": "oa4a10096",
+          "text": "A load generator"
+        },
+        {
+          "id": "oa8eeb75f",
+          "text": "A spy that records calls"
+        }
+      ],
+      "slots": [],
+      "selectCount": 1,
+      "reuse": false,
+      "grading": {
+        "policy": "exact",
+        "correct": [
+          "o2319c15e"
+        ]
+      },
+      "explanation": "A stub returns prepared answers so the unit can be tested in isolation and at speed. A spy also stands in for a dependency, but its purpose is to record how it was called.",
+      "weight": 1
+    },
+    {
+      "id": "ase-tdd-08",
+      "familyId": "ase-tdd-08",
+      "kind": "sequence",
+      "prompt": "Put the steps of the TDD cycle in order.",
+      "objectiveIds": [
+        "ase.tdd"
+      ],
+      "options": [
+        {
+          "id": "o4d408f2e",
+          "text": "Write a small test for the next behaviour"
+        },
+        {
+          "id": "oa2353998",
+          "text": "Refactor with all tests passing"
+        },
+        {
+          "id": "oa9ec5da2",
+          "text": "Run it and see it fail"
+        },
+        {
+          "id": "oe5b4d248",
+          "text": "Write the simplest code that passes"
+        }
+      ],
+      "slots": [],
+      "selectCount": 0,
+      "reuse": false,
+      "grading": {
+        "policy": "partial",
+        "correct": [
+          "o4d408f2e",
+          "oa9ec5da2",
+          "oe5b4d248",
+          "oa2353998"
+        ]
+      },
+      "explanation": "The cycle is red, green, refactor: a failing test, the simplest passing code, then a clean-up under green tests. Refactoring comes last because the passing tests are what make it safe.",
+      "weight": 1
+    }
+  ],
+  "scenarios": [],
+  "blueprints": [
+    {
+      "id": "short",
+      "title": "Short mock · 10 questions, 23 minutes",
+      "count": 10,
+      "minutes": 23,
+      "size": "short",
+      "objectiveIds": [
+        "ase.quality",
+        "ase.architecture",
+        "ase.test-first",
+        "ase.stories",
+        "ase.bdd",
+        "ase.models",
+        "ase.code-design",
+        "ase.tdd"
+      ],
+      "requiredKinds": [
+        "single"
+      ],
+      "objectiveWeights": {
+        "ase.quality": 2,
+        "ase.architecture": 1,
+        "ase.test-first": 1,
+        "ase.stories": 1,
+        "ase.bdd": 1,
+        "ase.models": 1,
+        "ase.code-design": 2,
+        "ase.tdd": 1
+      }
+    },
+    {
+      "id": "full",
+      "title": "Full mock · 20 questions, 45 minutes",
+      "count": 20,
+      "minutes": 45,
+      "size": "full",
+      "objectiveIds": [
+        "ase.quality",
+        "ase.architecture",
+        "ase.test-first",
+        "ase.stories",
+        "ase.bdd",
+        "ase.models",
+        "ase.code-design",
+        "ase.tdd"
+      ],
+      "requiredKinds": [
+        "single"
+      ],
+      "objectiveWeights": {
+        "ase.quality": 2,
+        "ase.architecture": 1,
+        "ase.test-first": 1,
+        "ase.stories": 1,
+        "ase.bdd": 1,
+        "ase.models": 1,
+        "ase.code-design": 2,
+        "ase.tdd": 1
+      }
+    }
+  ],
+  "readiness": {
+    "shortAttempts": 5,
+    "fullAttempts": 3,
+    "threshold": 90,
+    "lookbackDays": 90,
+    "minimumFreshPercent": 70
+  },
+  "sources": [
+    {
+      "title": "Scaled Agile · Exam study guide: ASE (6.0)",
+      "url": "https://support.scaledagile.com/en/articles/9791209-exam-study-guide-ase-6-0-safe-agile-software-engineer"
+    },
+    {
+      "title": "SAFe glossary",
+      "url": "https://framework.scaledagile.com/glossary"
+    },
+    {
+      "title": "SAFe · Built-In Quality (public introduction; the rest of the article needs a login)",
+      "url": "https://framework.scaledagile.com/built-in-quality"
+    },
+    {
+      "title": "SAFe · Team and Technical Agility discipline",
+      "url": "https://framework.scaledagile.com/team-and-technical-agility-discipline"
+    },
+    {
+      "title": "SAFe · Agile Testing (public introduction; the rest of the article needs a login)",
+      "url": "https://framework.scaledagile.com/agile-testing"
+    },
+    {
+      "title": "SAFe · Test-Driven Development (public introduction; the rest of the article needs a login)",
+      "url": "https://framework.scaledagile.com/test-driven-development"
+    },
+    {
+      "title": "SAFe · Behavior-Driven Development (public introduction; the rest of the article needs a login)",
+      "url": "https://framework.scaledagile.com/behavior-driven-development"
+    },
+    {
+      "title": "SAFe · Story (public introduction; the rest of the article needs a login)",
+      "url": "https://framework.scaledagile.com/story"
+    },
+    {
+      "title": "SAFe · Nonfunctional Requirements (public introduction; the rest of the article needs a login)",
+      "url": "https://framework.scaledagile.com/nonfunctional-requirements"
+    },
+    {
+      "title": "SAFe · Agile Architecture (public introduction; the rest of the article needs a login)",
+      "url": "https://framework.scaledagile.com/agile-architecture"
+    },
+    {
+      "title": "SAFe · Architectural Runway (public introduction; the rest of the article needs a login)",
+      "url": "https://framework.scaledagile.com/architectural-runway"
+    },
+    {
+      "title": "SAFe · Model-Based Systems Engineering (public introduction; the rest of the article needs a login)",
+      "url": "https://framework.scaledagile.com/model-based-systems-engineering"
+    },
+    {
+      "title": "SAFe · Set-Based Design (public introduction; the rest of the article needs a login)",
+      "url": "https://framework.scaledagile.com/set-based-design"
+    },
+    {
+      "title": "SAFe · Refactoring (public introduction; the rest of the article needs a login)",
+      "url": "https://framework.scaledagile.com/refactoring"
+    },
+    {
+      "title": "SAFe · Spikes (public introduction; the rest of the article needs a login)",
+      "url": "https://framework.scaledagile.com/spikes"
+    },
+    {
+      "title": "SAFe · Enablers (public introduction; the rest of the article needs a login)",
+      "url": "https://framework.scaledagile.com/enablers"
+    },
+    {
+      "title": "SAFe · Domain Modeling (public introduction; the rest of the article needs a login)",
+      "url": "https://framework.scaledagile.com/domain-modeling"
+    },
+    {
+      "title": "SAFe · Continuous Integration (public introduction; the rest of the article needs a login)",
+      "url": "https://framework.scaledagile.com/continuous-integration"
+    },
+    {
+      "title": "SAFe · Continuous Delivery Pipeline (public introduction; the rest of the article needs a login)",
+      "url": "https://framework.scaledagile.com/continuous-delivery-pipeline"
+    }
+  ],
+  "flashcardDecks": [
+    {
+      "id": "quality",
+      "title": "Built-in quality and flow",
+      "notes": [
+        {
+          "id": "biq",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.quality"
+          ],
+          "front": "Built-In Quality",
+          "back": "Practices that help Agile teams meet quality standards while creating customer value.",
+          "explanation": "Quality determines how fast a team can deliver.",
+          "tags": [
+            "quality",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe · Built-In Quality (public introduction; the rest of the article needs a login)",
+              "url": "https://framework.scaledagile.com/built-in-quality"
+            },
+            {
+              "title": "SAFe glossary",
+              "url": "https://framework.scaledagile.com/glossary"
+            }
+          ]
+        },
+        {
+          "id": "dod",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.quality"
+          ],
+          "front": "Definition of done",
+          "back": "The requirements for completeness of a work product or increment.",
+          "explanation": "Applies to every story; acceptance criteria are specific to one.",
+          "tags": [
+            "quality",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe glossary",
+              "url": "https://framework.scaledagile.com/glossary"
+            }
+          ]
+        },
+        {
+          "id": "shift-left",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.quality"
+          ],
+          "front": "What does shifting learning left mean?",
+          "back": "Finding problems sooner, when they are cheaper to fix.",
+          "explanation": "It is about timing of feedback, not moving a role.",
+          "tags": [
+            "quality"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe · Built-In Quality (public introduction; the rest of the article needs a login)",
+              "url": "https://framework.scaledagile.com/built-in-quality"
+            }
+          ]
+        },
+        {
+          "id": "pairing",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.quality"
+          ],
+          "front": "What are the two main gains of pair programming?",
+          "back": "Continuous review and shared knowledge of the code.",
+          "explanation": "It supports collective ownership. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "quality"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "tech-debt",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.quality"
+          ],
+          "front": "Technical debt",
+          "back": "The future cost of rework caused by shortcuts taken now.",
+          "explanation": "It slows later work like interest on a loan. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "quality",
+            "exact-recall"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "validate-hypothesis",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.quality"
+          ],
+          "front": "How is a benefit hypothesis validated?",
+          "back": "By measuring what real users do after a small release.",
+          "explanation": "Passing tests only shows the feature was built as specified.",
+          "tags": [
+            "quality"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe glossary",
+              "url": "https://framework.scaledagile.com/glossary"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "architecture",
+      "title": "Intentional architecture",
+      "notes": [
+        {
+          "id": "agile-arch",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.architecture"
+          ],
+          "front": "Agile Architecture",
+          "back": "Values, practices and collaborations that support a system's active, evolutionary design.",
+          "explanation": "It avoids big design up front.",
+          "tags": [
+            "architecture",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe · Agile Architecture (public introduction; the rest of the article needs a login)",
+              "url": "https://framework.scaledagile.com/agile-architecture"
+            },
+            {
+              "title": "SAFe glossary",
+              "url": "https://framework.scaledagile.com/glossary"
+            }
+          ]
+        },
+        {
+          "id": "design-for",
+          "kind": "cloze",
+          "objectiveIds": [
+            "ase.architecture"
+          ],
+          "text": "Agile Architecture designs for {{c1::testability}}, {{c2::deployability}} and {{c3::releasability}}.",
+          "explanation": "Named in the Agile Architecture article.",
+          "tags": [
+            "architecture",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe · Agile Architecture (public introduction; the rest of the article needs a login)",
+              "url": "https://framework.scaledagile.com/agile-architecture"
+            }
+          ]
+        },
+        {
+          "id": "emergent-intentional",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.architecture"
+          ],
+          "front": "What does SAFe balance emergent design with?",
+          "back": "Intentional architecture.",
+          "explanation": "Emergent design alone gives one-off solutions at scale.",
+          "tags": [
+            "architecture"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe · Architectural Runway (public introduction; the rest of the article needs a login)",
+              "url": "https://framework.scaledagile.com/architectural-runway"
+            }
+          ]
+        },
+        {
+          "id": "spike",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.architecture"
+          ],
+          "front": "Spike",
+          "back": "An enabler story used to gain knowledge that reduces risk or improves an estimate.",
+          "explanation": "Estimated and demonstrated like any story.",
+          "tags": [
+            "architecture",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe · Spikes (public introduction; the rest of the article needs a login)",
+              "url": "https://framework.scaledagile.com/spikes"
+            }
+          ]
+        },
+        {
+          "id": "sbd",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.architecture"
+          ],
+          "front": "Set-Based Design",
+          "back": "Keeping requirements and design options open until evidence supports a choice.",
+          "explanation": "The alternative, point-based design, commits too early.",
+          "tags": [
+            "architecture",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe · Set-Based Design (public introduction; the rest of the article needs a login)",
+              "url": "https://framework.scaledagile.com/set-based-design"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "test-first",
+      "title": "Thinking test-first",
+      "notes": [
+        {
+          "id": "agile-testing",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.test-first"
+          ],
+          "front": "What characterises agile testing?",
+          "back": "Developing and testing in small increments, often writing the test first.",
+          "explanation": "The whole team shares responsibility for quality.",
+          "tags": [
+            "test-first"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe · Agile Testing (public introduction; the rest of the article needs a login)",
+              "url": "https://framework.scaledagile.com/agile-testing"
+            }
+          ]
+        },
+        {
+          "id": "matrix-axes",
+          "kind": "cloze",
+          "objectiveIds": [
+            "ase.test-first"
+          ],
+          "text": "The Agile testing matrix has two axes: {{c1::business-facing}} or {{c2::technology-facing}}, and {{c3::guiding development}} or {{c4::critiquing the product}}.",
+          "explanation": "Four quadrants result. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "test-first",
+            "exact-recall"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "matrix-unit",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.test-first"
+          ],
+          "front": "Where do unit tests sit in the testing matrix?",
+          "back": "Technology-facing, guiding development.",
+          "explanation": "Automated, usually with TDD. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "test-first"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "matrix-exploratory",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.test-first"
+          ],
+          "front": "Where does exploratory testing sit in the testing matrix?",
+          "back": "Business-facing, critiquing the product.",
+          "explanation": "Largely manual. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "test-first"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "nfr",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.test-first"
+          ],
+          "front": "Nonfunctional requirements",
+          "back": "System qualities that guide design and often act as constraints across backlogs.",
+          "explanation": "Revisited with the definition of done.",
+          "tags": [
+            "test-first",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe · Nonfunctional Requirements (public introduction; the rest of the article needs a login)",
+              "url": "https://framework.scaledagile.com/nonfunctional-requirements"
+            },
+            {
+              "title": "SAFe glossary",
+              "url": "https://framework.scaledagile.com/glossary"
+            }
+          ]
+        },
+        {
+          "id": "pyramid",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.test-first"
+          ],
+          "front": "What shape should a test portfolio have?",
+          "back": "Many fast unit tests, fewer slow end-to-end tests.",
+          "explanation": "Writing tests first tends to produce it.",
+          "tags": [
+            "test-first"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe · Test-Driven Development (public introduction; the rest of the article needs a login)",
+              "url": "https://framework.scaledagile.com/test-driven-development"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stories",
+      "title": "Story details",
+      "notes": [
+        {
+          "id": "story",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.stories"
+          ],
+          "front": "Story",
+          "back": "A short description of a small piece of functionality, written from the user's perspective.",
+          "explanation": "Fits within one iteration.",
+          "tags": [
+            "stories",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe · Story (public introduction; the rest of the article needs a login)",
+              "url": "https://framework.scaledagile.com/story"
+            },
+            {
+              "title": "SAFe glossary",
+              "url": "https://framework.scaledagile.com/glossary"
+            }
+          ]
+        },
+        {
+          "id": "acceptance-criteria",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.stories"
+          ],
+          "front": "Acceptance criteria",
+          "back": "Information needed to confirm a story, feature or capability is implemented correctly.",
+          "explanation": "Specific to the item, unlike the definition of done.",
+          "tags": [
+            "stories",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe glossary",
+              "url": "https://framework.scaledagile.com/glossary"
+            }
+          ]
+        },
+        {
+          "id": "vertical-slice",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.stories"
+          ],
+          "front": "What is a vertical slice?",
+          "back": "A story that goes through all layers and delivers behaviour a user can see.",
+          "explanation": "Splitting by layer gives pieces that cannot be accepted alone. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "stories"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "enabler-story",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.stories"
+          ],
+          "front": "What do enabler stories describe?",
+          "back": "Exploration, architecture, infrastructure and compliance work.",
+          "explanation": "User stories describe value to an end user.",
+          "tags": [
+            "stories"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe · Story (public introduction; the rest of the article needs a login)",
+              "url": "https://framework.scaledagile.com/story"
+            },
+            {
+              "title": "SAFe · Enablers (public introduction; the rest of the article needs a login)",
+              "url": "https://framework.scaledagile.com/enablers"
+            }
+          ]
+        },
+        {
+          "id": "mmf",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.stories"
+          ],
+          "front": "Minimum Marketable Feature",
+          "back": "The smallest set of functionality that is worth releasing to customers.",
+          "explanation": "Splitting stories reduces it. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "stories",
+            "exact-recall"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "story-map",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.stories"
+          ],
+          "front": "What does a story map show?",
+          "back": "User activities in order, with stories beneath them by priority.",
+          "explanation": "Helps find gaps and choose a thin first slice. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "stories"
+          ],
+          "language": "en"
+        }
+      ]
+    },
+    {
+      "id": "bdd",
+      "title": "Behavior-driven development",
+      "notes": [
+        {
+          "id": "bdd",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.bdd"
+          ],
+          "front": "Behavior-Driven Development",
+          "back": "A test-first practice that defines tests before or as part of specifying behaviour.",
+          "explanation": "Its first purpose is shared understanding.",
+          "tags": [
+            "bdd",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe · Behavior-Driven Development (public introduction; the rest of the article needs a login)",
+              "url": "https://framework.scaledagile.com/behavior-driven-development"
+            },
+            {
+              "title": "SAFe glossary",
+              "url": "https://framework.scaledagile.com/glossary"
+            }
+          ]
+        },
+        {
+          "id": "triad",
+          "kind": "cloze",
+          "objectiveIds": [
+            "ase.bdd"
+          ],
+          "text": "The BDD triad: {{c1::customer-centric}}, {{c2::development-centric}} and {{c3::test-centric}} perspectives.",
+          "explanation": "All three agree the examples before coding.",
+          "tags": [
+            "bdd",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe · Behavior-Driven Development (public introduction; the rest of the article needs a login)",
+              "url": "https://framework.scaledagile.com/behavior-driven-development"
+            }
+          ]
+        },
+        {
+          "id": "gherkin",
+          "kind": "cloze",
+          "objectiveIds": [
+            "ase.bdd"
+          ],
+          "text": "In Gherkin, {{c1::Given}} sets the context, {{c2::When}} states the action and {{c3::Then}} states the outcome.",
+          "explanation": "Describe behaviour, not implementation. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "bdd",
+            "exact-recall"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "below-ui",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.bdd"
+          ],
+          "front": "Where should business rules be tested?",
+          "back": "Below the user interface, against the domain logic.",
+          "explanation": "Keep a few interface tests for the screens. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "bdd"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "test-double",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.bdd"
+          ],
+          "front": "Test double",
+          "back": "A stand-in for a dependency that is slow, costly or unavailable.",
+          "explanation": "Stubs return answers; mocks and spies check calls. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "bdd",
+            "exact-recall"
+          ],
+          "language": "en"
+        }
+      ]
+    },
+    {
+      "id": "models",
+      "title": "Models",
+      "notes": [
+        {
+          "id": "why-model",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.models"
+          ],
+          "front": "Why do Agile teams model?",
+          "back": "To explore and communicate a design cheaply, before the cost of change rises.",
+          "explanation": "Just enough to learn.",
+          "tags": [
+            "models"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe · Model-Based Systems Engineering (public introduction; the rest of the article needs a login)",
+              "url": "https://framework.scaledagile.com/model-based-systems-engineering"
+            }
+          ]
+        },
+        {
+          "id": "static-dynamic",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.models"
+          ],
+          "front": "What is the difference between static and dynamic models?",
+          "back": "Static models show structure; dynamic models show behaviour over time.",
+          "explanation": "Class diagram versus sequence or state diagram. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "models"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "crc",
+          "kind": "cloze",
+          "objectiveIds": [
+            "ase.models"
+          ],
+          "text": "CRC stands for {{c1::Class}}, {{c2::Responsibility}}, {{c3::Collaboration}}.",
+          "explanation": "One index card per class. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "models",
+            "exact-recall"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "domain-model",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.models"
+          ],
+          "front": "Domain model",
+          "back": "The entities of the problem domain and the relationships between them.",
+          "explanation": "Gives business and teams a common language.",
+          "tags": [
+            "models",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe · Domain Modeling (public introduction; the rest of the article needs a login)",
+              "url": "https://framework.scaledagile.com/domain-modeling"
+            }
+          ]
+        },
+        {
+          "id": "crowded-card",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.models"
+          ],
+          "front": "What does a CRC card with many responsibilities indicate?",
+          "back": "Low cohesion; the class should be split.",
+          "explanation": "A card that collaborates with everything indicates high coupling. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "models"
+          ],
+          "language": "en"
+        }
+      ]
+    },
+    {
+      "id": "code-design",
+      "title": "Code and design quality",
+      "notes": [
+        {
+          "id": "cohesion",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.code-design"
+          ],
+          "front": "Cohesion",
+          "back": "How closely the parts of a module relate to one purpose.",
+          "explanation": "High is good. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "code-design",
+            "exact-recall"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "coupling",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.code-design"
+          ],
+          "front": "Coupling",
+          "back": "How much one module depends on others.",
+          "explanation": "Loose is good. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "code-design",
+            "exact-recall"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "srp",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.code-design"
+          ],
+          "front": "Single responsibility principle",
+          "back": "A class should have one reason to change.",
+          "explanation": "S in SOLID. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "code-design",
+            "solid",
+            "exact-recall"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "ocp",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.code-design"
+          ],
+          "front": "Open-closed principle",
+          "back": "Open for extension, closed for modification.",
+          "explanation": "O in SOLID. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "code-design",
+            "solid",
+            "exact-recall"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "lsp",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.code-design"
+          ],
+          "front": "Liskov substitution principle",
+          "back": "A subtype can replace its base type without surprising the caller.",
+          "explanation": "L in SOLID. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "code-design",
+            "solid",
+            "exact-recall"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "isp",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.code-design"
+          ],
+          "front": "Interface segregation principle",
+          "back": "No client should depend on methods it does not use.",
+          "explanation": "I in SOLID. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "code-design",
+            "solid",
+            "exact-recall"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "dip",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.code-design"
+          ],
+          "front": "Dependency inversion principle",
+          "back": "Depend on abstractions; implementations are supplied from outside.",
+          "explanation": "D in SOLID. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "code-design",
+            "solid",
+            "exact-recall"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "strategy",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.code-design"
+          ],
+          "front": "Which pattern replaces a chain of conditionals that picks an algorithm?",
+          "back": "Strategy.",
+          "explanation": "Each algorithm sits behind a common interface. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "code-design"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "adapter",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.code-design"
+          ],
+          "front": "Which pattern makes a mismatched interface usable without changing either side?",
+          "back": "Adapter.",
+          "explanation": "Also a seam for test doubles. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "code-design"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "collective-ownership",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.code-design"
+          ],
+          "front": "What makes collective ownership safe?",
+          "back": "Automated tests and shared coding standards.",
+          "explanation": "Anyone may improve any code. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "code-design"
+          ],
+          "language": "en"
+        }
+      ]
+    },
+    {
+      "id": "tdd",
+      "title": "TDD and refactoring",
+      "notes": [
+        {
+          "id": "tdd",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.tdd"
+          ],
+          "front": "Test-Driven Development",
+          "back": "Building and running a test before the code or component it checks.",
+          "explanation": "A test-first practice with BDD.",
+          "tags": [
+            "tdd",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe · Test-Driven Development (public introduction; the rest of the article needs a login)",
+              "url": "https://framework.scaledagile.com/test-driven-development"
+            }
+          ]
+        },
+        {
+          "id": "tdd-cycle",
+          "kind": "cloze",
+          "objectiveIds": [
+            "ase.tdd"
+          ],
+          "text": "The TDD cycle is {{c1::red}}, {{c2::green}}, {{c3::refactor}}.",
+          "explanation": "Failing test, simplest passing code, clean-up under green tests. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "tdd",
+            "exact-recall"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "why-red",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.tdd"
+          ],
+          "front": "Why watch a new test fail first?",
+          "back": "To confirm the test can detect the missing behaviour.",
+          "explanation": "A test that passes before the code exists tests nothing. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "tdd"
+          ],
+          "language": "en"
+        },
+        {
+          "id": "refactoring",
+          "kind": "reversible",
+          "objectiveIds": [
+            "ase.tdd"
+          ],
+          "front": "Refactoring",
+          "back": "Improving internal structure or operation without changing external behaviour.",
+          "explanation": "It enables emergent design.",
+          "tags": [
+            "tdd",
+            "exact-recall"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe · Refactoring (public introduction; the rest of the article needs a login)",
+              "url": "https://framework.scaledagile.com/refactoring"
+            },
+            {
+              "title": "SAFe glossary",
+              "url": "https://framework.scaledagile.com/glossary"
+            }
+          ]
+        },
+        {
+          "id": "large-refactor",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.tdd"
+          ],
+          "front": "How is a larger refactoring planned in SAFe?",
+          "back": "As an enabler story, estimated and accepted by the product owner.",
+          "explanation": "Not hidden inside other stories.",
+          "tags": [
+            "tdd"
+          ],
+          "language": "en",
+          "sources": [
+            {
+              "title": "SAFe · Refactoring (public introduction; the rest of the article needs a login)",
+              "url": "https://framework.scaledagile.com/refactoring"
+            }
+          ]
+        },
+        {
+          "id": "stub",
+          "kind": "basic",
+          "objectiveIds": [
+            "ase.tdd"
+          ],
+          "front": "What does a stub do?",
+          "back": "Returns prepared answers in place of a real dependency.",
+          "explanation": "A spy records how it was called. Written from author knowledge; not checked against a public page.",
+          "tags": [
+            "tdd"
+          ],
+          "language": "en"
+        }
+      ]
+    }
+  ]
+}
