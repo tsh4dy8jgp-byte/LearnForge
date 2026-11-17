@@ -39,9 +39,9 @@ Keyword coverage is mostly fine, so it is not a focus.
 
 ## Part 1: merge (done)
 
-`main` and `chinese` were merged into `istqb` on 2026-11-05 (commits `7bc13a2`, `30abfc4`), not pushed. The mock pass/fail panel, multi-line prompts and server-clock timer fix moved from the deleted `pages/` folder into `attempts/` and `authoring/`.
+`main` was merged into `istqb` on 2026-11-05 (`7bc13a2`). The mock pass/fail panel, multi-line prompts and server-clock timer fix moved from the deleted `pages/` folder into `attempts/` and `authoring/`. `chinese` was merged too, but on 2026-11-18 the branch was rebuilt without it so `istqb` carries only ISTQB and AI-testing work; the writing pilot stays on the `chinese` branch.
 
-Verified on the merged tree: 255 backend tests, 65 web tests, 22 installer tests, 27 browser tests, `make check-content` and `make check-api-types`.
+Verified on the tree that still included `chinese`: 255 backend tests, 65 web tests, 22 installer tests, 27 browser tests, `make check-content` and `make check-api-types`.
 
 Two things the browser run needs on this machine:
 - **`bash scripts/dev.sh --data-dir <scratch>`.** The launcher overrides `ConnectionStrings__Database`. Merged code cannot read `apps/api/data/learnforge.db`, because it holds a `french-b2-grammar` release using `shortAnswer` and `ignoreDiacritics` from the unmerged `french` branch.
