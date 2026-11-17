@@ -1,4 +1,13 @@
-import { Component, ElementRef, effect, input, output, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  computed,
+  effect,
+  input,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import type { WritingCharacter, WritingMode } from '../api-contracts';
 import { WritingEngine } from './writing-engine';
@@ -37,6 +46,11 @@ export class CharacterTrainer {
   protected readonly paused = signal(false);
   protected readonly playing = signal(false);
   protected readonly choices = signal<number[]>([]);
+  protected readonly canClear = computed(() =>
+    this.mode() === 'watch'
+      ? this.playing() || this.stroke() > 0
+      : this.stroke() > 0 || this.mistakes() > 0 || this.hints() > 0,
+  );
   private engine?: WritingEngine;
 
   constructor() {
@@ -59,7 +73,7 @@ export class CharacterTrainer {
         mode === 'sequence'
           ? 'Choose the stroke that comes next. Each option shows one isolated stroke.'
           : mode === 'watch'
-            ? 'Watch the model, or step through its strokes.'
+            ? 'Watch the model, or step through its strokes. To draw, choose Trace, Copy or Recall.'
             : 'Draw one stroke at a time. Lift your finger or mouse between strokes.',
       );
       this.choices.set(
@@ -105,7 +119,7 @@ export class CharacterTrainer {
     else this.engine?.pause();
     this.paused.update((v) => !v);
   }
-  protected reset() {
+  reset() {
     this.revision.update((v) => v + 1);
   }
   protected hint() {

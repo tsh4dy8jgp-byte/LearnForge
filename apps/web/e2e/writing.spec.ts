@@ -14,6 +14,11 @@ async function register(page: Page) {
     page.getByRole('heading', { name: 'Welcome back, Character Learner.' }),
   ).toBeVisible();
 }
+// The board is usable before a session exists; strokes count only once the session has started.
+async function startSaved(page: Page) {
+  await page.getByRole('button', { name: 'Start saved practice', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Finish session', exact: true })).toBeVisible();
+}
 async function strokePoints(page: Page) {
   const catalog = await (await page.request.get('/api/catalog/chinese-writing-pilot')).json();
   const median = catalog.characters[0].strokeData.medians[0] as number[][];
@@ -104,6 +109,73 @@ test('public trainer animates, steps without motion, loads audio and prints work
   expect(errors).toEqual([]);
 });
 
+test('a signed-in learner can draw, clear and retry without a saved session', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await register(page);
+  await page.goto(coursePath);
+  const clear = page.getByRole('button', { name: 'Clear / retry', exact: true });
+  const start = page.getByRole('button', { name: 'Start saved practice', exact: true });
+  await expect(start).toBeHidden();
+  await expect(clear).toBeDisabled();
+
+  await page.getByRole('button', { name: 'Trace', exact: true }).click();
+  await expect(start).toBeVisible();
+  await expect(page.locator('.writing-board.drawing')).toBeVisible();
+  await expect(clear).toBeDisabled();
+
+  // A stroke far from the model is rejected, which gives Clear something to clear.
+  await page.locator('.writing-canvas').scrollIntoViewIfNeeded();
+  const corner = (await page.locator('.writing-canvas svg').first().boundingBox())!;
+  await page.mouse.move(corner.x + 30, corner.y + 30);
+  await page.mouse.down();
+  await page.mouse.move(corner.x + 60, corner.y + 90, { steps: 5 });
+  await page.mouse.up();
+  await expect(page.getByText(/1 retries/)).toBeVisible();
+  await clear.click();
+  await expect(page.getByText(/0 retries/)).toBeVisible();
+  await expect(clear).toBeDisabled();
+
+  await draw(page, 'mouse');
+  await expect(page.getByText(/this attempt was not saved/)).toBeVisible();
+  await expect(page.getByText(/1 \/ 1 strokes/)).toBeVisible();
+  await clear.click();
+  await expect(page.getByText(/0 \/ 1 strokes/)).toBeVisible();
+  await draw(page, 'mouse');
+  await expect(page.getByText(/1 \/ 1 strokes/)).toBeVisible();
+  const progress = await (
+    await page.request.get('/api/me/courses/chinese-writing-pilot/writing/')
+  ).json();
+  expect(progress.characters[0].assistedCompletions).toBe(0);
+  expect(errors).toEqual([]);
+});
+
+test('a finished character stays on the board after its result is saved', async ({ page }) => {
+  await register(page);
+  await page.goto(coursePath);
+  await page.getByRole('button', { name: 'Trace', exact: true }).click();
+  await startSaved(page);
+  await draw(page, 'mouse');
+  await expect(
+    page.getByText(
+      'Saved. Guided practice, independent recall and stroke choices are tracked separately.',
+    ),
+  ).toBeVisible();
+  await expect(page.locator('.writing-board.drawing')).toBeVisible();
+  await expect(page.getByText('Character complete. Take a moment')).toBeVisible();
+});
+
+test('stroke choices show a stroke on every option', async ({ page }) => {
+  await page.goto(coursePath);
+  await page.locator('.character-grid button').filter({ hasText: '十' }).click();
+  await page.getByRole('button', { name: 'Stroke choices', exact: true }).click();
+  const paths = page.locator('.stroke-choices path');
+  await expect(paths).toHaveCount(2);
+  const shapes = await paths.evaluateAll((els) => els.map((el) => el.getAttribute('d') ?? ''));
+  expect(shapes.every((d) => d.startsWith('M'))).toBe(true);
+  expect(shapes[0]).not.toBe(shapes[1]);
+});
+
 test('mouse writing saves guided practice; recall resumes and saves independently', async ({
   page,
 }) => {
@@ -112,7 +184,7 @@ test('mouse writing saves guided practice; recall resumes and saves independentl
   await register(page);
   await page.goto(coursePath);
   await page.getByRole('button', { name: 'Trace', exact: true }).click();
-  await page.getByRole('button', { name: 'Start saved practice', exact: true }).click();
+  await startSaved(page);
   await draw(page, 'mouse');
   await expect(
     page.getByText(
@@ -125,7 +197,7 @@ test('mouse writing saves guided practice; recall resumes and saves independentl
   expect(progress.characters[0].assistedCompletions).toBe(1);
   expect(progress.characters[0].independentCompletions).toBe(0);
   await page.getByRole('button', { name: 'Recall', exact: true }).click();
-  await page.getByRole('button', { name: 'Start saved practice', exact: true }).click();
+  await startSaved(page);
   await expect(page.locator('.character-library')).not.toBeVisible();
   await page.reload();
   await page.getByRole('button', { name: 'Resume practice', exact: true }).click();
@@ -153,7 +225,7 @@ test('touch and pen input work after mobile resize, and stroke choices work by k
   await page.setViewportSize({ width: 390, height: 844 });
   for (const kind of ['touch', 'pen'] as const) {
     await page.getByRole('button', { name: 'Trace', exact: true }).click();
-    await page.getByRole('button', { name: 'Start saved practice', exact: true }).click();
+    await startSaved(page);
     await draw(page, kind);
     await expect(
       page.getByText(
@@ -165,7 +237,7 @@ test('touch and pen input work after mobile resize, and stroke choices work by k
     );
   }
   await page.getByRole('button', { name: 'Stroke choices', exact: true }).click();
-  await page.getByRole('button', { name: 'Start saved practice', exact: true }).click();
+  await startSaved(page);
   const option = page.getByRole('button', { name: 'Stroke shape option 1', exact: true });
   await option.focus();
   await page.keyboard.press('Enter');

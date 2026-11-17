@@ -23,7 +23,7 @@
         >
           <svg viewBox="0 0 1024 1024" aria-hidden="true">
             <g transform="translate(0 900) scale(1 -1)">
-              <path [attr.d]="character().strokeData.strokes[staticHint()!]" />
+              <path [attr.d]="character().strokeData.strokes[index]" />
             </g>
           </svg>
           <span>Option {{ option + 1 }}</span>
@@ -116,7 +116,7 @@
         </button>
       }
     }
-    <button class="button secondary" [disabled]="done() && mode() !== 'watch'" (click)="reset()">
+    <button class="button secondary" [disabled]="!canClear()" (click)="reset()">
       Clear / retry
     </button>
   </div>
