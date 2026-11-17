@@ -5,8 +5,9 @@ import { ApiClient } from '../http/api-client';
 import { message } from '../http/api-error';
 import { CourseCard } from '../api-contracts';
 import { SiteSettingsStore } from '../site/site-settings-store';
+import { Icon } from '../icons/icon';
 @Component({
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, Icon],
   templateUrl: './courses-page.html',
 })
 export class CoursesPage {

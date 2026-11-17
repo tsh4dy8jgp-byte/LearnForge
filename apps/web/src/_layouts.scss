@@ -34,7 +34,7 @@
   .sidebar { padding: 28px 38px 20px; background: var(--white); }
   .brand small { display: none; }
   .sidebar nav > a { font-size: 0.8rem; }
-  .sidebar nav > a > span { display: none; }
+  .sidebar nav > a > lf-icon { display: none; }
   .topbar { padding-inline: 38px; background: var(--subtle); }
   main { max-width: 960px; padding: 40px 38px; min-height: calc(100vh - 330px); }
   .dashboard-grid, .practice-layout { grid-template-columns: minmax(0, 1fr); }

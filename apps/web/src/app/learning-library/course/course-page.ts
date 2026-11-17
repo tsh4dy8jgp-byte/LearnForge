@@ -14,6 +14,7 @@ import { ObjectiveMap } from './objective-map';
 import { PracticeSetup } from './practice-setup';
 import { PracticeSelection } from './practice-selection';
 import { CourseFlashcards } from '../../flashcards/course-flashcards';
+import { Icon } from '../../icons/icon';
 
 @Component({
   imports: [
@@ -28,6 +29,7 @@ import { CourseFlashcards } from '../../flashcards/course-flashcards';
     ObjectiveMap,
     PracticeSetup,
     CourseFlashcards,
+    Icon,
   ],
   templateUrl: './course-page.html',
 })

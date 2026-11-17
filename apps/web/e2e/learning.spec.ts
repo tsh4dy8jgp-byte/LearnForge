@@ -82,7 +82,7 @@ test('a learner registers, reads, uses every question format, resumes and review
     await card.getByRole('button', { name: 'Check answer' }).click();
     await expect(page.locator('.feedback')).toBeVisible();
     if (n < 4) {
-      await page.getByRole('button', { name: 'Next →', exact: true }).click();
+      await page.getByRole('button', { name: 'Next', exact: true }).click();
       await expect(card.locator('.eyebrow')).toHaveText(`QUESTION ${n + 2} / 5`);
     }
   }

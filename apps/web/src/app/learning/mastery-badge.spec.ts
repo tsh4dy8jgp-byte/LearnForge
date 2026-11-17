@@ -25,6 +25,26 @@ describe('MasteryBadge', () => {
     expect(text).toContain('3 of last 5 correct');
   });
 
+  it('pairs each state with its own ring and tone, separated from the label', async () => {
+    const rings: Record<MasteryState, string> = {
+      notStarted: 'mastery-none',
+      emerging: 'mastery-quarter',
+      developing: 'mastery-half',
+      proficient: 'mastery-full',
+    };
+    for (const [state, ring] of Object.entries(rings)) {
+      const fixture = TestBed.createComponent(MasteryBadge);
+      fixture.componentRef.setInput('state', state);
+      await fixture.whenStable();
+      const pill = (fixture.nativeElement as HTMLElement).querySelector('.pill.mastery')!;
+      expect(pill.getAttribute('data-state')).toBe(state);
+      const icon = pill.querySelector('lf-icon')!;
+      expect(icon.getAttribute('data-icon')).toBe(ring);
+      expect(icon.getAttribute('aria-hidden')).toBe('true');
+      expect(pill.textContent?.trim()).toBe(masteryLabel(state as MasteryState));
+    }
+  });
+
   it('says when there is no evidence and when a review is due', async () => {
     const fixture = TestBed.createComponent(MasteryBadge);
     fixture.componentRef.setInput('state', 'proficient');

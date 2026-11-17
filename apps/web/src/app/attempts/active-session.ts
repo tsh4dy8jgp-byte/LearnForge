@@ -4,6 +4,7 @@ import { AttemptState } from './attempt-state';
 import { QuestionInput } from '../assessment/question-input';
 import { describeExpected } from '../assessment/answer-description';
 import { QuestionKind } from '../api-contracts';
+import { Icon } from '../icons/icon';
 
 const kindLabels: Record<QuestionKind, string> = {
   single: 'Single choice',
@@ -17,7 +18,7 @@ const kindLabels: Record<QuestionKind, string> = {
 
 @Component({
   selector: 'lf-active-session',
-  imports: [DecimalPipe, QuestionInput],
+  imports: [DecimalPipe, QuestionInput, Icon],
   host: { style: 'display: contents' },
   templateUrl: './active-session.html',
 })

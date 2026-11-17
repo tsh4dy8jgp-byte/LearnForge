@@ -4,7 +4,7 @@
     <h1>{{ site.settings().historyLabel }}<span class="accent">.</span></h1>
     <p class="lead">Reflect on your progress. Find the patterns. Choose your next step.</p>
   </div>
-  <a href="/api/me/export" class="button secondary">Export history ↓</a>
+  <a href="/api/me/export" class="button secondary">Export history <lf-icon name="download" /></a>
 </div>
 <div class="filter-row">
   <label
@@ -79,8 +79,8 @@
           }
           <td>
             <a [routerLink]="['/attempts', a.id]" class="text-link"
-              >{{ a.status === 'completed' ? 'Review' : 'Resume' }} →</a
-            >
+              >{{ a.status === 'completed' ? 'Review' : 'Resume' }} <lf-icon name="arrow-right"
+            /></a>
           </td>
         </tr>
       } @empty {

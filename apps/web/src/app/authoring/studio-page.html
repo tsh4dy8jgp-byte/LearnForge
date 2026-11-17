@@ -105,7 +105,10 @@
 }
 @if (published()) {
   <p class="alert success" role="status">
-    Release published. <a routerLink="/courses">Open {{ site.settings().libraryLabel }} →</a> Change
-    the source version before publishing another release.
+    Release published.
+    <a routerLink="/courses" class="text-link"
+      >Open {{ site.settings().libraryLabel }} <lf-icon name="arrow-right"
+    /></a>
+    Change the source version before publishing another release.
   </p>
 }

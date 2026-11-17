@@ -3,10 +3,14 @@
 }
 @if (error()) {
   <p class="alert error" role="alert">{{ error() }}</p>
-  <a routerLink="/attempts" class="text-link">Find your active session →</a>
+  <a routerLink="/attempts" class="text-link"
+    >Find your active session <lf-icon name="arrow-right"
+  /></a>
 }
 @if (course(); as c) {
-  <a routerLink="/courses" class="breadcrumb">← {{ site.settings().libraryLabel }}</a>
+  <a routerLink="/courses" class="breadcrumb"
+    ><lf-icon name="arrow-left" />{{ site.settings().libraryLabel }}</a
+  >
   <div class="page-heading">
     <div>
       <p class="eyebrow">
@@ -129,7 +133,9 @@
           @for (s of c.sources; track s.url) {
             <p>
               <a [href]="s.url" target="_blank" rel="noopener noreferrer" class="text-link"
-                >{{ s.title }} ↗</a
+                >{{ s.title }} <lf-icon name="external" /><span class="sr-only"
+                  >(opens in a new tab)</span
+                ></a
               >
             </p>
           } @empty {

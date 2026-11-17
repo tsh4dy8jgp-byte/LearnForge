@@ -6,9 +6,10 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } fro
 import { ApiClient } from './http/api-client';
 import { message } from './http/api-error';
 import { SiteSettingsStore } from './site/site-settings-store';
+import { Icon } from './icons/icon';
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icon],
   templateUrl: './app.html',
 })
 export class App {

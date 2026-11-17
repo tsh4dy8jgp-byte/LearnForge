@@ -2,10 +2,11 @@ import { Component, computed, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CourseCatalogDto } from '../../api-contracts';
 import { LessonContent } from '../../learning/lesson-content';
+import { Icon } from '../../icons/icon';
 
 @Component({
   selector: 'lf-course-lessons',
-  imports: [RouterLink, LessonContent],
+  imports: [RouterLink, LessonContent, Icon],
   templateUrl: './course-lessons.html',
 })
 export class CourseLessons {

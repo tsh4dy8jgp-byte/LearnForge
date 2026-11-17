@@ -5,8 +5,9 @@ import { Router, RouterLink } from '@angular/router';
 import { ApiClient } from '../http/api-client';
 import { message } from '../http/api-error';
 import { removeDrafts } from '../attempts/attempt-drafts';
+import { Icon } from '../icons/icon';
 @Component({
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, Icon],
   templateUrl: './settings-page.html',
 })
 export class SettingsPage {

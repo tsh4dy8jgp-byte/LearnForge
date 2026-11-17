@@ -16,22 +16,20 @@
     <div class="nav-label">YOUR WORKSPACE</div>
     <nav aria-label="Main navigation">
       <a routerLink="/dashboard" routerLinkActive="active"
-        ><span aria-hidden="true">◈</span> {{ site.settings().overviewLabel }}</a
+        ><lf-icon name="overview" />{{ site.settings().overviewLabel }}</a
       >
       <a routerLink="/courses" routerLinkActive="active"
-        ><span aria-hidden="true">▤</span> {{ site.settings().libraryLabel }}</a
+        ><lf-icon name="library" />{{ site.settings().libraryLabel }}</a
       >
       <a routerLink="/attempts" routerLinkActive="active"
-        ><span aria-hidden="true">◷</span> {{ site.settings().historyLabel }}</a
+        ><lf-icon name="history" />{{ site.settings().historyLabel }}</a
       >
       @if (session.user()?.publisher) {
         <a routerLink="/studio" routerLinkActive="active"
-          ><span aria-hidden="true">✧</span> {{ site.settings().studioLabel }}</a
+          ><lf-icon name="studio" />{{ site.settings().studioLabel }}</a
         >
       }
-      <a routerLink="/settings" routerLinkActive="active"
-        ><span aria-hidden="true">⚙</span> Account</a
-      >
+      <a routerLink="/settings" routerLinkActive="active"><lf-icon name="account" />Account</a>
     </nav>
     <div class="sidebar-note">
       <span class="tiny-label">BUILT FOR UNDERSTANDING</span>
@@ -60,7 +58,7 @@
           routerLinkActive="active"
           ariaCurrentWhenActive="page"
           class="appearance-link"
-          ><span aria-hidden="true">◐</span> Appearance</a
+          ><lf-icon name="appearance" />Appearance</a
         >
       </div>
     </header>

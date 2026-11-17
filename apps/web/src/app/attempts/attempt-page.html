@@ -3,7 +3,9 @@
   <button class="button secondary" (click)="state.load()">Reload saved attempt</button>
 }
 @if (state.attempt(); as attempt) {
-  <a [routerLink]="['/courses', attempt.packId]" class="breadcrumb">← {{ attempt.title }}</a>
+  <a [routerLink]="['/courses', attempt.packId]" class="breadcrumb"
+    ><lf-icon name="arrow-left" />{{ attempt.title }}</a
+  >
   @if (attempt.status === 'completed') {
     <lf-attempt-results [attempt]="attempt" />
   } @else {

@@ -6,6 +6,7 @@ import { RouterLink } from '@angular/router';
 import { message } from '../http/api-error';
 import { CourseGoal, DashboardDto } from '../api-contracts';
 import { MasteryBadge } from '../learning/mastery-badge';
+import { Icon } from '../icons/icon';
 import { NextSteps } from '../learning/next-steps';
 
 const goalLabels: Record<CourseGoal, string> = {
@@ -16,7 +17,7 @@ const goalLabels: Record<CourseGoal, string> = {
 };
 
 @Component({
-  imports: [RouterLink, DecimalPipe, DatePipe, MasteryBadge, NextSteps],
+  imports: [RouterLink, DecimalPipe, DatePipe, MasteryBadge, NextSteps, Icon],
   templateUrl: './dashboard-page.html',
 })
 export class DashboardPage {
