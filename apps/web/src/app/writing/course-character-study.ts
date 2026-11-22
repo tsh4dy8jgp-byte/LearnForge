@@ -30,6 +30,7 @@ import {
   recommendReading,
   reviewAvailability,
 } from './character-study-plan';
+import { Icon } from '../icons/icon';
 
 type StudyStep = { kind: 'recognition' | 'confusion'; deck: string; limit: number; tag?: string };
 type PendingReview = {
@@ -40,7 +41,7 @@ type PendingReview = {
 
 @Component({
   selector: 'lf-course-character-study',
-  imports: [RouterLink],
+  imports: [RouterLink, Icon],
   templateUrl: './course-character-study.html',
   styleUrl: './course-character-study.scss',
 })

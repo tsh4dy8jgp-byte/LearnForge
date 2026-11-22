@@ -12,11 +12,12 @@ import type {
   WritingSessionDto,
   WritingSummaryDto,
 } from '../api-contracts';
+import { Icon } from '../icons/icon';
 import { CharacterTrainer, PracticeResult } from './character-trainer';
 
 @Component({
   selector: 'lf-course-writing',
-  imports: [FormsModule, RouterLink, DatePipe, CharacterTrainer],
+  imports: [FormsModule, RouterLink, DatePipe, CharacterTrainer, Icon],
   templateUrl: './course-writing.html',
   styleUrl: './course-writing.scss',
 })

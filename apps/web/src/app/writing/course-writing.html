@@ -157,7 +157,9 @@
               {{ current()?.finishedAt ? 'Practise again' : 'Start saved practice' }}
             </button>
           } @else if (!account.user() && !preview()) {
-            <a routerLink="/sign-in" class="text-link">Sign in to save writing progress →</a>
+            <a routerLink="/sign-in" class="text-link"
+              >Sign in to save writing progress <lf-icon name="arrow-right"
+            /></a>
           }
         </div>
         @if (!hideModel()) {
@@ -178,8 +180,8 @@
               [routerLink]="['/courses', course().id]"
               [queryParams]="{ tab: 'learn', lesson: c.lessonId }"
               class="text-link"
-              >Open the teaching lesson →</a
-            >
+              >Open the teaching lesson <lf-icon name="arrow-right"
+            /></a>
           </details>
         }
         <p class="small muted">
