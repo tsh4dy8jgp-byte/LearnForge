@@ -24,6 +24,8 @@ check-content:
 	dotnet run --project tools/cli -- check packs/reasoning-foundations.json
 	dotnet run --project tools/cli -- check packs/evidence-lab.json
 	dotnet run --project tools/cli -- check packs/recall-foundations.json
+	dotnet run --project tools/cli -- check packs/azure-ai-200.json
+	dotnet run --project tools/cli -- lint packs/azure-ai-200.json --strict
 	dotnet run --project tools/cli -- check docs/examples/exam-sample.json
 	dotnet run --project tools/cli -- check docs/examples/flashcards-sample.json
 	dotnet run --project tools/cli -- lint docs/examples/exam-sample.json --strict

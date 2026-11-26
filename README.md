@@ -146,6 +146,7 @@ Read the [authoring guide](docs/authoring.md) for templates and question contrac
 | --- | --- |
 | [Reasoning foundations](packs/reasoning-foundations.json) | 3 objectives, 3 lessons, 40 template-generated questions across all five formats |
 | [Evidence lab](packs/evidence-lab.json) | A different subject: 2 shared cases, 10 questions and section-locking blueprints |
+| [Azure AI-200 preparation](docs/azure-ai-200.md) | Independent preparation for Microsoft Exam AI-200: 150 practice questions, 15 lessons, 72 flashcards and weighted short and full mocks (guide; the pack is `packs/azure-ai-200.json`) |
 | [Web foundations sample](docs/examples/exam-sample.json) | The compact exam/1 format: 3 weighted domains, all eight question kinds and a case study (not seeded; copy it into `packs/` to try it) |
 
 These original demonstration materials use CC0-1.0. They are not official certification questions or validated exams. Small banks and superficial variants cannot substantiate real readiness; production authors must create enough independent families.
