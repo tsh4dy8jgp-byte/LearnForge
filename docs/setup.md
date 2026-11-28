@@ -35,7 +35,7 @@ The browser opens only after API, database, web page, and proxied API checks suc
 | --data-dir "/path/with spaces" | Use a separate SQLite database and session-key directory. Relative paths are resolved against the checkout. |
 | --help | Print usage. |
 
-On macOS/Linux, make install runs the whole installer, make setup prepares it, and make dev starts with existing tools/packages and no browser. Windows uses the PowerShell entry point with the same options.
+On macOS/Linux, make install runs the whole installer, make setup prepares it, and make dev starts with existing tools/packages and no browser. Pass DATA to keep a separate database and session keys, for example make dev DATA=.learnforge/data/my-branch. Windows uses the PowerShell entry point with the same options.
 
 Application data defaults to apps/api/data/learnforge.db and apps/api/data/keys/. Installer state is ignored by Git under .learnforge/: tools/, cache/, logs/installer.log, separate timestamped server logs, and run/proxy.json. Successful web dependency installs are fingerprinted by the lockfile and toolchain, so repeat installations skip npm ci until those inputs change. API builds are incremental; ordinary launches do not run tests or regenerate API types.
 

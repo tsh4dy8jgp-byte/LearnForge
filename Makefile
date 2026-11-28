@@ -11,8 +11,9 @@ test-flashcard-exports:
 	.venv-flashcards/bin/python -m unittest discover -s tools/flashcards -v
 setup:
 	bash scripts/install.sh --install-only
+DATA ?=
 dev:
-	bash scripts/dev.sh
+	bash scripts/dev.sh $(if $(DATA),--data-dir "$(DATA)")
 test:
 	dotnet test LearnForge.slnx
 installer-test:

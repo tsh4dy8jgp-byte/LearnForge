@@ -11,6 +11,7 @@ LearnForge: an education and exam-practice framework. ASP.NET Core 10 API + Angu
 ```sh
 make setup                      # scripts/install.sh --install-only: tools if missing, restore/build API + CLI, npm ci, validate packs
 make dev                        # existing tools, no browser: API near 127.0.0.1:5080 + Angular near 127.0.0.1:4300
+make dev DATA=.learnforge/data/<branch>   # same, with a separate database and session keys (default apps/api/data)
 dotnet test LearnForge.slnx     # all xUnit tests (Core + HTTP integration)
 dotnet test LearnForge.slnx --filter "FullyQualifiedName~CoreTests.Readiness"   # single test / class
 dotnet build LearnForge.slnx -c Release
