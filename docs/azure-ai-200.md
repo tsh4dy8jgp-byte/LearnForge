@@ -2,17 +2,31 @@
 
 `azure-ai-200` is a generic LearnForge pack for Microsoft Exam AI-200, *Developing AI Cloud Solutions on Azure* (Microsoft Certified: Azure AI Cloud Developer Associate). It follows the official skills list and weights, and every fact traces to a Microsoft Learn page or the Azure SDK source. It contains no personal plan and no study-plan dates.
 
-## What is in 1.0.0
+## What is in 1.1.0
 
-- 150 original practice questions, including 2 case studies, covering all 27 skills in 4 domains.
-- A weighted short mock: 20 questions, 40 minutes, practice only.
-- A generated full mock: 50 questions, 100 minutes, drawn from the practice pool and weighted like the exam.
-- 15 lessons, including `start-here` with the suggested routes.
-- 72 flashcards, tagged by skill.
+- 400 original questions covering all 27 skills in 4 domains:
+  - 150 practice questions, including 2 case studies, used by learning sessions, focused practice and the short mock.
+  - 250 paper questions, split across five fixed papers, A to E. Papers share no questions.
+- A weighted short mock: 20 questions, 40 minutes, practice questions only.
+- Five fixed mock papers, A to E. Each has 50 questions, 100 minutes and one 5-question case study, and passes at 35 of 50 points.
+- 37 lessons: one for each of the 27 skills, 6 worked labs (`lab-*`) and four cross-cutting lessons (`start-here` with the suggested routes, `commonly-confused`, `exam-technique` and `final-revision`).
+- 163 flashcards in four decks, one for each domain, tagged by skill.
 
-## What 1.1.0 will add
+## Release history and the freeze
 
-No date is promised. The next version is planned to add five fixed, disjoint 50-question papers (each with a 5-question case study), the full lesson set with worked labs, and 150 or more flashcards.
+- 1.0.0: 150 practice questions, a short mock, a generated full mock, 15 lessons and 72 flashcards.
+- 1.1.0: adds the 250 paper questions and five fixed papers, 22 more lessons (including the labs) and 91 more flashcards. The generated full mock is removed in favour of the papers.
+
+1.1.0 is the final release before the exam and is frozen: no further version is planned. A new version would restart readiness (see below), so the content stays as it is.
+
+## Upgrading from 1.0.0
+
+Publish 1.1.0 into the same database as 1.0.0 (see [Study database](#study-database)). What carries over:
+
+- Lesson progress, for the 15 lessons whose IDs were kept. All 15 were revised for 1.1.0, so a lesson you completed in 1.0.0 stays completed and is marked "Updated since you read it". It is shown as revised, not reset.
+- The evidence ledger. All 150 practice question IDs are kept, so mastery, next steps and focused practice keep your 1.0.0 answers. Questions you saw in 1.0.0 count as seen in 1.1.0.
+
+What doesn't carry over is readiness. It is scoped to a release, so any 1.0.0 full mock streak starts again at 0 on 1.1.0. All 250 paper questions are new in 1.1.0, so every paper starts unstarted and fully fresh, however much you practised on 1.0.0. Practice questions you saw in 1.0.0 count as seen, but readiness on 1.1.0 uses only the papers, so this doesn't affect it.
 
 ## Exam facts
 
@@ -27,16 +41,16 @@ Checked on MS Learn on 24 Nov 2026 (the date the `start-here` lesson shows). The
 
 - The exam typically has 40-60 questions. Associate exams without labs give you 100 minutes, and 120 if the exam contains labs. A scaled score of 700 passes.
 - Microsoft lists question types such as multiple choice, build list, drag and drop, hot area, case studies and labs, but doesn't publish the exact types for each exam.
-- The 1.0.0 mocks have no pass line. The 1.1.0 fixed papers will use 70% (35 of 50 points) as a stated approximation of 700 scaled, not a prediction.
+- The fixed papers pass at 70% (35 of 50 points), a stated approximation of 700 scaled, not a prediction. The short mock has no pass line.
 - Microsoft changes study guides. If the live weights differ from the table, trust the live page.
 
 ## Mocks, papers and readiness
 
 Readiness counts full mocks only. The pack's policy is `shortAttempts 0`, `fullAttempts 3`, `threshold 80`, `lookbackDays 90` and `minimumFreshPercent 100`. In plain terms, the latest three full mocks within 90 days must each score strictly above 80% fully correct and use only questions you haven't seen before. Fully correct counts only answers that are entirely right: partial credit earns points but doesn't count towards this percentage. A newer failed, expired or ineligible full mock breaks the streak, and there is no cherry-picking of good attempts. The short mock never counts.
 
-In 1.0.0 the full mock is generated from the practice pool, and learning sessions draw from the same pool. Heavy practice therefore uses up fresh questions: learn first, then keep enough of the pool unseen for three full mocks. Fresh questions are what make a mock score meaningful, so the pool is the limit.
+In 1.1.0 the full mocks are the five fixed papers. Each paper is reserved for full mocks (`reserveFixedPapers`): until you have seen a paper's questions, learning sessions, focused practice and short mocks leave them out and draw from the 150 practice questions, so practice never spends an unopened paper. Mistakes from a paper you have taken return to practice afterwards. A paper is fresh the first time only, so a retake doesn't count and the five papers allow at most five eligible full mocks. Take them on separate days and review each before the next.
 
-Readiness is scoped to a release, while evidence is permanent. Publishing a new version restarts the readiness streak, and questions you already saw in 1.0.0 stay in 1.1.0 but count as seen, so they are no longer fresh there. The 1.0.0 generated full mock is removed in 1.1.0 in favour of the fixed papers. Once 1.1.0 ships its fixed papers, each paper is reserved for full mocks (`reserveFixedPapers`), so learning sessions don't spend them and they stay fresh for the readiness check. Read `docs/assessment.md` for the full rule.
+Readiness is scoped to a release, while evidence is permanent. Publishing a new version restarts the readiness streak, which is why 1.1.0 is frozen. Read `docs/assessment.md` for the full rule.
 
 ## Study database
 
@@ -78,7 +92,7 @@ bash run.sh build.py --draft   # writes build/draft/azure-ai-200.json and prints
 bash run.sh build.py           # writes packs/azure-ai-200.json
 ```
 
-Always try `--draft` first. Write `packs/` only with no dev server running, otherwise the watcher may publish a half-finished file. Releases are immutable, so a content change needs a `version` bump. Then run `make check-content`, which compiles the pack and lints it with `--strict`.
+Always try `--draft` first. Write `packs/` only with no dev server running, otherwise the watcher may publish a half-finished file. Releases are immutable, so a content change needs a `version` bump, and a bump restarts readiness for every learner on the pack. Then run `make check-content`, which compiles the pack and lints it with `--strict`.
 
 ## How content was verified
 
@@ -87,6 +101,13 @@ Always try `--draft` first. Write `packs/` only with no dev server running, othe
 - A blind review had fresh reviewers answer the practice pool using only the delivery view and MS Learn. Each disagreement was settled against the sources and fixed.
 - A code check compiles and runs the code samples in the lessons.
 - The CLI `check` and `lint --strict` pass with no warnings.
+
+## Known engine issues
+
+These come from the LearnForge engine, not the pack content. Both are planned to be fixed on `main` later. The pack stays frozen in the meantime.
+
+- At 390 px phone width, about 20 questions' option, matching-token or sequence rows overflow the page sideways. Long code identifiers in the options don't wrap, and sequence rows push their buttons off the row. Lessons, labs, tables and case backgrounds are not affected. Use a wider window or landscape mode for those questions.
+- An attempt view includes every case background in the pack, not just the one its questions use. The page shows only the case in use, and no questions, keys or explanations are exposed, but someone reading the raw response could see a paper's case background before taking that paper. The cause is that `AttemptService` copies all of `pack.Scenarios` into the attempt.
 
 ## Independence
 
